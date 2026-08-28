@@ -51,7 +51,7 @@
   .sync-dot.ok { background: #34d399; }
   .sync-dot.err { background: #f87171; }
   @media (max-width: 768px) {
-    .sync-btn { margin: 0; width: auto; padding: 8px 12px; flex-shrink: 0; border-radius: 8px; }
+    .sync-btn { margin: 0 0 0 auto; padding: 7px 10px; font-size: 11px; border-radius: 8px; flex-shrink: 0; }
   }
   .sync-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
@@ -64,7 +64,7 @@
   .page { display: none; }
   .page.active { display: block; }
   @media (max-width: 768px) {
-    .sidebar { position: static; width: 100%; height: auto; padding: 10px 14px; display: flex; align-items: center; gap: 10px; }
+    .sidebar { position: static; width: 100%; height: auto; padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
     .sidebar .logo { padding: 0 10px 0 4px; font-size: 17px; }
     .sidebar nav { flex-direction: row; }
     .nav-item { padding: 8px 14px; }
@@ -1557,6 +1557,9 @@ let sb = null, cloudUser = null, cloudPushTimer = null, cloudBusy = false;
 
 if (cloudReady) {
   sb = supabase.createClient(CLOUD.url, CLOUD.key);
+  const syncBtnEl = document.getElementById('syncBtn');
+  syncBtnEl.style.display = '';
+  updateSyncBtn();
   initCloud();
 } else {
   const btn = document.getElementById('syncBtn');
@@ -1676,12 +1679,16 @@ function scheduleCloudPush() {
 
 function updateSyncBtn(state) {
   const btn = document.getElementById('syncBtn');
-  if (!cloudUser) { btn.innerHTML = '<span class="sync-dot"></span>☁️ 云同步：未登录'; return; }
+  const short = window.innerWidth <= 768; // 手机端显示短文本，避免顶部导航溢出
+  if (!cloudUser) {
+    btn.innerHTML = short ? '<span class="sync-dot"></span>☁️ 登录' : '<span class="sync-dot"></span>☁️ 云同步：未登录';
+    return;
+  }
   const email = cloudUser.email || cloudUser.id.slice(0, 8);
-  if (state === 'ok') btn.innerHTML = `<span class="sync-dot ok"></span>☁️ ${email}`;
-  else if (state === 'syncing') btn.innerHTML = '<span class="sync-dot"></span>☁️ 同步中…';
-  else if (state === 'err') btn.innerHTML = `<span class="sync-dot err"></span>☁️ 同步失败`;
-  else btn.innerHTML = `<span class="sync-dot ok"></span>☁️ ${email}`;
+  if (state === 'ok') btn.innerHTML = short ? '<span class="sync-dot ok"></span>☁️ 已同步' : `<span class="sync-dot ok"></span>☁️ ${email}`;
+  else if (state === 'syncing') btn.innerHTML = '<span class="sync-dot"></span>☁️ …';
+  else if (state === 'err') btn.innerHTML = short ? '<span class="sync-dot err"></span>☁️ 未同步' : `<span class="sync-dot err"></span>☁️ 同步失败`;
+  else btn.innerHTML = short ? '<span class="sync-dot ok"></span>☁️ 已登录' : `<span class="sync-dot ok"></span>☁️ ${email}`;
 }
 
 async function initCloud() {
