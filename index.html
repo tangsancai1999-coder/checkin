@@ -69,7 +69,13 @@
   }
   .title-btn:hover { background: var(--primary); color: #fff; }
   .goal-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 10px; }
-  .goal-row input { width: 110px !important; margin-bottom: 0 !important; text-align: center; }
+  .goal-row input, .goal-row select { width: 150px !important; margin-bottom: 0 !important; text-align: left; }
+  .stat-tabs { display: flex; gap: 8px; margin: -2px 0 14px; }
+  .stat-tab {
+    flex: 1; padding: 7px 0; border: 2px solid var(--line); background: #fff; color: var(--muted);
+    border-radius: 999px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 700;
+  }
+  .stat-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
   .main { margin-left: 210px; }
   .page { display: none; }
   .page.active { display: block; }
@@ -411,19 +417,8 @@
 
   <!-- 考试倒计时 -->
   <div class="card">
-    <h2>考试倒计时</h2>
+    <h2>考试倒计时 <button type="button" class="title-btn" id="openExamModal">⚙️ 设置</button></h2>
     <div id="countdownBody"></div>
-    <div class="exam-setting">
-      <span>设置：</span>
-      <input type="date" id="examDate">
-      <input type="text" id="examName" placeholder="考试名称（如：雅思首考）">
-      <select id="examTarget">
-        <option value="">目标分数（选填）</option>
-        <option>6.0</option><option>6.5</option><option>7.0</option>
-        <option>7.5</option><option>8.0</option><option>8.5</option>
-      </select>
-      <button class="save-goals" id="saveExam">保存</button>
-    </div>
   </div>
 
   <!-- 今日打卡 -->
@@ -493,13 +488,17 @@
   <div class="two-col">
     <div class="card">
       <h2>学习统计</h2>
+      <div class="stat-tabs" id="ieltsStatTabs">
+        <button class="stat-tab active" data-range="month">本月</button>
+        <button class="stat-tab" data-range="year">本年</button>
+      </div>
       <div class="stats">
-        <div class="stat"><div class="num" id="statDays">0</div><div class="label">累计打卡（天）</div></div>
-        <div class="stat"><div class="num" id="statReading">0</div><div class="label">累计阅读（篇）</div></div>
-        <div class="stat"><div class="num" id="statListening">0</div><div class="label">累计听力（次）</div></div>
-        <div class="stat"><div class="num" id="statWriting">0</div><div class="label">累计写作（篇）</div></div>
-        <div class="stat"><div class="num" id="statSpeaking">0</div><div class="label">累计口语（次）</div></div>
-        <div class="stat"><div class="num" id="statWords">0</div><div class="label">累计背单词</div></div>
+        <div class="stat"><div class="num" id="statDays">0</div><div class="label">打卡（天）</div></div>
+        <div class="stat"><div class="num" id="statReading">0</div><div class="label">阅读（篇）</div></div>
+        <div class="stat"><div class="num" id="statListening">0</div><div class="label">听力（次）</div></div>
+        <div class="stat"><div class="num" id="statWriting">0</div><div class="label">写作（篇）</div></div>
+        <div class="stat"><div class="num" id="statSpeaking">0</div><div class="label">口语（次）</div></div>
+        <div class="stat"><div class="num" id="statWords">0</div><div class="label">背单词（个）</div></div>
       </div>
     </div>
 
@@ -570,10 +569,14 @@
   <div class="two-col">
     <div class="card">
       <h2>健身统计</h2>
+      <div class="stat-tabs" id="fitStatTabs">
+        <button class="stat-tab active" data-range="month">本月</button>
+        <button class="stat-tab" data-range="year">本年</button>
+      </div>
       <div class="stats">
-        <div class="stat"><div class="num" id="fitStatDays">0</div><div class="label">累计打卡天数</div></div>
-        <div class="stat"><div class="num" id="fitStatCardio">0</div><div class="label">累计有氧（分钟）</div></div>
-        <div class="stat"><div class="num" id="fitStatStrength">0</div><div class="label">累计力量（次）</div></div>
+        <div class="stat"><div class="num" id="fitStatDays">0</div><div class="label">打卡（天）</div></div>
+        <div class="stat"><div class="num" id="fitStatCardio">0</div><div class="label">有氧（分钟）</div></div>
+        <div class="stat"><div class="num" id="fitStatStrength">0</div><div class="label">力量（次）</div></div>
       </div>
     </div>
 
@@ -669,6 +672,29 @@
       <button id="fitGoalCancel">取消</button>
     </div>
     <button class="modal-close" id="fitGoalMaskClose">×</button>
+  </div>
+</div>
+
+<!-- 考试设置弹窗 -->
+<div class="modal-mask" id="examMask">
+  <div class="modal">
+    <h3>⚙️ 考试倒计时设置</h3>
+    <div class="sync-form">
+      <label class="goal-row">📅 考试日期<input type="date" id="examDate"></label>
+      <label class="goal-row">✏️ 考试名称<input type="text" id="examName" placeholder="如：雅思首考"></label>
+      <label class="goal-row">🎯 目标分数
+        <select id="examTarget">
+          <option value="">选填</option>
+          <option>6.0</option><option>6.5</option><option>7.0</option>
+          <option>7.5</option><option>8.0</option><option>8.5</option>
+        </select>
+      </label>
+    </div>
+    <div class="row2">
+      <button class="add-btn" id="saveExam">保存</button>
+      <button id="examCancel">取消</button>
+    </div>
+    <button class="modal-close" id="examMaskClose">×</button>
   </div>
 </div>
 
@@ -1145,7 +1171,7 @@ function renderCountdown() {
   const body = document.getElementById('countdownBody');
   const exam = store.exam;
   if (!exam || !exam.date) {
-    body.innerHTML = '<div class="empty-tip">还没有设置考试日期，在下方设置后开启倒计时 ⏳</div>';
+    body.innerHTML = '<div class="empty-tip">还没有设置考试日期，点击右上角「⚙️ 设置」开启倒计时 ⏳</div>';
     return;
   }
   const [y, m, d] = exam.date.split('-').map(Number);
@@ -1177,14 +1203,35 @@ document.getElementById('saveExam').addEventListener('click', () => {
   };
   saveStore();
   renderCountdown();
+  document.getElementById('examMask').classList.remove('show');
   showToast('考试倒计时已设置 ⏳');
 });
 
+/* ---------- 考试设置弹窗 ---------- */
+const examMask = document.getElementById('examMask');
+document.getElementById('openExamModal').onclick = () => {
+  const exam = store.exam || {};
+  document.getElementById('examDate').value = exam.date || '';
+  document.getElementById('examName').value = exam.name === '雅思考试' ? '' : (exam.name || '');
+  document.getElementById('examTarget').value = exam.target || '';
+  examMask.classList.add('show');
+};
+document.getElementById('examMaskClose').onclick = () => examMask.classList.remove('show');
+document.getElementById('examCancel').onclick = () => examMask.classList.remove('show');
+examMask.addEventListener('click', e => { if (e.target === examMask) examMask.classList.remove('show'); });
+
 /* ---------- 统计 ---------- */
+let statsRange = 'month';
+function inStatRange(dateKeyStr) {
+  if (statsRange === 'month') return dateKeyStr.slice(0, 7) === dateKey(new Date()).slice(0, 7);
+  return dateKeyStr.slice(0, 4) === dateKey(new Date()).slice(0, 4);
+}
+
 function renderStats() {
   let days = 0;
   const cnt = { reading: 0, listening: 0, writing: 0, speaking: 0 };
   Object.keys(store.records).forEach(k => {
+    if (!inStatRange(k)) return;
     const items = store.records[k];
     if (items.length) days++;
     items.forEach(it => { if (cnt[it.type] !== undefined) cnt[it.type]++; });
@@ -1195,9 +1242,20 @@ function renderStats() {
   document.getElementById('statWriting').textContent = cnt.writing;
   document.getElementById('statSpeaking').textContent = cnt.speaking;
   let words = 0;
-  Object.keys(store.words).forEach(k => store.words[k].forEach(w => words += w.count));
+  Object.keys(store.words).forEach(k => {
+    if (!inStatRange(k)) return;
+    store.words[k].forEach(w => words += w.count);
+  });
   document.getElementById('statWords').textContent = words;
 }
+
+document.getElementById('ieltsStatTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.stat-tab');
+  if (!btn) return;
+  statsRange = btn.dataset.range;
+  document.querySelectorAll('#ieltsStatTabs .stat-tab').forEach(b => b.classList.toggle('active', b === btn));
+  renderStats();
+});
 
 function renderStreak() {
   let streak = 0;
@@ -1511,9 +1569,14 @@ document.getElementById('fitSaveGoals').addEventListener('click', () => {
   showToast('健身周目标已保存 ✓');
 });
 
+let fitStatsRange = 'month';
 function renderFitStats() {
+  const ym = dateKey(new Date()).slice(0, 7);
+  const y = dateKey(new Date()).slice(0, 4);
   let days = 0, cardio = 0, strength = 0;
   Object.keys(fitStore.records).forEach(k => {
+    const inRange = fitStatsRange === 'month' ? k.slice(0, 7) === ym : k.slice(0, 4) === y;
+    if (!inRange) return;
     const items = fitStore.records[k];
     if (items.length) days++;
     items.forEach(it => {
@@ -1525,6 +1588,14 @@ function renderFitStats() {
   document.getElementById('fitStatCardio').textContent = cardio;
   document.getElementById('fitStatStrength').textContent = strength;
 }
+
+document.getElementById('fitStatTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.stat-tab');
+  if (!btn) return;
+  fitStatsRange = btn.dataset.range;
+  document.querySelectorAll('#fitStatTabs .stat-tab').forEach(b => b.classList.toggle('active', b === btn));
+  renderFitStats();
+});
 
 function renderFitStreak() {
   let streak = 0;
