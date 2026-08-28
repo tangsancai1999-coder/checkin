@@ -2,8 +2,13 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>打卡本 · 雅思 & 健身</title>
+<link rel="apple-touch-icon" href="icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="打卡本">
+<meta name="theme-color" content="#ffffff">
 <style>
   :root {
     --primary: #1f1f1f;
@@ -23,8 +28,9 @@
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
+    padding-top: env(safe-area-inset-top);
   }
-  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px 60px; }
+  .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
 
   /* 侧边栏与页面布局 */
   .sidebar {
@@ -53,9 +59,6 @@
   .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; margin-right: 6px; }
   .sync-dot.ok { background: #34d399; }
   .sync-dot.err { background: #f87171; }
-  @media (max-width: 768px) {
-    .sync-btn { margin: 0 0 0 auto; padding: 7px 10px; font-size: 11px; border-radius: 8px; flex-shrink: 0; }
-  }
   .sync-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
     font-size: 14px; outline: none; margin-bottom: 10px; box-sizing: border-box; font-family: inherit;
@@ -80,10 +83,13 @@
   .page { display: none; }
   .page.active { display: block; }
   @media (max-width: 768px) {
-    .sidebar { position: static; width: 100%; height: auto; padding: 10px 14px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
-    .sidebar .logo { padding: 0 10px 0 4px; font-size: 17px; }
-    .sidebar nav { flex-direction: row; }
-    .nav-item { padding: 8px 14px; }
+    .sidebar { position: static; width: 100%; height: auto; padding: 10px 14px 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .sidebar .logo { order: 1; padding: 0 4px; font-size: 16px; }
+    .sidebar .logo svg { width: 26px; height: 26px; }
+    .sync-btn { order: 2; margin: 0 0 0 auto; padding: 8px 14px; font-size: 12px; border-radius: 999px; flex-shrink: 0; }
+    .sidebar nav { order: 3; flex-basis: 100%; flex-direction: row; gap: 8px; padding-top: 4px; }
+    .nav-item { flex: 1; justify-content: center; padding: 11px 8px; font-size: 14px; border-radius: 10px; background: #f5f5f5; }
+    .nav-item.active { background: #1f1f1f; }
     .main { margin-left: 0; }
   }
 
