@@ -6,19 +6,20 @@
 <title>打卡本 · 雅思 & 健身</title>
 <style>
   :root {
-    --primary: #4f6ef7;
-    --primary-dark: #3b55d9;
-    --bg: #f3f5fb;
+    --primary: #1f1f1f;
+    --primary-dark: #000000;
+    --bg: #fafafa;
     --card: #ffffff;
-    --text: #1f2430;
-    --muted: #8a91a5;
-    --border: #e6e9f2;
-    --success: #2fb77c;
-    --radius: 16px;
+    --text: #1a1a1a;
+    --muted: #9a9a9a;
+    --border: #e3e3e3;
+    --success: #3a3a3a;
+    --radius: 20px;
+    --line: #bdbdbd;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   body {
-    font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "Comic Sans MS", "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100vh;
@@ -28,24 +29,26 @@
   /* 侧边栏与页面布局 */
   .sidebar {
     position: fixed; left: 0; top: 0; width: 210px; height: 100vh;
-    background: linear-gradient(180deg, #232946 0%, #1a1f2e 100%);
+    background: #ffffff;
+    border-right: 2px solid #1f1f1f;
     padding: 22px 14px; box-sizing: border-box; z-index: 50;
   }
-  .sidebar .logo { color: #fff; font-size: 20px; font-weight: 700; padding: 0 10px 20px; letter-spacing: 1px; }
+  .sidebar .logo { color: var(--text); font-size: 19px; font-weight: 700; padding: 0 10px 20px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+  .sidebar .logo svg { flex-shrink: 0; }
   .sidebar nav { display: flex; flex-direction: column; gap: 6px; }
   .nav-item {
     display: flex; align-items: center; gap: 10px; padding: 12px 16px;
-    border-radius: 10px; color: #aab1c5; font-size: 15px; cursor: pointer; transition: all .15s;
+    border-radius: 12px; color: #808080; font-size: 15px; cursor: pointer; transition: all .15s;
     white-space: nowrap;
   }
-  .nav-item:hover { color: #fff; background: rgba(255,255,255,.06); }
-  .nav-item.active { color: #fff; background: var(--primary); }
+  .nav-item:hover { color: var(--text); background: #f2f2f2; }
+  .nav-item.active { color: #fff; background: #1f1f1f; }
   .sync-btn {
     margin: 18px 12px 0; width: calc(100% - 24px); padding: 9px; box-sizing: border-box;
-    border: none; border-radius: 8px; background: rgba(255,255,255,.12); color: #cbd5e1;
+    border: 1.5px dashed #cfcfcf; border-radius: 10px; background: #fff; color: #8a8a8a;
     font-size: 12px; cursor: pointer; text-align: left; font-family: inherit;
   }
-  .sync-btn:hover { background: rgba(255,255,255,.2); color: #fff; }
+  .sync-btn:hover { background: #f5f5f5; color: #111; border-color: #999; }
   .sync-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; margin-right: 6px; }
   .sync-dot.ok { background: #34d399; }
@@ -60,6 +63,13 @@
   .sync-form input:focus { border-color: var(--primary); }
   .sync-tip { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 0 0 12px; }
   .sync-info { font-size: 14px; line-height: 1.9; margin: 0 0 12px; word-break: break-all; }
+  .title-btn {
+    float: right; background: #fff; color: var(--primary-dark); font-size: 12px; font-weight: 700;
+    padding: 5px 12px; border: 2px solid var(--primary); border-radius: 999px; cursor: pointer; font-family: inherit; margin-top: -5px;
+  }
+  .title-btn:hover { background: var(--primary); color: #fff; }
+  .goal-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 10px; }
+  .goal-row input { width: 110px !important; margin-bottom: 0 !important; text-align: center; }
   .main { margin-left: 210px; }
   .page { display: none; }
   .page.active { display: block; }
@@ -73,33 +83,58 @@
 
   /* 头部 */
   header {
-    background: linear-gradient(135deg, #4f6ef7 0%, #7b5df0 100%);
+    background: #f6f6f6;
+    border: 2px solid #1f1f1f;
     border-radius: var(--radius);
-    color: #fff;
-    padding: 28px 28px 24px;
-    margin-bottom: 20px;
+    color: var(--text);
+    padding: 14px 20px;
+    margin-bottom: 16px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 16px;
+    gap: 12px;
   }
-  header h1 { font-size: 26px; letter-spacing: 1px; }
-  header p { opacity: .85; margin-top: 6px; font-size: 14px; }
-  .streak-box { text-align: center; background: rgba(255,255,255,.15); border-radius: 12px; padding: 12px 22px; }
-  .streak-box .num { font-size: 32px; font-weight: 700; }
-  .streak-box .label { font-size: 12px; opacity: .85; }
+  header h1 { font-size: 20px; letter-spacing: 1px; }
+  header p { opacity: .65; margin-top: 4px; font-size: 13px; }
+  .streak-box { text-align: center; background: #fff; border: 2px solid #1f1f1f; border-radius: 12px; padding: 6px 18px; }
+  .streak-box .num { font-size: 26px; font-weight: 700; }
+  .streak-box .label { font-size: 12px; opacity: .65; }
 
-  /* 卡片 */
+  /* 卡片（猫咪线条风） */
   .card {
     background: var(--card);
+    border: 2px solid var(--line);
     border-radius: var(--radius);
     padding: 22px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(31,36,48,.05);
+    box-shadow: 0 4px 14px rgba(222, 168, 128, .10);
+    position: relative;
   }
-  .card h2 { font-size: 17px; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
-  .card h2::before { content: ""; width: 4px; height: 18px; background: var(--primary); border-radius: 2px; }
+  .card::before, .card::after {
+    content: ""; position: absolute; top: -13px; width: 26px; height: 26px;
+    background: var(--card); border: 2px solid var(--line);
+    border-radius: 60% 60% 0 0;
+  }
+  .card::before {
+    left: 32px; border-bottom: none; border-left: none; transform: rotate(-14deg);
+  }
+  .card::after {
+    right: 32px; border-bottom: none; border-right: none; transform: rotate(14deg);
+  }
+  .card h2 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; cursor: pointer; user-select: none; }
+  .card h2::before { content: "🐾"; width: auto; height: auto; background: none; font-size: 14px; }
+  .card h2 .title-btn { margin-left: auto; }
+  .card h2::after { content: "▾"; margin-left: auto; color: var(--muted); font-size: 13px; transition: transform .25s; }
+  .card h2:has(.title-btn)::after { margin-left: 0; }
+  .card.collapsed h2::after { transform: rotate(-90deg); }
+  .card.collapsed h2 { margin-bottom: 0; }
+
+  /* 折叠动画 */
+  .card-body { display: grid; grid-template-rows: 1fr; transition: grid-template-rows .3s ease; }
+  .card.collapsed .card-body { grid-template-rows: 0fr; }
+  .card-inner { min-height: 0; overflow: hidden; }
+  .paw-footer { text-align: center; color: var(--muted); font-size: 13px; padding: 6px 0 10px; letter-spacing: 2px; }
 
   /* 添加表单 */
   .add-form { display: grid; grid-template-columns: 1fr 1.4fr 1fr 1fr; gap: 10px; }
@@ -110,10 +145,10 @@
   }
   .add-form select:focus, .add-form input:focus { border-color: var(--primary); }
   .add-btn {
-    padding: 9px 22px; background: var(--primary); color: #fff; border: none;
-    border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; white-space: nowrap;
+    padding: 8px 22px; background: #fff; color: var(--primary-dark); border: 2px solid var(--primary);
+    border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap;
   }
-  .add-btn:hover { background: var(--primary-dark); }
+  .add-btn:hover { background: var(--primary); color: #fff; }
   @media (max-width: 640px) {
     .add-form { grid-template-columns: 1fr 1fr; }
     .add-form .row2 { grid-template-columns: 1fr; }
@@ -135,16 +170,16 @@
   .badge {
     font-size: 12px; padding: 3px 10px; border-radius: 20px; color: #fff; font-weight: 600; flex-shrink: 0;
   }
-  .badge.reading { background: var(--primary); }
-  .badge.listening { background: var(--success); }
-  .badge.writing { background: #f0a35d; }
-  .badge.speaking { background: #9b6df0; }
-  .badge.fitness { background: #ff7043; }
-  .badge.cardio { background: #1e9e8e; }
-  .badge.strength { background: #ff7043; }
-  header.fitness-header { background: linear-gradient(135deg, #ff7043 0%, #ff9f43 100%); }
+  .badge.reading { background: #1f1f1f; }
+  .badge.listening { background: #4a4a4a; }
+  .badge.writing { background: #6b6b6b; }
+  .badge.speaking { background: #8a8a8a; }
+  .badge.fitness { background: #1f1f1f; }
+  .badge.cardio { background: #6b6b6b; }
+  .badge.strength { background: #4a4a4a; }
+  header.fitness-header { background: #f6f6f6; }
   .qtype {
-    font-size: 12px; color: #5b6b8c; background: #e8edf9;
+    font-size: 12px; color: #444; background: #f0f0f0;
     padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
   }
   /* 多选触发按钮 + 底部弹层选择器 */
@@ -202,9 +237,9 @@
   .goal { margin-bottom: 16px; }
   .goal-head { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
   .goal-head .count { color: var(--primary); font-weight: 700; }
-  .bar { height: 10px; background: var(--bg); border-radius: 6px; overflow: hidden; }
-  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--primary), #7b5df0); border-radius: 6px; transition: width .4s; }
-  .bar-fill.full { background: linear-gradient(90deg, #2fb77c, #6fe0ae); }
+  .bar { height: 10px; background: #f0f0f0; border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, #2b2b2b, #6e6e6e); border-radius: 6px; transition: width .4s; }
+  .bar-fill.full { background: linear-gradient(90deg, #000, #555); }
   .goal-done { font-size: 12px; color: var(--success); margin-top: 6px; }
   .goal-setting {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -227,7 +262,7 @@
   .cd-unit { font-size: 16px; font-weight: 600; }
   .cd-desc { font-size: 14px; color: var(--muted); margin-top: 6px; }
   .cd-badge {
-    display: inline-block; margin-left: 8px; background: #fff7e6; color: #d48806;
+    display: inline-block; margin-left: 8px; background: #f0f0f0; color: #555;
     font-size: 12px; padding: 2px 10px; border-radius: 10px; font-weight: 600;
   }
   .exam-setting {
@@ -242,7 +277,7 @@
   .exam-setting input[type="text"] { flex: 1; min-width: 140px; }
 
   /* 单词打卡 */
-  .badge.word { background: #12b5cb; }
+  .badge.word { background: #8a8a8a; }
   .word-form { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 10px; }
   .word-form select, .word-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
@@ -297,7 +332,7 @@
   .day.checked { background: var(--primary); color: #fff; font-weight: 600; }
   .day.today:not(.checked) { border: 2px solid var(--primary); color: var(--primary); font-weight: 700; }
   .day .cnt { font-size: 10px; opacity: .85; margin-top: 2px; }
-  .day.checked .cnt { color: #c9f7e2; }
+  .day.checked .cnt { color: #bdbdbd; }
   /* 小号日历（健身页） */
   .cal-sm-wrap { max-width: 400px; }
   .cal-sm .day { aspect-ratio: auto; height: 46px; font-size: 12px; border-radius: 8px; }
@@ -338,7 +373,20 @@
 </head>
 <body>
 <aside class="sidebar">
-  <div class="logo">📒 打卡本</div>
+  <div class="logo">
+    <svg width="30" height="30" viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <path d="M15 24 L11 9 L25 16"/>
+      <path d="M49 24 L53 9 L39 16"/>
+      <circle cx="32" cy="36" r="21"/>
+      <circle cx="24" cy="34" r="2.5" fill="#1f1f1f" stroke="none"/>
+      <circle cx="40" cy="34" r="2.5" fill="#1f1f1f" stroke="none"/>
+      <path d="M29 42 L35 42 L32 46 Z" fill="#1f1f1f" stroke="none"/>
+      <path d="M32 46 Q29 50 26 48"/>
+      <path d="M32 46 Q35 50 38 48"/>
+      <path d="M6 38 L15 39 M7 45 L15 44 M49 39 L58 38 M49 44 L57 45"/>
+    </svg>
+    <span>打卡本</span>
+  </div>
   <nav>
     <div class="nav-item active" data-page="ielts">📚 雅思打卡</div>
     <div class="nav-item" data-page="fitness">💪 健身打卡</div>
@@ -413,16 +461,11 @@
       <div class="bar"><div class="bar-fill" id="wordWeekBar" style="width:0%"></div></div>
       <div class="goal-done" id="wordWeekDone" style="display:none">🎉 已达成本周单词目标！</div>
     </div>
-    <div class="goal-setting">
-      <span>单词目标：</span>
-      <label><input type="number" min="0" id="wordGoalInput"> 个 / 周</label>
-      <button class="save-goals" id="saveWordGoal">保存目标</button>
-    </div>
   </div>
 
   <!-- 本周目标 -->
   <div class="card">
-    <h2>本周目标</h2>
+    <h2>本周目标 <button type="button" class="title-btn" id="openGoalModal">🎯 设置目标</button></h2>
     <div class="week-dates" id="weekDates"></div>
     <div class="goal">
       <div class="goal-head"><span>📖 阅读</span><span class="count" id="readingCount">0 / 0 篇</span></div>
@@ -443,14 +486,6 @@
       <div class="goal-head"><span>🗣️ 口语</span><span class="count" id="speakingCount">0 / 0 次</span></div>
       <div class="bar"><div class="bar-fill" id="speakingBar" style="width:0%"></div></div>
       <div class="goal-done" id="speakingDone" style="display:none">🎉 已达成本周口语目标！</div>
-    </div>
-    <div class="goal-setting">
-      <span>目标设置：</span>
-      <label>阅读 <input type="number" min="0" id="goalReading"> 篇 / 周</label>
-      <label>听力 <input type="number" min="0" id="goalListening"> 次 / 周</label>
-      <label>写作 <input type="number" min="0" id="goalWriting"> 篇 / 周</label>
-      <label>口语 <input type="number" min="0" id="goalSpeaking"> 次 / 周</label>
-      <button class="save-goals" id="saveGoals">保存目标</button>
     </div>
   </div>
 
@@ -517,7 +552,7 @@
 
   <!-- 本周目标 -->
   <div class="card">
-    <h2>本周目标</h2>
+    <h2>本周目标 <button type="button" class="title-btn" id="openFitGoalModal">🎯 设置目标</button></h2>
     <div class="week-dates" id="fitWeekDates"></div>
     <div class="goal">
       <div class="goal-head"><span>🏃 有氧训练</span><span class="count" id="fitCardioCount">0 / 0 分钟</span></div>
@@ -528,12 +563,6 @@
       <div class="goal-head"><span>🏋️ 力量训练</span><span class="count" id="fitStrCount">0 / 0 次</span></div>
       <div class="bar"><div class="bar-fill" id="fitStrBar" style="width:0%"></div></div>
       <div class="goal-done" id="fitStrDone" style="display:none">🎉 已达成本周力量目标！</div>
-    </div>
-    <div class="goal-setting">
-      <span>目标设置：</span>
-      <label>有氧 <input type="number" min="0" id="fitGoalMinutes"> 分钟 / 周</label>
-      <label>力量 <input type="number" min="0" id="fitGoalTimes"> 次 / 周</label>
-      <button class="save-goals" id="fitSaveGoals">保存目标</button>
     </div>
   </div>
 
@@ -605,6 +634,41 @@
       </div>
     </div>
     <button class="modal-close" id="syncMaskClose">×</button>
+  </div>
+</div>
+
+<!-- 雅思目标设置弹窗 -->
+<div class="modal-mask" id="goalMask">
+  <div class="modal">
+    <h3>🎯 目标设置（每周）</h3>
+    <div class="sync-form">
+      <label class="goal-row">📖 阅读（篇）<input type="number" min="0" id="goalReading"></label>
+      <label class="goal-row">🎧 听力（次）<input type="number" min="0" id="goalListening"></label>
+      <label class="goal-row">✍️ 写作（篇）<input type="number" min="0" id="goalWriting"></label>
+      <label class="goal-row">🗣️ 口语（次）<input type="number" min="0" id="goalSpeaking"></label>
+      <label class="goal-row">📝 单词（个）<input type="number" min="0" id="wordGoalInput"></label>
+    </div>
+    <div class="row2">
+      <button class="add-btn" id="saveGoals">保存</button>
+      <button id="goalCancel">取消</button>
+    </div>
+    <button class="modal-close" id="goalMaskClose">×</button>
+  </div>
+</div>
+
+<!-- 健身目标设置弹窗 -->
+<div class="modal-mask" id="fitGoalMask">
+  <div class="modal">
+    <h3>🎯 健身目标（每周）</h3>
+    <div class="sync-form">
+      <label class="goal-row">🏃 有氧（分钟）<input type="number" min="0" id="fitGoalMinutes"></label>
+      <label class="goal-row">🏋️ 力量（次）<input type="number" min="0" id="fitGoalTimes"></label>
+    </div>
+    <div class="row2">
+      <button class="add-btn" id="fitSaveGoals">保存</button>
+      <button id="fitGoalCancel">取消</button>
+    </div>
+    <button class="modal-close" id="fitGoalMaskClose">×</button>
   </div>
 </div>
 
@@ -982,10 +1046,37 @@ document.getElementById('saveGoals').addEventListener('click', () => {
   ['reading', 'listening', 'writing', 'speaking'].forEach(t => {
     store.goals[t] = Math.max(0, Number(document.getElementById('goal' + t[0].toUpperCase() + t.slice(1)).value) || 0);
   });
+  store.wordGoal = Math.max(0, Number(document.getElementById('wordGoalInput').value) || 0);
   saveStore();
   renderGoals();
+  renderWords();
+  document.getElementById('goalMask').classList.remove('show');
   showToast('周目标已保存 ✓');
 });
+
+/* ---------- 目标设置弹窗 ---------- */
+const goalMask = document.getElementById('goalMask');
+const fitGoalMask = document.getElementById('fitGoalMask');
+document.getElementById('openGoalModal').onclick = () => {
+  document.getElementById('goalReading').value = store.goals.reading;
+  document.getElementById('goalListening').value = store.goals.listening;
+  document.getElementById('goalWriting').value = store.goals.writing;
+  document.getElementById('goalSpeaking').value = store.goals.speaking;
+  document.getElementById('wordGoalInput').value = store.wordGoal;
+  goalMask.classList.add('show');
+};
+document.getElementById('goalMaskClose').onclick = () => goalMask.classList.remove('show');
+document.getElementById('goalCancel').onclick = () => goalMask.classList.remove('show');
+goalMask.addEventListener('click', e => { if (e.target === goalMask) goalMask.classList.remove('show'); });
+
+document.getElementById('openFitGoalModal').onclick = () => {
+  document.getElementById('fitGoalMinutes').value = fitStore.goals.minutes;
+  document.getElementById('fitGoalTimes').value = fitStore.goals.times;
+  fitGoalMask.classList.add('show');
+};
+document.getElementById('fitGoalMaskClose').onclick = () => fitGoalMask.classList.remove('show');
+document.getElementById('fitGoalCancel').onclick = () => fitGoalMask.classList.remove('show');
+fitGoalMask.addEventListener('click', e => { if (e.target === fitGoalMask) fitGoalMask.classList.remove('show'); });
 
 /* ---------- 单词打卡 ---------- */
 const WORD_BOOKS = ['绿宝书', '红宝书', '雅思真词汇', '王陆语料库'];
@@ -1048,13 +1139,6 @@ function renderWords() {
   document.getElementById('wordWeekCount').textContent = `${week} / ${goal} 个`;
   document.getElementById('wordWeekDone').style.display = (goal > 0 && week >= goal) ? '' : 'none';
 }
-
-document.getElementById('saveWordGoal').addEventListener('click', () => {
-  store.wordGoal = Math.max(0, Number(document.getElementById('wordGoalInput').value) || 0);
-  saveStore();
-  renderWords();
-  showToast('单词目标已保存 ✓');
-});
 
 /* ---------- 考试倒计时 ---------- */
 function renderCountdown() {
@@ -1423,6 +1507,7 @@ document.getElementById('fitSaveGoals').addEventListener('click', () => {
   fitStore.goals.times = Math.max(0, Number(document.getElementById('fitGoalTimes').value) || 0);
   saveFit();
   renderFitGoals();
+  document.getElementById('fitGoalMask').classList.remove('show');
   showToast('健身周目标已保存 ✓');
 });
 
@@ -1764,6 +1849,39 @@ document.getElementById('syncOut').onclick = async () => {
   syncMask.classList.remove('show');
   showToast('已退出登录（本地数据保留）');
 };
+
+/* ---------- 模块折叠（点击标题展开/收起） ---------- */
+const foldState = JSON.parse(localStorage.getItem('fold_state_v1') || '{}');
+document.querySelectorAll('.page').forEach((page, pi) => {
+  page.querySelectorAll('.card').forEach((card, ci) => {
+    const h2 = card.querySelector('h2');
+    if (!h2) return;
+    const body = document.createElement('div');
+    body.className = 'card-body';
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+    while (h2.nextSibling) inner.appendChild(h2.nextSibling);
+    body.appendChild(inner);
+    card.appendChild(body);
+    const key = 'p' + pi + 'c' + ci;
+    const collapsed = foldState[key] !== undefined ? foldState[key] : !(pi === 0 && ci === 0);
+    if (collapsed) card.classList.add('collapsed');
+    h2.addEventListener('click', e => {
+      if (e.target.closest('button, input, select, a, label')) return;
+      card.classList.toggle('collapsed');
+      foldState[key] = card.classList.contains('collapsed');
+      localStorage.setItem('fold_state_v1', JSON.stringify(foldState));
+    });
+  });
+});
+
+/* ---------- 猫爪页脚 ---------- */
+document.querySelectorAll('.container').forEach(c => {
+  const f = document.createElement('div');
+  f.className = 'paw-footer';
+  f.textContent = '🐾 今天也要加油喵～';
+  c.appendChild(f);
+});
 </script>
 </body>
 </html>
