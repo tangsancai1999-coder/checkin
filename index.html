@@ -34,14 +34,14 @@
 
   /* 侧边栏与页面布局 */
   .sidebar {
-    position: fixed; left: 0; top: 0; width: 210px; height: 100vh;
-    background: #ffffff;
-    border-right: 2px solid #1f1f1f;
-    padding: 22px 14px; box-sizing: border-box; z-index: 50;
+    position: fixed; top: 0; left: 0; right: 0; width: 100%; height: auto;
+    padding: 10px 16px; box-sizing: border-box; z-index: 50;
+    background: #ffffff; border-bottom: 2px solid #1f1f1f;
+    display: flex; align-items: center; justify-content: space-between;
   }
-  .sidebar .logo { color: var(--text); font-size: 19px; font-weight: 700; padding: 0 10px 20px; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
+  .sidebar .logo { color: var(--text); font-size: 19px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
   .sidebar .logo svg { flex-shrink: 0; }
-  .sidebar nav { display: flex; flex-direction: column; gap: 6px; }
+  .sidebar nav { display: flex; align-items: center; gap: 10px; }
   .nav-item {
     display: flex; align-items: center; gap: 10px; padding: 12px 16px;
     border-radius: 12px; color: #808080; font-size: 15px; cursor: pointer; transition: all .15s;
@@ -50,9 +50,9 @@
   .nav-item:hover { color: var(--text); background: #f2f2f2; }
   .nav-item.active { color: #fff; background: #1f1f1f; }
   .sync-btn {
-    margin: 18px 12px 0; width: calc(100% - 24px); padding: 9px; box-sizing: border-box;
+    margin: 0; padding: 8px 14px; box-sizing: border-box;
     border: 1.5px dashed #cfcfcf; border-radius: 10px; background: #fff; color: #8a8a8a;
-    font-size: 12px; cursor: pointer; text-align: left; font-family: inherit;
+    font-size: 13px; cursor: pointer; text-align: left; font-family: inherit; flex-shrink: 0;
   }
   .sync-btn:hover { background: #f5f5f5; color: #111; border-color: #999; }
   .sync-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
@@ -60,15 +60,19 @@
   .sync-dot.ok { background: #34d399; }
   .sync-dot.err { background: #f87171; }
   .sync-form input {
-    width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px;
-    font-size: 14px; outline: none; margin-bottom: 10px; box-sizing: border-box; font-family: inherit;
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-size: 16px; outline: none; margin-bottom: 10px; box-sizing: border-box; font-family: inherit;
   }
   .sync-form input:focus { border-color: var(--primary); }
   .sync-tip { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 0 0 12px; }
   .sync-info { font-size: 14px; line-height: 1.9; margin: 0 0 12px; word-break: break-all; }
+  .back-bar { display: flex; align-items: center; margin-bottom: 12px; }
+  .back-btn { background: #fff; border: 2px solid var(--line); border-radius: 999px; min-width:44px; min-height:44px; height:44px; padding: 0 16px; font-size: 14px; cursor: pointer; color: var(--text); font-family: inherit; }
+  .back-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
   .title-btn {
     float: right; background: #fff; color: var(--primary-dark); font-size: 12px; font-weight: 700;
-    padding: 5px 12px; border: 2px solid var(--primary); border-radius: 999px; cursor: pointer; font-family: inherit; margin-top: -5px;
+    min-width: 44px; min-height: 36px; height: 36px;
+    padding: 0 12px; border: 2px solid var(--primary); border-radius: 999px; cursor: pointer; font-family: inherit; margin-top: -5px;
   }
   .title-btn:hover { background: var(--primary); color: #fff; }
   .goal-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 10px; }
@@ -79,23 +83,16 @@
     border-radius: 999px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 700;
   }
   .stat-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
-  .main { margin-left: 210px; }
+  .main { padding-top: 56px; }
   .page { display: none; }
   .page.active { display: block; }
   @media (max-width: 768px) {
-    .sidebar { position: static; width: 100%; height: auto; padding: 10px 14px 8px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .sidebar .logo { order: 1; padding: 0 4px; font-size: 16px; }
+    .sidebar { padding: 8px 12px; }
+    .sidebar .logo { font-size: 16px; }
     .sidebar .logo svg { width: 26px; height: 26px; }
-    .sync-btn {
-      order: 2; margin: 0 0 0 auto; width: 46px; height: 40px; padding: 0; position: relative;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 19px; line-height: 1; border-radius: 12px; flex-shrink: 0;
-    }
+    .sync-btn { width: 46px; height: 40px; padding: 0; position: relative; display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1; border-radius: 12px; flex-shrink: 0; }
     .sync-btn .sync-dot { margin-right: 0; width: 7px; height: 7px; position: absolute; transform: translate(-14px, -9px); }
-    .sidebar nav { order: 3; flex-basis: 100%; flex-direction: row; gap: 8px; padding-top: 4px; }
-    .nav-item { flex: 1; justify-content: center; padding: 11px 8px; font-size: 14px; border-radius: 10px; background: #f5f5f5; }
-    .nav-item.active { background: #1f1f1f; }
-    .main { margin-left: 0; }
+    .main { padding-top: 50px; margin-left: 0; }
   }
 
   /* 头部 */
@@ -117,6 +114,17 @@
   .streak-box { text-align: center; background: #fff; border: 2px solid #1f1f1f; border-radius: 12px; padding: 6px 18px; }
   .streak-box .num { font-size: 26px; font-weight: 700; }
   .streak-box .label { font-size: 12px; opacity: .65; }
+  .card.cal-streak-card .cal-streak-top {
+    position: absolute; top: 18px; right: 22px; z-index: 3;
+    padding: 4px 14px; border-radius: 10px; line-height: 1.1;
+  }
+  .card.cal-streak-card .cal-streak-top .num { font-size: 22px; }
+  .card.cal-streak-card .cal-streak-top .label { font-size: 11px; }
+  @media (max-width: 480px) {
+    .card.cal-streak-card .cal-streak-top { padding: 4px 10px; top: 16px; right: 16px; }
+    .card.cal-streak-card .cal-streak-top .num { font-size: 20px; }
+    .card.cal-streak-card .cal-streak-top .label { font-size: 10px; }
+  }
 
   /* 卡片（猫咪线条风） */
   .card {
@@ -144,6 +152,8 @@
   .card h2 .title-btn { margin-left: auto; }
   .card h2::after { content: "▾"; margin-left: auto; color: var(--muted); font-size: 13px; transition: transform .25s; }
   .card h2:has(.title-btn)::after { margin-left: 0; }
+  .card.no-collapse h2::after { display: none !important; }
+  .card.no-collapse h2 { cursor: default; }
   .card.collapsed h2::after { transform: rotate(-90deg); }
   .card.collapsed h2 { margin-bottom: 0; }
 
@@ -158,11 +168,12 @@
   .add-form .row2 { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; }
   .add-form select, .add-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 14px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
   }
   .add-form select:focus, .add-form input:focus { border-color: var(--primary); }
   .add-btn {
-    padding: 8px 22px; background: #fff; color: var(--primary-dark); border: 2px solid var(--primary);
+    min-width: 44px; min-height: 44px; height: 44px;
+    padding: 0 22px; background: #fff; color: var(--primary-dark); border: 2px solid var(--primary);
     border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap;
   }
   .add-btn:hover { background: var(--primary); color: #fff; }
@@ -201,11 +212,13 @@
   }
   /* 多选触发按钮 + 底部弹层选择器 */
   .multi-trigger {
-    grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; justify-content: space-between;
     gap: 10px; width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 12px; font-size: 14px; background: #fff; cursor: pointer;
+    padding: 10px 12px; font-size: 16px; background: #fff; cursor: pointer;
     color: var(--muted); text-align: left; font-family: inherit;
+    box-sizing: border-box;
   }
+  .multi-trigger.full, #qtypeTrigger, #fitExTrigger { grid-column: 1 / -1; }
   .multi-trigger.has { color: var(--text); border-color: var(--primary); }
   .multi-trigger .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .multi-trigger .arr { color: #999; flex-shrink: 0; }
@@ -232,10 +245,16 @@
   }
   .picker-item:hover { background: var(--bg); }
   .picker-item input { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; margin: 0; }
+  .picker-del {
+    margin-left: auto; width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
+    border: 1.5px solid var(--line); background: #fff; color: var(--muted);
+    font-size: 15px; line-height: 1; cursor: pointer; font-family: inherit;
+  }
+  .picker-del:hover { border-color: #e53935; color: #e53935; background: #fdecea; }
   .picker-custom { padding: 0 18px 10px; display: none; }
   .picker-custom input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px; font-size: 14px; outline: none; font-family: inherit; box-sizing: border-box;
+    padding: 10px; font-size: 16px; outline: none; font-family: inherit; box-sizing: border-box;
   }
   .picker-custom input:focus { border-color: var(--primary); }
   .picker-foot {
@@ -264,7 +283,7 @@
   }
   .goal-setting input {
     width: 70px; border: 1px solid var(--border); border-radius: 8px;
-    padding: 7px 10px; font-size: 14px; outline: none; text-align: center;
+    padding: 7px 10px; font-size: 16px; outline: none; text-align: center;
   }
   .goal-setting input:focus { border-color: var(--primary); }
   .goal-setting .save-goals, .exam-setting .save-goals {
@@ -288,7 +307,7 @@
   }
   .exam-setting input, .exam-setting select {
     border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
-    font-size: 14px; outline: none; background: #fff; font-family: inherit;
+    font-size: 16px; outline: none; background: #fff; font-family: inherit;
   }
   .exam-setting input:focus, .exam-setting select:focus { border-color: var(--primary); }
   .exam-setting input[type="text"] { flex: 1; min-width: 140px; }
@@ -298,7 +317,7 @@
   .word-form { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 10px; }
   .word-form select, .word-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 14px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
   }
   .word-form select:focus, .word-form input:focus { border-color: var(--primary); }
   @media (max-width: 640px) { .word-form { grid-template-columns: 1fr 1fr; } }
@@ -308,7 +327,7 @@
   .fit-form .row2 { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; }
   .fit-form select, .fit-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 14px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
   }
   .fit-form select:focus, .fit-form input:focus { border-color: var(--primary); }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -386,6 +405,146 @@
     font-size: 14px; opacity: 0; pointer-events: none; transition: all .3s; z-index: 200;
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* 单选模式弹层（picker single） */
+  .picker-mask.single .picker-foot, .picker-mask.single .picker-custom { display: none; }
+  .picker-dot { width: 18px; height: 18px; border: 2px solid #bbb; border-radius: 50%; flex-shrink: 0; margin: 0; box-sizing: border-box; position: relative; }
+  .picker-dot.on { border-color: var(--primary); }
+  .picker-dot.on::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--primary); }
+
+  /* 主页卡片网格 */
+  .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 8px; }
+  .home-card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
+  .home-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+  .home-card .emoji { font-size: 36px; display: block; margin-bottom: 10px; }
+  .home-card h3 { font-size: 16px; margin-bottom: 4px; }
+  .home-card p { font-size: 12px; color: var(--muted); }
+  @media (max-width: 480px) { .home-grid { grid-template-columns: 1fr; } }
+
+  /* 读书打卡 */
+  .reading-stats { display: flex; gap: 12px; justify-content: space-between; margin: -4px 0 16px; }
+  .reading-stats .read-stat { flex: 1; padding: 10px 8px; border-radius: 14px; }
+  .reading-stats .read-stat .num { font-size: 22px; }
+  .reading-stats .read-stat .label { font-size: 12px; }
+  .search-row { display: flex; gap: 10px; align-items: center; }
+  .search-row input {
+    flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: 10px 14px;
+    font-size: 16px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box;
+  }
+  .search-row input:focus { border-color: var(--primary); }
+  @media (max-width: 640px) {
+    .reading-stats { flex-wrap: wrap; }
+    .reading-stats .read-stat { min-width: 30%; }
+    .search-row { flex-direction: column; align-items: stretch; }
+  }
+  .card h2 .cnt { color: var(--primary); font-weight: 700; margin-left: 4px; font-size: 14px; }
+  .month-nav { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; }
+  .month-nav .month-label { font-weight: 700; font-size: 15px; }
+  .month-nav button {
+    background: var(--bg); border: none; width: 32px; height: 32px; border-radius: 8px;
+    cursor: pointer; font-size: 15px; color: var(--text);
+  }
+  .month-nav button:hover { background: var(--border); }
+  .book-item {
+    background: #fff; border: 2px solid var(--line); border-radius: var(--radius);
+    padding: 14px 16px; margin-bottom: 12px; position: relative;
+  }
+  .book-item .row-a { display: flex; align-items: flex-start; gap: 12px; }
+  .book-item .row-a > [data-act="edit"],
+  .book-item .row-a > button[onclick],
+  .book-item .row-a > button {
+    min-width: 44px; min-height: 44px; height: 44px; width: 44px; border-radius: 50%;
+    border: 2px solid var(--line); background: #fff; cursor: pointer; font-size: 16px;
+  }
+  .book-item .meta { flex: 1; min-width: 0; }
+  .book-item .title { font-size: 16px; font-weight: 700; word-break: break-word; }
+  .book-item .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .book-item .progress { margin-top: 10px; }
+  .book-item .p-text { display: flex; justify-content: space-between; font-size: 12px; color: #444; margin-bottom: 6px; }
+  .book-item .p-text .pct { font-weight: 700; color: #111; }
+  .book-item .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  .book-item .btns button {
+    min-width: 44px; min-height: 44px; height: 44px; padding: 0 16px; font-size: 14px;
+    border: 2px solid var(--line); background: #fff; border-radius: 999px; cursor: pointer;
+  }
+  .book-item .btns button.primary { border-color: var(--primary); color: var(--primary-dark); font-weight: 700; }
+  .book-item .btns button.danger  { border-color: #e53935; color: #b71c1c; }
+  .book-item .read-form { margin-top: 12px; display: grid; gap: 10px; }
+  .book-item .tabs { display: flex; gap: 8px; }
+  .book-item .tab {
+    flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center;
+    padding: 8px 10px; text-align: center; border: 2px solid var(--line); border-radius: 10px;
+    font-size: 14px; cursor: pointer; background: #fff;
+  }
+  .book-item .tab.active { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 700; }
+  .book-item .tab-row { display: flex; gap: 10px; }
+  .book-item .tab-row input {
+    flex: 1; min-height: 44px; border: 1px solid var(--border); border-radius: 10px;
+    padding: 10px 12px; font-size: 16px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box;
+  }
+  .book-item .tab-row input:focus { border-color: var(--primary); }
+  .book-item .tab-row .add-btn { min-height: 44px; }
+  .book-item .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #f0f0f0; color: #555; margin-right: 6px; }
+  .book-item .badge.reading  { background: #e3f2fd; color: #0d47a1; }
+  .book-item .badge.plan     { background: #fff3e0; color: #e65100; }
+  .book-item .badge.finished { background: #e8f5e9; color: #1b5e20; }
+  .book-item .badge.unknown  { background: #f5f5f5; color: #555; }
+  .sync-form textarea {
+    width: 100%; border: 1px solid var(--border); border-radius: 8px;
+    padding: 10px 12px; font-size: 16px; outline: none; margin-bottom: 10px;
+    box-sizing: border-box; font-family: inherit; resize: vertical; min-height: 64px;
+  }
+  .sync-form textarea:focus { border-color: var(--primary); }
+  @media (max-width: 480px) {
+    .goal-row input, .goal-row select, .goal-row .multi-trigger, .goal-row textarea { width: 100% !important; max-width: 220px; }
+    .goal-row { flex-wrap: wrap; }
+  }
+
+  /* 饮食记录 */
+  .diet-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; }
+  .diet-form input, .diet-form .multi-trigger { font-size: 16px; }
+  .diet-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box; }
+  .diet-form input:focus { border-color: var(--primary); }
+  @media (max-width: 640px) { .diet-form { grid-template-columns: 1fr 1fr; } }
+  .sugar-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .sugar-green { background: #4caf50; }
+  .sugar-yellow { background: #ffc107; }
+  .sugar-red { background: #f44336; }
+  .diet-meal-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #f0f0f0; color: #555; flex-shrink: 0; }
+  .diet-date-view { margin-top: 0; margin-bottom: 4px; }
+  .diet-date-view label { font-size: 14px; }
+  .diet-date-view input[type="date"] { font-size: 16px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 12px; outline: none; font-family: inherit; box-sizing: border-box; }
+  .diet-date-view input[type="date"]:focus { border-color: var(--primary); }
+  /* 饮食记录流 */
+  .diet-feed { max-height: 460px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 2px; }
+  .diet-feed-date { font-size: 12px; color: var(--muted); margin: 10px 0 0; font-weight: 700; }
+  .diet-feed-date:first-child { margin-top: 0; }
+  .diet-note { display: block; font-size: 12px; color: var(--muted); margin-top: 4px; }
+  .item .sugar-dot { align-self: center; }
+  .clothing-filter-row { margin-bottom: 12px; }
+
+  /* 衣服购物记录 */
+  .clothing-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
+  .clothing-form input, .clothing-form .multi-trigger { font-size: 16px; }
+  .clothing-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box; }
+  .clothing-form input:focus { border-color: var(--primary); }
+  .clothing-form .row2 { grid-column: 1 / -1; }
+  @media (max-width: 640px) { .clothing-form { grid-template-columns: 1fr 1fr; } }
+  .clothing-total-row { display: flex; gap: 20px; justify-content: space-around; }
+  .clothing-total-item { text-align: center; }
+  .clothing-total-item .num { font-size: 28px; font-weight: 800; color: var(--primary); }
+  .clothing-total-item .label { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  @media (max-width: 480px) { .clothing-total-row { flex-direction: column; gap: 12px; } }
+  .clothing-month-summary { display: flex; gap: 16px; }
+  .clothing-month-summary .stat { flex: 1; }
+  .clothing-month-group { margin-bottom: 16px; }
+  .clothing-month-group h3 { font-size: 14px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+  .clothing-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
+  .clothing-item .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 6px; }
+  .clothing-item .del:hover { background: #fdecec; color: #d64545; }
+  .clothing-item .title { flex: 1; font-weight: 500; }
+  .clothing-item .meta { color: var(--muted); font-size: 12px; }
+  .clothing-item .price { color: var(--primary); font-weight: 700; flex-shrink: 0; }
 </style>
 </head>
 <body>
@@ -405,29 +564,37 @@
     <span>打卡本</span>
   </div>
   <nav>
-    <div class="nav-item active" data-page="ielts">📚 雅思打卡</div>
-    <div class="nav-item" data-page="fitness">💪 健身打卡</div>
     <button class="sync-btn" id="syncBtn" style="display:none"></button>
   </nav>
 </aside>
 <main class="main">
 
-<!-- 雅思打卡页 -->
-<div id="page-ielts" class="page active">
+<!-- 主页 -->
+<div id="page-home" class="page active">
 <div class="container">
+  <div class="home-grid">
+    <div class="home-card" data-page="ielts"><span class="emoji">📚</span><h3>雅思打卡</h3><p>题目/单词/周目标</p></div>
+    <div class="home-card" data-page="fitness"><span class="emoji">💪</span><h3>健身打卡</h3><p>有氧/力量训练</p></div>
+    <div class="home-card" data-page="diet"><span class="emoji">🍽️</span><h3>饮食记录</h3><p>每餐食物/血糖标记</p></div>
+    <div class="home-card" data-page="clothing"><span class="emoji">👕</span><h3>衣服购物记录</h3><p>月度支出/尺码类型</p></div>
+    <div class="home-card" data-page="reading"><span class="emoji">📖</span><h3>读书打卡</h3><p>进度/想读/已读完</p></div>
+  </div>
+</div>
+</div>
+
+<!-- 雅思打卡页 -->
+<div id="page-ielts" class="page">
+<div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
   <header>
     <div>
       <h1>雅思打卡 📚</h1>
       <p id="todayText"></p>
     </div>
-    <div class="streak-box">
-      <div class="num" id="streakNum">0</div>
-      <div class="label">连续打卡（天）</div>
-    </div>
   </header>
 
   <!-- 考试倒计时 -->
-  <div class="card">
+  <div class="card no-collapse">
     <h2>考试倒计时 <button type="button" class="title-btn" id="openExamModal">⚙️ 设置</button></h2>
     <div id="countdownBody"></div>
   </div>
@@ -436,11 +603,11 @@
   <div class="card">
     <h2>今日打卡</h2>
     <div class="add-form">
-      <select id="typeSel"></select>
-      <select id="bookSel"></select>
+      <button type="button" class="multi-trigger" id="typeSel"></button>
+      <button type="button" class="multi-trigger" id="bookSel"></button>
       <input id="customBook" placeholder="材料名称，如：九分达人" style="display:none">
-      <select id="testSel"></select>
-      <select id="partSel"></select>
+      <button type="button" class="multi-trigger" id="testSel"></button>
+      <button type="button" class="multi-trigger" id="partSel"></button>
       <button type="button" class="multi-trigger" id="qtypeTrigger" style="display:none"></button>
       <input id="customTopic" placeholder="话题内容，如：描述你的邻居" style="display:none">
       <div class="row2">
@@ -456,7 +623,7 @@
   <div class="card">
     <h2>单词打卡</h2>
     <div class="word-form">
-      <select id="wordBookSel"></select>
+      <button type="button" class="multi-trigger" id="wordBookSel"></button>
       <input id="wordBookCustom" placeholder="词书名称" style="display:none">
       <input type="number" min="0" id="wordCount" placeholder="今日背单词数量">
       <button class="add-btn" id="wordAddBtn">+ 打卡</button>
@@ -513,8 +680,12 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card cal-streak-card" style="position:relative;">
       <h2>打卡日历</h2>
+      <div class="streak-box cal-streak-top" aria-label="连续打卡">
+        <div class="num" id="streakNum">0</div>
+        <div class="label">连续打卡（天）</div>
+      </div>
     <div class="cal-header">
       <button id="prevMonth">‹</button>
       <div class="month" id="monthLabel"></div>
@@ -532,6 +703,7 @@
 <!-- 健身打卡页 -->
 <div id="page-fitness" class="page">
 <div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
   <header class="fitness-header">
     <div>
       <h1>健身打卡 💪</h1>
@@ -547,8 +719,8 @@
   <div class="card">
     <h2>今日训练</h2>
     <div class="fit-form">
-      <select id="fitCatSel"></select>
-      <select id="fitNameSel"></select>
+      <button type="button" class="multi-trigger" id="fitCatSel"></button>
+      <button type="button" class="multi-trigger" id="fitNameSel"></button>
       <input id="fitNameCustom" placeholder="运动名称" style="display:none">
       <button type="button" class="multi-trigger" id="fitExTrigger" style="display:none"></button>
       <div class="row2">
@@ -605,6 +777,144 @@
         数字为当天训练次数
       </div>
     </div>
+  </div>
+</div>
+</div>
+
+<!-- 饮食记录页 -->
+<div id="page-diet" class="page">
+<div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
+  <header>
+    <div><h1>饮食记录 🍽️</h1><p id="dietTodayText"></p></div>
+  </header>
+
+  <!-- 今日饮食 -->
+  <div class="card">
+    <h2>今日饮食</h2>
+    <div class="diet-form">
+      <input id="dietFood" placeholder="食物名称，如：白米饭、鸡蛋、全麦面包">
+      <button type="button" class="multi-trigger" id="dietMealTrigger">餐次（选填）</button>
+      <button type="button" class="multi-trigger" id="dietSugarTrigger">血糖标记</button>
+      <input class="row2" id="dietNote" placeholder="备注（选填，如：饭后 2 小时血糖 9.8）">
+      <button class="add-btn" id="dietAddBtn">+ 记录</button>
+    </div>
+  </div>
+
+  <!-- 饮食记录 -->
+  <div class="card">
+    <h2>饮食记录</h2>
+    <div class="diet-date-view">
+      <label>📅 查看日期：</label>
+      <input type="date" id="dietViewDate">
+      <div class="today-list" id="dietDateList"></div>
+    </div>
+    <div class="stat-tabs" id="dietFeedTabs">
+      <button class="stat-tab active" data-filter="all">全部</button>
+      <button class="stat-tab" data-filter="red">🔴 仅升糖快</button>
+    </div>
+    <div id="dietFeed" class="diet-feed"></div>
+  </div>
+</div>
+</div>
+
+<!-- 衣服购物记录页 -->
+<div id="page-clothing" class="page">
+<div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
+  <header>
+    <div><h1>衣服购物记录 👕</h1><p id="clothingTodayText"></p></div>
+  </header>
+
+  <!-- 总支出 -->
+  <div class="card clothing-total-card">
+    <div class="clothing-total-row">
+      <div class="clothing-total-item">
+        <div class="num" id="clothingAllCount">0</div>
+        <div class="label">累计购买</div>
+      </div>
+      <div class="clothing-total-item">
+        <div class="num" id="clothingAllTotal">¥0</div>
+        <div class="label">累计支出</div>
+      </div>
+      <div class="clothing-total-item">
+        <div class="num" id="clothingMonthTotal">¥0</div>
+        <div class="label">本月支出</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 添加衣服 -->
+  <div class="card">
+    <h2>添加衣服</h2>
+    <div class="clothing-form">
+      <input id="clothingName" placeholder="衣服名称，如：黑色卫衣">
+      <button type="button" class="multi-trigger" id="clothingTypeTrigger">类型</button>
+      <input type="number" min="0" id="clothingPrice" placeholder="价格（元）">
+      <button type="button" class="multi-trigger" id="clothingSizeTrigger">尺码</button>
+      <button type="button" class="multi-trigger" id="clothingBrandTrigger">品牌</button>
+      <input class="row2" id="clothingBrandCustom" placeholder="输入自定义品牌名称" style="display:none">
+      <input class="row2" id="clothingNote" placeholder="备注（选填）">
+      <button class="add-btn" id="clothingAddBtn">+ 添加</button>
+    </div>
+  </div>
+
+  <!-- 历史记录（按月查看 / 按品牌筛选） -->
+  <div class="card">
+    <h2>历史记录</h2>
+    <div class="clothing-filter-row">
+      <button type="button" class="multi-trigger" id="clothingBrandFilter">🏷️ 全部品牌</button>
+    </div>
+    <div class="cal-header" id="clothingMonthNav">
+      <button id="clothingPrevMonth">‹</button>
+      <div class="month" id="clothingMonthLabel"></div>
+      <button id="clothingNextMonth">›</button>
+    </div>
+    <div id="clothingHistory"></div>
+  </div>
+</div>
+</div>
+
+<!-- 读书打卡页 -->
+<div id="page-reading" class="page">
+<div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
+  <header>
+    <div><h1>读书打卡 📖</h1><p id="readingTodayText"></p></div>
+  </header>
+
+  <!-- 顶部三统计 -->
+  <div class="reading-stats">
+    <div class="streak-box read-stat"><div class="num" id="readStatReading">0</div><div class="label">📖 在读书</div></div>
+    <div class="streak-box read-stat"><div class="num" id="readStatFinished">0</div><div class="label">✅ 已读完</div></div>
+    <div class="streak-box read-stat"><div class="num" id="readStatPlan">0</div><div class="label">🌟 想读</div></div>
+  </div>
+
+  <!-- 搜索条 + 添加 -->
+  <div class="card">
+    <div class="search-row">
+      <input id="bookSearch" placeholder="🔍 搜索书名 / 作者（不区分大小写）" style="font-size:16px">
+      <button class="add-btn" id="addBookBtn">+ 添加书籍</button>
+    </div>
+  </div>
+
+  <!-- 正在读 -->
+  <div class="card">
+    <h2>📖 正在读 <span class="cnt" id="readingCnt">(0)</span></h2>
+    <div id="readingList"></div>
+  </div>
+
+  <!-- 想读 -->
+  <div class="card">
+    <h2>🌟 想读 <span class="cnt" id="planCnt">(0)</span></h2>
+    <div id="planList"></div>
+  </div>
+
+  <!-- 已读完 -->
+  <div class="card">
+    <h2>✅ 已读完 <span class="cnt" id="finishedCnt">(0)</span></h2>
+    <div class="month-nav" id="finishedMonthNav"></div>
+    <div id="finishedList"></div>
   </div>
 </div>
 </div>
@@ -694,11 +1004,7 @@
       <label class="goal-row">📅 考试日期<input type="date" id="examDate"></label>
       <label class="goal-row">✏️ 考试名称<input type="text" id="examName" placeholder="如：雅思首考"></label>
       <label class="goal-row">🎯 目标分数
-        <select id="examTarget">
-          <option value="">选填</option>
-          <option>6.0</option><option>6.5</option><option>7.0</option>
-          <option>7.5</option><option>8.0</option><option>8.5</option>
-        </select>
+        <button type="button" class="multi-trigger" id="examTarget" style="width:150px"></button>
       </label>
     </div>
     <div class="row2">
@@ -718,6 +1024,44 @@
       <button class="btn-del" id="modalDel">删除当天记录</button>
       <button class="btn-close" id="modalClose">关闭</button>
     </div>
+  </div>
+</div>
+
+<!-- 读书：添加/编辑书籍 弹窗 -->
+<div class="modal-mask" id="bookMask">
+  <div class="modal">
+    <h3 id="bookMaskTitle">➕ 添加书籍</h3>
+    <div class="sync-form">
+      <label class="goal-row">📕 书名 <span style="color:#c0392b">*</span><input id="bTitle" placeholder="书名，如：三体" style="font-size:16px"></label>
+      <label class="goal-row">✍️ 作者<input id="bAuthor" placeholder="选填" style="font-size:16px"></label>
+      <label class="goal-row">📄 总页数<input id="bPages" type="number" min="0" placeholder="正整数，正在读时必填" style="font-size:16px"></label>
+      <label class="goal-row">📌 加入到
+        <button type="button" class="multi-trigger" id="bStatusTrigger"></button>
+      </label>
+      <label class="goal-row">📝 备注<textarea id="bNotes" placeholder="选填，短评/购书日期等" rows="2" style="font-size:16px"></textarea></label>
+    </div>
+    <div class="row2">
+      <button class="add-btn" id="bookSave">💾 保存</button>
+      <button class="btn-del" id="bookDelete" style="display:none">🗑️ 删除本书</button>
+      <button id="bookCancel">取消</button>
+    </div>
+    <button class="modal-close" id="bookMaskClose">×</button>
+  </div>
+</div>
+
+<!-- 读书：想读→开始读 弹窗 -->
+<div class="modal-mask" id="startMask">
+  <div class="modal">
+    <h3 id="startMaskTitle">📖 开始读</h3>
+    <div class="sync-form">
+      <p class="sync-tip" id="startTip">请填写本书总页数，开始后将进入「正在读」分组。</p>
+      <label class="goal-row">📄 总页数 <span style="color:#c0392b">*</span><input id="startPages" type="number" min="1" placeholder="必须 > 0" style="font-size:16px"></label>
+    </div>
+    <div class="row2">
+      <button class="add-btn" id="startOk">🚀 确认开读</button>
+      <button id="startCancel">取消</button>
+    </div>
+    <button class="modal-close" id="startMaskClose">×</button>
   </div>
 </div>
 
@@ -785,6 +1129,16 @@ const TYPES = [
   { key: 'speaking', name: '口语', groups: SPEAKING_GROUPS }
 ];
 const TYPE_MAP = Object.fromEntries(TYPES.map(t => [t.key, t]));
+const TYPE_NAME_MAP = (() => {
+  const m = {};
+  TYPES.forEach(t => { m[t.key] = t.name; m[t.name] = t.name; });
+  return m;
+})();
+function typeName(t) { return TYPE_NAME_MAP[t] || t || '其他'; }
+function typeClass(t) {
+  const hit = TYPES.find(x => x.key === t || x.name === t);
+  return hit ? hit.key : (t || 'other');
+}
 const BOOKS = Array.from({ length: 17 }, (_, i) => `剑${i + 4}`); // 剑4 ~ 剑20
 const TESTS = ['Test 1', 'Test 2', 'Test 3', 'Test 4'];
 
@@ -831,30 +1185,63 @@ function openPicker(opts) {
     enableCustom: !!opts.enableCustom,
     useCustom: selected.some(s => !items.includes(s)),
     customText: selected.filter(s => !items.includes(s)).join('，'),
-    onOk: opts.onOk
+    onOk: opts.onOk,
+    multiple: opts.multiple !== false,
+    deletable: !!opts.deletable,
+    noDelete: opts.noDelete || [],
+    onDelete: opts.onDelete
   };
   pickerTitle.textContent = opts.title;
   renderPicker();
   pickerMask.classList.add('show');
+  pickerMask.classList.toggle('single', pickerCtx.multiple === false);
 }
 
 function renderPicker() {
   pickerList.innerHTML = '';
+  const single = pickerCtx.multiple === false;
   pickerCtx.items.forEach(it => {
     const label = document.createElement('label');
     label.className = 'picker-item';
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = pickerCtx.sel.has(it);
-    cb.addEventListener('change', () => {
-      if (cb.checked) pickerCtx.sel.add(it); else pickerCtx.sel.delete(it);
-    });
-    const span = document.createElement('span');
-    span.textContent = it;
-    label.appendChild(cb);
-    label.appendChild(span);
+    if (single) {
+      label.addEventListener('click', () => {
+        pickerMask.classList.remove('show');
+        if (pickerCtx.onOk) pickerCtx.onOk([it]);
+      });
+      const dot = document.createElement('span');
+      dot.className = 'picker-dot' + (pickerCtx.sel.has(it) ? ' on' : '');
+      const span = document.createElement('span');
+      span.textContent = it;
+      label.appendChild(dot);
+      label.appendChild(span);
+      if (pickerCtx.deletable && !pickerCtx.noDelete.includes(it)) {
+        const del = document.createElement('button');
+        del.type = 'button';
+        del.className = 'picker-del';
+        del.textContent = '×';
+        del.title = '从列表中删除';
+        del.addEventListener('click', e => {
+          e.preventDefault();
+          e.stopPropagation();
+          if (pickerCtx.onDelete) pickerCtx.onDelete(it);
+        });
+        label.appendChild(del);
+      }
+    } else {
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.checked = pickerCtx.sel.has(it);
+      cb.addEventListener('change', () => {
+        if (cb.checked) pickerCtx.sel.add(it); else pickerCtx.sel.delete(it);
+      });
+      const span = document.createElement('span');
+      span.textContent = it;
+      label.appendChild(cb);
+      label.appendChild(span);
+    }
     pickerList.appendChild(label);
   });
+  if (single) { pickerCustomWrap.style.display = 'none'; return; }
   if (pickerCtx.enableCustom) {
     const row = document.createElement('label');
     row.className = 'picker-item';
@@ -899,36 +1286,100 @@ pickerMask.addEventListener('click', e => {
   if (e.target === pickerMask) pickerMask.classList.remove('show');
 });
 
+/* 单选触发按钮：把按钮封装成带 .value 的单选选择器（点击弹 picker） */
+function makeSingleTrigger(btn, opts) {
+  const o = {
+    items: opts.items || [],
+    placeholder: opts.placeholder || opts.title,
+    title: opts.title,
+    onPick: opts.onPick,
+    deletable: !!opts.deletable,
+    noDelete: opts.noDelete || [],
+    onDelete: opts.onDelete
+  };
+  o._value = opts.value != null ? opts.value : (o.items.length ? o.items[0].value : '');
+  function curLabel() { const c = o.items.find(it => it.value === o._value); return c ? c.label : ''; }
+  function render() {
+    const lbl = curLabel();
+    btn.innerHTML = `<span class="txt">${lbl || o.placeholder}</span><span class="arr">▾</span>`;
+    btn.classList.toggle('has', !!curLabel() && lbl !== o.placeholder);
+  }
+  Object.defineProperty(o, 'value', {
+    get() { return o._value; },
+    set(v) { o._value = v; render(); }
+  });
+  btn.addEventListener('click', () => {
+    openPicker({
+      multiple: false, title: o.title,
+      items: o.items.map(it => it.label),
+      selected: curLabel() ? [curLabel()] : [],
+      deletable: o.deletable, noDelete: o.noDelete,
+      onOk: arr => {
+        const picked = o.items.find(it => it.label === arr[0]);
+        o._value = picked ? picked.value : '';
+        render();
+        if (o.onPick) o.onPick(o._value);
+      },
+      onDelete: o.deletable && o.onDelete ? lbl => {
+        // 从触发器选项中移除，若当前选中被删则复位为占位
+        o.items = o.items.filter(x => x.label !== lbl);
+        if (!o.items.some(it => it.value === o._value)) o._value = '';
+        render();
+        // 就地刷新弹层列表
+        pickerCtx.items = pickerCtx.items.filter(x => x !== lbl);
+        pickerCtx.sel.delete(lbl);
+        renderPicker();
+        o.onDelete(lbl);
+      } : null
+    });
+  });
+  o.setItems = function(items, keep) {
+    o.items = items;
+    if (!keep || !o.items.some(it => it.value === o._value)) o._value = items.length ? items[0].value : '';
+    render();
+  };
+  o.render = render;
+  render();
+  return o;
+}
+
 /* ---------- 表单初始化 ---------- */
-const typeSel = document.getElementById('typeSel');
-const bookSel = document.getElementById('bookSel');
-const testSel = document.getElementById('testSel');
-const partSel = document.getElementById('partSel');
 const qtypeTrigger = document.getElementById('qtypeTrigger');
 let qtypeState = [];
 let qtypeItems = [];
 const customBook = document.getElementById('customBook');
 const customTopic = document.getElementById('customTopic');
 
-TYPES.forEach(t => typeSel.add(new Option(t.name, t.key)));
-BOOKS.forEach(b => bookSel.add(new Option(b, b)));
-bookSel.add(new Option('其他 / 自定义', 'custom'));
-TESTS.forEach(t => testSel.add(new Option(t, t)));
+const typeSel = makeSingleTrigger(document.getElementById('typeSel'), {
+  title: '题型', placeholder: '题型',
+  items: TYPES.map(t => ({ value: t.key, label: t.name })),
+  onPick: () => refreshParts()
+});
+const bookSel = makeSingleTrigger(document.getElementById('bookSel'), {
+  title: '材料', placeholder: '材料',
+  items: BOOKS.map(b => ({ value: b, label: b })).concat([{ value: 'custom', label: '其他 / 自定义' }]),
+  onPick: v => { customBook.style.display = v === 'custom' ? '' : 'none'; }
+});
+const testSel = makeSingleTrigger(document.getElementById('testSel'), {
+  title: '题号', placeholder: '题号',
+  items: TESTS.map(t => ({ value: t, label: t }))
+});
+const partSel = makeSingleTrigger(document.getElementById('partSel'), {
+  title: '部分', placeholder: '部分',
+  items: [],
+  onPick: v => { customTopic.style.display = v === '__custom__' ? '' : 'none'; }
+});
 
 function refreshParts() {
-  const t = TYPE_MAP[typeSel.value];
-  partSel.innerHTML = '';
-  if (t.groups) {
-    t.groups.forEach(g => {
-      const og = document.createElement('optgroup');
-      og.label = g.label;
-      g.items.forEach(p => og.appendChild(new Option(p, p)));
-      partSel.appendChild(og);
-    });
-    partSel.appendChild(new Option('自定义话题…', '__custom__'));
-  } else {
-    t.parts.forEach(p => partSel.add(new Option(p, p)));
+  const t = TYPE_MAP[typeClass(typeSel.value)];
+  let items = [];
+  if (t && t.groups) {
+    t.groups.forEach(g => { g.items.forEach(p => items.push({ value: p, label: p })); });
+    items.push({ value: '__custom__', label: '自定义话题…' });
+  } else if (t && t.parts) {
+    items = t.parts.map(p => ({ value: p, label: p }));
   }
+  partSel.setItems(items);
   customTopic.style.display = 'none';
   // 题型分类：仅阅读/听力显示（弹层多选）
   qtypeState = [];
@@ -961,13 +1412,6 @@ qtypeTrigger.addEventListener('click', () => {
     onOk: arr => { qtypeState = arr; updateQtypeTrigger(); }
   });
 });
-typeSel.addEventListener('change', refreshParts);
-partSel.addEventListener('change', () => {
-  customTopic.style.display = partSel.value === '__custom__' ? '' : 'none';
-});
-bookSel.addEventListener('change', () => {
-  customBook.style.display = bookSel.value === 'custom' ? '' : 'none';
-});
 refreshParts();
 
 /* ---------- 添加记录 ---------- */
@@ -998,7 +1442,7 @@ document.getElementById('addBtn').addEventListener('click', () => {
   document.getElementById('noteInp').value = '';
   qtypeState = [];
   updateQtypeTrigger();
-  if (partSel.value === '__custom__') { customTopic.value = ''; customTopic.style.display = 'none'; partSel.value = partSel.options[0].value; }
+  if (partSel.value === '__custom__') { customTopic.value = ''; customTopic.style.display = 'none'; if (partSel.items.length) partSel.value = partSel.items[0].value; }
   renderAll();
   showToast(`已记录：${itemTitle(item)} 💪`);
 });
@@ -1030,7 +1474,7 @@ function renderToday() {
   }
   box.innerHTML = list.map((it, i) => `
     <div class="item">
-      <span class="badge ${it.type}">${TYPE_MAP[it.type].name}</span>
+      <span class="badge ${typeClass(it.type)}">${typeName(it.type)}</span>
       <span class="title">${itemTitle(it)}</span>
       ${qtypeTags(it)}
       ${it.score ? `<span class="score">${it.score}</span>` : ''}
@@ -1061,7 +1505,7 @@ function renderGoals() {
   const days = weekRange();
   const cnt = { reading: 0, listening: 0, writing: 0, speaking: 0 };
   days.forEach(k => {
-    (store.records[k] || []).forEach(it => { if (cnt[it.type] !== undefined) cnt[it.type]++; });
+    (store.records[k] || []).forEach(it => { const k2 = typeClass(it.type); if (cnt[k2] !== undefined) cnt[k2]++; });
   });
   ['reading', 'listening', 'writing', 'speaking'].forEach(t =>
     setGoal(t, cnt[t], store.goals[t]));
@@ -1117,12 +1561,11 @@ fitGoalMask.addEventListener('click', e => { if (e.target === fitGoalMask) fitGo
 
 /* ---------- 单词打卡 ---------- */
 const WORD_BOOKS = ['绿宝书', '红宝书', '雅思真词汇', '王陆语料库'];
-const wordBookSel = document.getElementById('wordBookSel');
 const wordBookCustom = document.getElementById('wordBookCustom');
-WORD_BOOKS.forEach(b => wordBookSel.appendChild(new Option(b, b)));
-wordBookSel.appendChild(new Option('其他 / 自定义', 'custom'));
-wordBookSel.addEventListener('change', () => {
-  wordBookCustom.style.display = wordBookSel.value === 'custom' ? '' : 'none';
+const wordBookSel = makeSingleTrigger(document.getElementById('wordBookSel'), {
+  title: '词书', placeholder: '词书',
+  items: WORD_BOOKS.map(b => ({ value: b, label: b })).concat([{ value: 'custom', label: '其他 / 自定义' }]),
+  onPick: v => { wordBookCustom.style.display = v === 'custom' ? '' : 'none'; }
 });
 
 document.getElementById('wordAddBtn').addEventListener('click', () => {
@@ -1204,13 +1647,18 @@ function renderCountdown() {
     body.innerHTML = `<div class="cd-main"><span class="cd-num">${-diff}</span><span class="cd-unit">天</span></div><div class="cd-desc">${name} 已结束（${dateStr}），开启新一轮备考吧 💪</div>`;
 }
 
+const examTargetSel = makeSingleTrigger(document.getElementById('examTarget'), {
+  title: '目标分数', placeholder: '选填',
+  items: ['', '6.0', '6.5', '7.0', '7.5', '8.0', '8.5'].map(v => ({ value: v, label: v || '选填' }))
+});
+
 document.getElementById('saveExam').addEventListener('click', () => {
   const date = document.getElementById('examDate').value;
   if (!date) { showToast('请选择考试日期'); return; }
   store.exam = {
     date,
     name: document.getElementById('examName').value.trim() || '雅思考试',
-    target: document.getElementById('examTarget').value
+    target: examTargetSel.value
   };
   saveStore();
   renderCountdown();
@@ -1224,7 +1672,7 @@ document.getElementById('openExamModal').onclick = () => {
   const exam = store.exam || {};
   document.getElementById('examDate').value = exam.date || '';
   document.getElementById('examName').value = exam.name === '雅思考试' ? '' : (exam.name || '');
-  document.getElementById('examTarget').value = exam.target || '';
+  examTargetSel.value = exam.target || '';
   examMask.classList.add('show');
 };
 document.getElementById('examMaskClose').onclick = () => examMask.classList.remove('show');
@@ -1245,7 +1693,7 @@ function renderStats() {
     if (!inStatRange(k)) return;
     const items = store.records[k];
     if (items.length) days++;
-    items.forEach(it => { if (cnt[it.type] !== undefined) cnt[it.type]++; });
+    items.forEach(it => { const k2 = typeClass(it.type); if (cnt[k2] !== undefined) cnt[k2]++; });
   });
   document.getElementById('statDays').textContent = days;
   document.getElementById('statReading').textContent = cnt.reading;
@@ -1332,7 +1780,7 @@ function openModal(key) {
     document.getElementById('modalDel').style.display = '';
     body.innerHTML = items.map(it => `
       <div class="m-item">
-        <span class="badge ${it.type}">${TYPE_MAP[it.type].name}</span>
+        <span class="badge ${typeClass(it.type)}">${typeName(it.type)}</span>
         <span>${itemTitle(it)}</span>
         ${qtypeTags(it)}
         ${it.score ? `<span class="score">${it.score}</span>` : ''}
@@ -1384,7 +1832,7 @@ document.getElementById('wordGoalInput').value = store.wordGoal;
 if (store.exam) {
   document.getElementById('examDate').value = store.exam.date;
   document.getElementById('examName').value = store.exam.name || '';
-  document.getElementById('examTarget').value = store.exam.target || '';
+  examTargetSel.value = store.exam.target || '';
 }
 renderAll();
 
@@ -1418,8 +1866,6 @@ function loadFit() {
 function saveFit() { fitStore._ts = Date.now(); localStorage.setItem(FIT_KEY, JSON.stringify(fitStore)); scheduleCloudPush(); }
 let fitStore = loadFit();
 
-const fitCatSel = document.getElementById('fitCatSel');
-const fitNameSel = document.getElementById('fitNameSel');
 const fitNameCustom = document.getElementById('fitNameCustom');
 const fitExTrigger = document.getElementById('fitExTrigger');
 const fitAmount = document.getElementById('fitAmount');
@@ -1427,8 +1873,16 @@ const fitNote = document.getElementById('fitNote');
 let fitExState = [];
 let fitExItems = [];
 
-[['有氧训练', 'cardio'], ['力量训练', 'strength']].forEach(([n, v]) =>
-  fitCatSel.appendChild(new Option(n, v)));
+const fitCatSel = makeSingleTrigger(document.getElementById('fitCatSel'), {
+  title: '训练类别', placeholder: '训练类别',
+  items: [{ value: 'cardio', label: '有氧训练' }, { value: 'strength', label: '力量训练' }],
+  onPick: () => fitRefreshForm()
+});
+const fitNameSel = makeSingleTrigger(document.getElementById('fitNameSel'), {
+  title: '运动名称', placeholder: '运动名称',
+  items: [],
+  onPick: () => fitRefreshName()
+});
 
 function fitRefreshName() {
   const cat = fitCatSel.value;
@@ -1468,23 +1922,21 @@ fitExTrigger.addEventListener('click', () => {
 });
 
 function fitRefreshForm() {
-  fitNameSel.innerHTML = '';
+  let items;
+  if (fitCatSel.value === 'cardio') {
+    items = CARDIO_EXERCISES.map(x => ({ value: x, label: x })).concat([{ value: '__custom__', label: '其他 / 自定义' }]);
+    fitAmount.placeholder = '运动时长（分钟）';
+  } else {
+    items = Object.keys(STRENGTH_PLANS).map(p => ({ value: p, label: p }));
+    fitAmount.placeholder = '动作总次数';
+  }
+  fitNameSel.setItems(items);
   fitNameCustom.style.display = 'none';
   fitExState = [];
   fitExItems = [];
   fitExTrigger.style.display = 'none';
-  if (fitCatSel.value === 'cardio') {
-    CARDIO_EXERCISES.forEach(x => fitNameSel.appendChild(new Option(x, x)));
-    fitNameSel.appendChild(new Option('其他 / 自定义', '__custom__'));
-    fitAmount.placeholder = '运动时长（分钟）';
-  } else {
-    Object.keys(STRENGTH_PLANS).forEach(p => fitNameSel.appendChild(new Option(p, p)));
-    fitAmount.placeholder = '动作总次数';
-  }
   fitRefreshName();
 }
-fitCatSel.addEventListener('change', fitRefreshForm);
-fitNameSel.addEventListener('change', fitRefreshName);
 fitRefreshForm();
 
 document.getElementById('fitAddBtn').addEventListener('click', () => {
@@ -1697,14 +2149,721 @@ function renderFitnessAll() {
   renderFitCalendar();
 }
 
-/* ---------- 页面切换 ---------- */
-document.querySelectorAll('.nav-item').forEach(item => {
-  item.addEventListener('click', () => {
-    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-    item.classList.add('active');
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById('page-' + item.dataset.page).classList.add('active');
+/* ================= 饮食记录页 ================= */
+const DIET_KEY = 'diet_v1';
+const DIET_MEALS = ['早餐', '午餐', '晚餐', '加餐', '其他'];
+const DIET_SUGARS = [
+  { value: 'green', label: '🟢 升糖慢' },
+  { value: 'yellow', label: '🟡 一般' },
+  { value: 'red', label: '🔴 升糖快' }
+];
+
+function loadDiet() {
+  try {
+    const d = JSON.parse(localStorage.getItem(DIET_KEY));
+    if (d && d.records) return d;
+  } catch {}
+  return { records: {}, _ts: 0 };
+}
+function saveDiet() { dietStore._ts = Date.now(); localStorage.setItem(DIET_KEY, JSON.stringify(dietStore)); scheduleCloudPush(); }
+let dietStore = loadDiet();
+
+const dietMealTrigger = makeSingleTrigger(document.getElementById('dietMealTrigger'), {
+  title: '餐次', placeholder: '餐次（选填）',
+  items: DIET_MEALS.map(m => ({ value: m, label: m })),
+  value: ''
+});
+const dietSugarTrigger = makeSingleTrigger(document.getElementById('dietSugarTrigger'), {
+  title: '血糖标记', placeholder: '血糖标记',
+  items: DIET_SUGARS,
+  value: 'yellow'
+});
+
+document.getElementById('dietAddBtn').addEventListener('click', () => {
+  const food = document.getElementById('dietFood').value.trim();
+  if (!food) { showToast('请填写食物名称'); return; }
+  const meal = dietMealTrigger.value || '';
+  const sugar = dietSugarTrigger.value || 'yellow';
+  const note = document.getElementById('dietNote').value.trim();
+  const key = todayKey();
+  if (!dietStore.records[key]) dietStore.records[key] = [];
+  dietStore.records[key].push({ id: newItemId(), food, meal, sugar, note, _ts: Date.now() });
+  saveDiet();
+  document.getElementById('dietFood').value = '';
+  document.getElementById('dietNote').value = '';
+  dietMealTrigger.value = '';
+  dietSugarTrigger.value = 'yellow';
+  renderDietAll();
+  showToast(`已记录：${food} 🍽️`);
+});
+
+function deleteDietItem(date, idx) {
+  dietStore.records[date].splice(idx, 1);
+  if (!dietStore.records[date].length) delete dietStore.records[date];
+  saveDiet();
+  renderDietAll();
+}
+
+function renderDietToday() {
+  const key = todayKey();
+  const list = dietStore.records[key] || [];
+  const box = document.getElementById('dietTodayList');
+  if (!box) return;
+  box.innerHTML = list.length ? list.map((it, i) => `
+    <div class="item" style="flex-wrap:wrap">
+      <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
+      ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
+      <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
+      <button class="del" data-idx="${i}" title="删除">×</button>
+    </div>`).join('') : '<div class="empty-tip">今天还没记录饮食，来记一笔吧～</div>';
+  box.querySelectorAll('.del').forEach(btn =>
+    btn.addEventListener('click', () => deleteDietItem(todayKey(), Number(btn.dataset.idx))));
+}
+
+let dietFeedFilter = 'all';
+function dietItemHtml(date, it, idx) {
+  return `<div class="item" style="flex-wrap:wrap">
+    <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
+    ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
+    <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
+    <button class="del" data-date="${date}" data-idx="${idx}" title="删除">×</button>
+  </div>`;
+}
+function renderDietFeed() {
+  const box = document.getElementById('dietFeed');
+  let entries = [];
+  Object.keys(dietStore.records).forEach(date => {
+    dietStore.records[date].forEach((it, idx) => entries.push({ date, it, idx }));
   });
+  if (dietFeedFilter === 'red') entries = entries.filter(e => (e.it.sugar || 'yellow') === 'red');
+  entries.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.it._ts || 0) - (a.it._ts || 0));
+  if (!entries.length) {
+    box.innerHTML = `<div class="empty-tip">${dietFeedFilter === 'red' ? '还没有标记「升糖快」的食物记录' : '还没有饮食记录'}</div>`;
+    return;
+  }
+  let html = '', lastDate = '';
+  entries.forEach(e => {
+    if (e.date !== lastDate) { html += `<div class="diet-feed-date">${e.date}</div>`; lastDate = e.date; }
+    html += dietItemHtml(e.date, e.it, e.idx);
+  });
+  box.innerHTML = html;
+  box.querySelectorAll('.del').forEach(btn =>
+    btn.addEventListener('click', () => deleteDietItem(btn.dataset.date, Number(btn.dataset.idx))));
+}
+
+document.getElementById('dietFeedTabs').addEventListener('click', e => {
+  const btn = e.target.closest('.stat-tab');
+  if (!btn) return;
+  dietFeedFilter = btn.dataset.filter;
+  document.querySelectorAll('#dietFeedTabs .stat-tab').forEach(b => b.classList.toggle('active', b === btn));
+  renderDietFeed();
+});
+
+function renderDietDateView() {
+  const input = document.getElementById('dietViewDate');
+  const key = input.value ? input.value : todayKey();
+  const list = dietStore.records[key] || [];
+  const box = document.getElementById('dietDateList');
+  box.innerHTML = list.length ? list.map((it, i) => dietItemHtml(key, it, i)).join('') : '<div class="empty-tip">这天没有饮食记录</div>';
+  box.querySelectorAll('.del').forEach(btn =>
+    btn.addEventListener('click', () => deleteDietItem(key, Number(btn.dataset.idx))));
+}
+document.getElementById('dietViewDate').addEventListener('change', renderDietDateView);
+
+function renderDietAll() {
+  renderDietFeed();
+  renderDietDateView();
+}
+document.getElementById('dietTodayText').textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+document.getElementById('dietViewDate').value = todayKey();
+renderDietAll();
+
+/* ================= 衣服购物记录页 ================= */
+const CLOTHING_KEY = 'clothing_v1';
+const CLOTHING_TYPES = ['上衣', '裤子', '裙子', '外套', '鞋', '配饰', '其他'];
+const DEFAULT_BRANDS = ['其他']; // 不预设品牌，全部来自用户自定义保存
+
+function loadClothing() {
+  try {
+    const d = JSON.parse(localStorage.getItem(CLOTHING_KEY));
+    if (d && d.items) return Object.assign({ brands: [] }, d);
+  } catch {}
+  return { items: [], brands: [], _ts: 0 };
+}
+function saveClothing() { clothingStore._ts = Date.now(); localStorage.setItem(CLOTHING_KEY, JSON.stringify(clothingStore)); scheduleCloudPush(); }
+let clothingStore = loadClothing();
+
+const clothingTypeTrigger = makeSingleTrigger(document.getElementById('clothingTypeTrigger'), {
+  title: '类型', placeholder: '类型',
+  items: CLOTHING_TYPES.map(t => ({ value: t, label: t }))
+});
+const CLOTHING_SIZES = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', '均码', '36', '38', '40', '42', '其他'];
+const clothingSizeTrigger = makeSingleTrigger(document.getElementById('clothingSizeTrigger'), {
+  title: '尺码', placeholder: '尺码',
+  items: CLOTHING_SIZES.map(s => ({ value: s, label: s }))
+});
+function getBrandItems() {
+  const list = [...DEFAULT_BRANDS];
+  (clothingStore.brands || []).forEach(b => { if (!list.includes(b)) list.push(b); });
+  return list.map(b => ({ value: b, label: b }));
+}
+const clothingBrandCustom = document.getElementById('clothingBrandCustom');
+const clothingBrandTrigger = makeSingleTrigger(document.getElementById('clothingBrandTrigger'), {
+  title: '品牌', placeholder: '品牌', value: '',
+  items: getBrandItems(),
+  deletable: true, noDelete: ['其他'],
+  onDelete: name => removeBrandOption(name),
+  onPick: v => {
+    const custom = v === '其他';
+    clothingBrandCustom.style.display = custom ? '' : 'none';
+    if (!custom) clothingBrandCustom.value = '';
+  }
+});
+// 从品牌选项中删除（写错的品牌可以叉掉）
+function removeBrandOption(name) {
+  clothingStore.brands = (clothingStore.brands || []).filter(b => b !== name);
+  saveClothing();
+  if (clothingBrandFilter === name) clothingBrandFilter = '';
+  clothingBrandCustom.style.display = 'none';
+  clothingBrandCustom.value = '';
+  clothingBrandFilterTrigger.setItems(getFilterBrandItems(), true);
+  renderClothingHistory();
+  showToast(`已从品牌列表删除「${name}」`);
+}
+function refreshBrandTrigger(keep) {
+  clothingBrandTrigger.setItems(getBrandItems(), keep);
+}
+
+document.getElementById('clothingAddBtn').addEventListener('click', () => {
+  const name = document.getElementById('clothingName').value.trim();
+  if (!name) { showToast('请填写衣服名称'); return; }
+  const type = clothingTypeTrigger.value || '其他';
+  const price = Math.max(0, Number(document.getElementById('clothingPrice').value) || 0);
+  const size = clothingSizeTrigger.value || '';
+  const brand = clothingBrandTrigger.value === '其他'
+    ? clothingBrandCustom.value.trim()
+    : (clothingBrandTrigger.value || '');
+  const note = document.getElementById('clothingNote').value.trim();
+  if (brand && !DEFAULT_BRANDS.includes(brand) && !(clothingStore.brands || []).includes(brand)) {
+    clothingStore.brands.push(brand);
+  }
+  clothingStore.items.push({ id: newItemId(), name, type, brand, price, size, note, date: todayKey(), _ts: Date.now() });
+  saveClothing();
+  document.getElementById('clothingName').value = '';
+  document.getElementById('clothingPrice').value = '';
+  document.getElementById('clothingNote').value = '';
+  clothingTypeTrigger.value = '';
+  clothingSizeTrigger.value = '';
+  refreshBrandTrigger(false);
+  clothingBrandTrigger.value = '';
+  clothingBrandCustom.value = '';
+  clothingBrandCustom.style.display = 'none';
+  renderClothingAll();
+  showToast(`已添加：${name} ¥${price} 👕`);
+});
+
+function deleteClothingItem(id) {
+  const idx = clothingStore.items.findIndex(it => it.id === id);
+  if (idx >= 0) { clothingStore.items.splice(idx, 1); saveClothing(); renderClothingAll(); }
+}
+
+function renderClothingTotals() {
+  const now = new Date();
+  const ym = dateKey(now).slice(0, 7);
+  let allCount = 0, allTotal = 0, monthTotal = 0;
+  clothingStore.items.forEach(it => {
+    allCount++;
+    allTotal += it.price || 0;
+    if ((it.date || '').slice(0, 7) === ym) monthTotal += it.price || 0;
+  });
+  document.getElementById('clothingAllCount').textContent = allCount;
+  document.getElementById('clothingAllTotal').textContent = '¥' + allTotal;
+  document.getElementById('clothingMonthTotal').textContent = '¥' + monthTotal;
+}
+
+let clothingViewMonth = new Date().getMonth();
+let clothingViewYear = new Date().getFullYear();
+let clothingBrandFilter = ''; // '' = 全部品牌；否则为品牌名
+
+// 品牌筛选下拉（选项来自用户自定义品牌 + 记录中出现过的品牌）
+const clothingBrandFilterTrigger = makeSingleTrigger(document.getElementById('clothingBrandFilter'), {
+  title: '按品牌筛选', placeholder: '🏷️ 全部品牌', value: '',
+  items: [{ value: '', label: '🏷️ 全部品牌' }],
+  onPick: v => { clothingBrandFilter = v || ''; renderClothingHistory(); }
+});
+function getFilterBrandItems() {
+  const names = new Set(clothingStore.brands || []);
+  clothingStore.items.forEach(it => { if (it.brand) names.add(it.brand); });
+  return [{ value: '', label: '🏷️ 全部品牌' }, ...[...names].sort().map(b => ({ value: b, label: b }))];
+}
+
+function clothingItemHtml(it, showDate) {
+  return `<div class="clothing-item">
+    <span class="title">${it.name}<span class="meta">${showDate && it.date ? ' · ' + it.date.slice(5) : ''}${it.brand ? ' · ' + it.brand : ''} · ${it.type}${it.size ? ' · ' + it.size : ''}${it.note ? ' · ' + it.note : ''}</span></span>
+    <span class="price">¥${it.price || 0}</span>
+    <button class="del" data-id="${it.id}" title="删除">×</button>
+  </div>`;
+}
+function bindClothingDel(box) {
+  box.querySelectorAll('.del').forEach(btn =>
+    btn.addEventListener('click', () => deleteClothingItem(btn.dataset.id)));
+}
+
+function renderClothingHistory() {
+  clothingBrandFilterTrigger.setItems(getFilterBrandItems(), true);
+  const box = document.getElementById('clothingHistory');
+  const monthNav = document.getElementById('clothingMonthNav');
+
+  // 品牌筛选模式：跨所有月份显示该品牌，汇总总花费
+  if (clothingBrandFilter) {
+    monthNav.style.display = 'none';
+    const items = clothingStore.items
+      .filter(it => it.brand === clothingBrandFilter)
+      .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b._ts || 0) - (a._ts || 0));
+    if (!items.length) {
+      box.innerHTML = `<div class="empty-tip">「${clothingBrandFilter}」暂无购买记录</div>`;
+      return;
+    }
+    const total = items.reduce((s, it) => s + (it.price || 0), 0);
+    box.innerHTML = `<div class="clothing-month-group">
+      <h3>🏷️ ${clothingBrandFilter} · 共 ${items.length} 件 · 总花费 ¥${total}</h3>
+      ${items.map(it => clothingItemHtml(it, true)).join('')}
+    </div>`;
+    bindClothingDel(box);
+    return;
+  }
+
+  // 按月查看模式
+  monthNav.style.display = '';
+  document.getElementById('clothingMonthLabel').textContent = `${clothingViewYear} 年 ${clothingViewMonth + 1} 月`;
+  const ym = `${clothingViewYear}-${String(clothingViewMonth + 1).padStart(2, '0')}`;
+  const items = clothingStore.items
+    .filter(it => (it.date || '').slice(0, 7) === ym)
+    .sort((a, b) => (a.date || '').localeCompare(b.date || '') || (b._ts || 0) - (a._ts || 0));
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-tip">本月没有购物记录</div>';
+    return;
+  }
+  const total = items.reduce((s, it) => s + (it.price || 0), 0);
+  box.innerHTML = `<div class="clothing-month-group">
+    <h3>${ym}（${items.length} 件 · ¥${total}）</h3>
+    ${items.map(it => clothingItemHtml(it, true)).join('')}
+  </div>`;
+  bindClothingDel(box);
+}
+document.getElementById('clothingPrevMonth').addEventListener('click', () => {
+  clothingViewMonth--; if (clothingViewMonth < 0) { clothingViewMonth = 11; clothingViewYear--; }
+  renderClothingHistory();
+});
+document.getElementById('clothingNextMonth').addEventListener('click', () => {
+  clothingViewMonth++; if (clothingViewMonth > 11) { clothingViewMonth = 0; clothingViewYear++; }
+  renderClothingHistory();
+});
+
+function renderClothingAll() {
+  renderClothingTotals();
+  renderClothingHistory();
+}
+document.getElementById('clothingTodayText').textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+renderClothingAll();
+
+/* ================= 读书打卡页 ================= */
+const READ_KEY = 'reading_v1';
+const BOOK_STATUS = {
+  reading:  { key: 'reading',  name: '正在读' },
+  plan:     { key: 'plan',     name: '想读'   },
+  finished: { key: 'finished', name: '已读完' }
+};
+const BOOK_STATUS_ORDER = ['reading', 'plan', 'finished'];
+function statusKey(s) {
+  if (!s) return 'plan';
+  if (BOOK_STATUS[s]) return s;
+  const found = Object.values(BOOK_STATUS).find(x => x.name === s || x.key === s);
+  return found ? found.key : String(s);
+}
+function statusLabel(s) {
+  const k = statusKey(s);
+  return BOOK_STATUS[k] ? BOOK_STATUS[k].name : (k ? `未知状态(${String(k).slice(0,12)})` : '未知状态');
+}
+function bookProgress(b) {
+  const total = Math.max(0, Number(b && b.totalPages) || 0);
+  const cur   = Math.max(0, Number(b && b.currentPage) || 0);
+  if (!total) return { pct: 0, cur, total, dirty: true };
+  const clamped = Math.min(cur, total); // 进度显示不会超过 100%
+  const pct = Math.round(clamped / total * 100);
+  return { pct, cur: clamped, total, dirty: false };
+}
+function bookMatchesFilter(b, kw) {
+  if (!kw) return true;
+  const hay = `${b.title || ''} ${b.author || ''}`.toLowerCase();
+  return hay.includes(kw.toLowerCase());
+}
+function defaultBookStore() { return { books: [], logs: [], _ts: Date.now() }; }
+function loadBookStore() {
+  try {
+    const d = JSON.parse(localStorage.getItem(READ_KEY));
+    if (d && Array.isArray(d.books)) {
+      if (!Array.isArray(d.logs)) d.logs = [];
+      d.books.forEach(b => { b.status = statusKey(b.status); b._ts = b._ts || Date.now(); });
+      return d;
+    }
+  } catch {}
+  return defaultBookStore();
+}
+function saveBook() {
+  bookStore._ts = Date.now();
+  localStorage.setItem(READ_KEY, JSON.stringify(bookStore));
+  scheduleCloudPush();
+}
+let bookStore = loadBookStore();
+let bookFilter = '';
+let bookCtxBookId = null;        // 当前编辑中的书（null=添加）
+let startCtxBookId = null;       // 当前想读→正在读的书
+// 已读完月份导航
+let finishedViewYear = new Date().getFullYear();
+let finishedViewMonth = new Date().getMonth();
+
+/* --- 渲染：顶部计数 + 三分组 --- */
+function renderBooksStats() {
+  const byStatus = { reading: 0, plan: 0, finished: 0 };
+  bookStore.books.forEach(b => { byStatus[statusKey(b.status)]++; });
+  const sr = document.getElementById('readStatReading');
+  const sf = document.getElementById('readStatFinished');
+  const sp = document.getElementById('readStatPlan');
+  if (sr) sr.textContent = byStatus.reading;
+  if (sf) sf.textContent = byStatus.finished;
+  if (sp) sp.textContent = byStatus.plan;
+  document.getElementById('readingCnt').textContent  = `(${byStatus.reading})`;
+  document.getElementById('planCnt').textContent     = `(${byStatus.plan})`;
+  document.getElementById('finishedCnt').textContent = `(${byStatus.finished})`;
+}
+function bookCardHtml(b) {
+  if (!b) return '';
+  const k = statusKey(b.status);
+  const pro = bookProgress(b);
+  const badge = `<span class="badge ${k === 'reading' ? 'reading' : k === 'plan' ? 'plan' : k === 'finished' ? 'finished' : 'unknown'}">${statusLabel(k)}</span>`;
+  const pctText = pro.dirty
+    ? `<span class="pct" style="color:#c0392b">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
+    : `<span class="pct">${pro.pct}%</span>`;
+  const prog = (k !== 'plan')
+    ? `<div class="progress">
+         <div class="p-text"><span>${pro.cur} / ${pro.total || 0} 页</span>${pctText}</div>
+         <div class="bar"><div class="bar-fill" style="width:${Math.min(100, pro.pct)}%"></div></div>
+       </div>`
+    : `<div class="p-text" style="margin-top:6px;color:var(--muted);font-size:12px">未开始 · 点击「开始读」后进入正在读</div>`;
+  const readForm = (k === 'reading')
+    ? `<div class="read-form">
+         <div class="tabs">
+           <div class="tab active" data-mode="to">读到第几页</div>
+           <div class="tab"        data-mode="add">新增 N 页</div>
+         </div>
+         <div class="tab-row">
+           <input type="number" min="0" class="read-input" placeholder="读到第几页（如 120）">
+           <button class="add-btn read-submit">✍️ 记录</button>
+         </div>
+       </div>`
+    : '';
+  const planBtn = (k === 'plan') ? `<button class="primary" data-act="start">🚀 开始读</button>` : '';
+  const author  = b.author ? ` · ${b.author}` : '';
+  const start   = b.startDate  ? ` · 开始 ${b.startDate}`  : '';
+  const finish  = b.finishDate ? ` · 读完 ${b.finishDate}` : '';
+  const notes   = b.notes     ? `<div class="sub">📝 ${String(b.notes).slice(0, 80)}${String(b.notes).length > 80 ? '…' : ''}</div>` : '';
+  return `<div class="book-item" data-bid="${b.id}">
+    <div class="row-a">
+      <div class="meta">
+        <div class="title">${badge}${String(b.title || '(未命名)').replace(/</g, '&lt;')}</div>
+        <div class="sub">${String(b.author || '').replace(/</g, '&lt;') || '佚名作者'}${start}${finish}</div>
+        ${notes}
+      </div>
+      <button data-act="edit" title="编辑/删除">⚙️</button>
+    </div>
+    ${prog}
+    ${readForm}
+    <div class="btns">${planBtn}</div>
+  </div>`;
+}
+function renderGroup(listElId, statusKeyName) {
+  const box = document.getElementById(listElId);
+  if (!box) return;
+  let items = bookStore.books
+    .filter(b => statusKey(b.status) === statusKeyName)
+    .filter(b => bookMatchesFilter(b, bookFilter));
+  // 已读完：按选中月份过滤
+  if (statusKeyName === 'finished') {
+    const ym = `${finishedViewYear}-${String(finishedViewMonth + 1).padStart(2, '0')}`;
+    items = items.filter(b => b.finishDate && b.finishDate.startsWith(ym));
+  }
+  items = items.sort((a, b) => (b._ts || 0) - (a._ts || 0));
+  if (!items.length) {
+    let tip = '还没有读完的书，加油鸭！';
+    if (statusKeyName === 'finished') tip = `${finishedViewYear} 年 ${finishedViewMonth + 1} 月没有读完的书`;
+    const tips = { reading: '还没有在读的书，添加一本开始打卡吧～', plan: '想读的书空空如也，点「+ 添加书籍」加到读书计划里吧～', finished: tip };
+    box.innerHTML = `<div class="empty-tip">${tips[statusKeyName] || ''}</div>`;
+    return;
+  }
+  box.innerHTML = items.map(bookCardHtml).join('');
+  // 事件：编辑 / 开始读 / 记录 tab / 记录提交
+  box.querySelectorAll('.book-item').forEach(card => {
+    const bid = card.dataset.bid;
+    card.querySelector('[data-act="edit"]').addEventListener('click', () => openBookEditor(bid));
+    const startBtn = card.querySelector('[data-act="start"]');
+    if (startBtn) startBtn.addEventListener('click', () => openStartModal(bid));
+    const tabs = card.querySelectorAll('.tab');
+    tabs.forEach(t => t.addEventListener('click', () => {
+      tabs.forEach(x => x.classList.toggle('active', x === t));
+      const inp = card.querySelector('.read-input');
+      const mode = t.dataset.mode;
+      inp.placeholder = (mode === 'to') ? '读到第几页（如 120）' : '新增多少页（如 20）';
+      inp.value = '';
+    }));
+    const submit = card.querySelector('.read-submit');
+    if (submit) submit.addEventListener('click', () => {
+      const mode = card.querySelector('.tab.active').dataset.mode;
+      const inp  = card.querySelector('.read-input');
+      const n    = Number(inp.value);
+      if (Number.isNaN(n) || n < 0 || (mode === 'add' && n === 0)) { showToast('请输入有效的页数（≥ 0，新增时 ≥ 1）'); return; }
+      recordPages(bid, mode, n);
+    });
+  });
+}
+function renderFinishedMonthNav() {
+  const nav = document.getElementById('finishedMonthNav');
+  if (!nav) return;
+  nav.innerHTML = `
+    <button id="finishedPrevMonth" title="上个月">‹</button>
+    <div class="month-label">${finishedViewYear} 年 ${finishedViewMonth + 1} 月</div>
+    <button id="finishedNextMonth" title="下个月">›</button>`;
+  document.getElementById('finishedPrevMonth').addEventListener('click', () => {
+    finishedViewMonth--; if (finishedViewMonth < 0) { finishedViewMonth = 11; finishedViewYear--; }
+    renderGroup('finishedList', 'finished');
+    renderFinishedMonthNav();
+  });
+  document.getElementById('finishedNextMonth').addEventListener('click', () => {
+    finishedViewMonth++; if (finishedViewMonth > 11) { finishedViewMonth = 0; finishedViewYear++; }
+    renderGroup('finishedList', 'finished');
+    renderFinishedMonthNav();
+  });
+}
+function renderBooksAll() {
+  try {
+    renderBooksStats();
+    renderFinishedMonthNav();
+    renderGroup('readingList',  'reading');
+    renderGroup('planList',     'plan');
+    renderGroup('finishedList', 'finished');
+    // 兜底：未知状态的书（脏数据）统一显示在「已读完」分组卡的底部提示区，避免消失不见
+    const unknowns = bookStore.books
+      .filter(b => !BOOK_STATUS[statusKey(b.status)])
+      .filter(b => bookMatchesFilter(b, bookFilter));
+    if (unknowns.length) {
+      const box = document.getElementById('finishedList');
+      const warn = document.createElement('div');
+      warn.className = 'book-item';
+      warn.innerHTML = `<div class="title" style="font-size:14px;color:#c0392b;font-weight:700">⚠️ 以下 ${unknowns.length} 本书状态异常，请到编辑里手动改为「想读 / 正在读 / 已读完」：</div>` +
+        unknowns.map(b => {
+          const k = statusKey(b.status);
+          const pro = bookProgress(b);
+          const badge = `<span class="badge unknown">${statusLabel(k)}</span>`;
+          const pctText = pro.dirty
+            ? `<span class="pct" style="color:#c0392b">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
+            : `<span class="pct">${pro.pct}%</span>`;
+          return `<div class="book-item" data-bid="${b.id}" style="margin-top:10px">
+            <div class="row-a">
+              <div class="meta">
+                <div class="title">${badge}${String(b.title || '(未命名)').replace(/</g,'&lt;')}</div>
+                <div class="sub">${String(b.author || '').replace(/</g,'&lt;') || '佚名作者'}${b.startDate?' · 开始 '+b.startDate:''}${b.finishDate?' · 读完 '+b.finishDate:''}</div>
+              </div>
+              <button onclick="openBookEditor('${b.id}')" title="修正">⚙️</button>
+            </div>
+            <div class="progress"><div class="p-text"><span>${pro.cur} / ${pro.total || 0} 页</span>${pctText}</div><div class="bar"><div class="bar-fill" style="width:${Math.min(100, pro.pct)}%"></div></div></div>
+          </div>`;
+        }).join('');
+      box.appendChild(warn);
+    }
+  } catch (e) {
+    console.error('renderBooksAll error', e);
+    showToast('读书页渲染异常：' + (e.message || e));
+  }
+}
+
+/* --- 业务：记录页数 + 自动读完 --- */
+function recordPages(bookId, mode, n) {
+  const b = bookStore.books.find(x => x.id === bookId);
+  if (!b) return;
+  const before = Math.max(0, Number(b.currentPage) || 0);
+  let after = before;
+  let delta = 0;
+  if (mode === 'to') {
+    after = Math.max(before, Math.max(0, Math.floor(n)));
+    delta = after - before;
+  } else { // add
+    delta = Math.max(0, Math.floor(n));
+    after = before + delta;
+  }
+  const total = Math.max(0, Number(b.totalPages) || 0);
+  b.currentPage = after;
+  b._ts = Date.now();
+  // 日志
+  bookStore.logs.push({
+    id: newItemId(), bookId, date: todayKey(),
+    delta: delta, pageAfter: after, note: '', _ts: Date.now()
+  });
+  // 自动读完
+  if (total > 0 && after >= total && statusKey(b.status) !== 'finished') {
+    b.status = 'finished';
+    if (!b.finishDate) b.finishDate = todayKey();
+    saveBook();
+    renderBooksAll();
+    showToast(`🎉 已读完《${b.title}》！`);
+    return;
+  }
+  saveBook();
+  renderBooksAll();
+  showToast(delta >= 0 ? `已记录：《${b.title}》+${delta} 页 💪` : `已记录：《${b.title}》修正到第 ${after} 页`);
+}
+
+/* --- 添加/编辑 书籍弹窗 --- */
+let bStatusTrigger = null;
+const BOOK_STATUS_ITEMS = BOOK_STATUS_ORDER.map(k => ({ value: BOOK_STATUS[k].key, label: BOOK_STATUS[k].name }));
+function openBookEditor(bookIdOrNull) {
+  bookCtxBookId = bookIdOrNull || null;
+  const b = bookCtxBookId ? bookStore.books.find(x => x.id === bookCtxBookId) : null;
+  document.getElementById('bookMaskTitle').textContent = b ? '✏️ 编辑书籍' : '➕ 添加书籍';
+  document.getElementById('bTitle').value  = b ? (b.title  || '') : '';
+  document.getElementById('bAuthor').value = b ? (b.author || '') : '';
+  document.getElementById('bPages').value  = b && b.totalPages ? String(b.totalPages) : '';
+  document.getElementById('bNotes').value  = b ? (b.notes  || '') : '';
+  const status = b ? statusKey(b.status) : 'plan';
+  if (!bStatusTrigger) {
+    bStatusTrigger = makeSingleTrigger(document.getElementById('bStatusTrigger'), {
+      title: '加入到', placeholder: '想读 / 正在读 / 已读完', value: status,
+      items: BOOK_STATUS_ITEMS
+    });
+  } else {
+    bStatusTrigger.setItems(BOOK_STATUS_ITEMS, false);
+    bStatusTrigger.value = status;
+  }
+  document.getElementById('bookDelete').style.display = b ? '' : 'none';
+  document.getElementById('bookMask').classList.add('show');
+}
+function closeBookEditor() {
+  document.getElementById('bookMask').classList.remove('show');
+  bookCtxBookId = null;
+}
+document.getElementById('addBookBtn').addEventListener('click', () => openBookEditor(null));
+document.getElementById('bookMaskClose').addEventListener('click', closeBookEditor);
+document.getElementById('bookCancel').addEventListener('click', closeBookEditor);
+document.getElementById('bookDelete').addEventListener('click', () => {
+  const b = bookCtxBookId ? bookStore.books.find(x => x.id === bookCtxBookId) : null;
+  if (!b) return;
+  if (!confirm(`删除《${b.title}》后，本书阅读记录也会一起清除，确定吗？`)) return;
+  bookStore.books = bookStore.books.filter(x => x.id !== b.id);
+  bookStore.logs  = bookStore.logs.filter(l => l.bookId !== b.id);
+  saveBook();
+  closeBookEditor();
+  renderBooksAll();
+  showToast(`已删除《${b.title}》`);
+});
+document.getElementById('bookSave').addEventListener('click', () => {
+  const title  = document.getElementById('bTitle').value.trim();
+  const author = document.getElementById('bAuthor').value.trim();
+  const pages  = Number(document.getElementById('bPages').value);
+  const status = statusKey(bStatusTrigger ? bStatusTrigger.value : 'plan');
+  const notes  = document.getElementById('bNotes').value;
+  if (!title) { showToast('请填写书名'); return; }
+  if (status === 'reading' && !(pages > 0)) { showToast('正在读时请填写总页数（> 0）'); return; }
+  if (bookCtxBookId) {
+    const b = bookStore.books.find(x => x.id === bookCtxBookId);
+    if (!b) return closeBookEditor();
+    b.title  = title;
+    b.author = author;
+    b.notes  = notes;
+    if (pages > 0) b.totalPages = pages;
+    else if (status === 'finished') b.totalPages = b.totalPages || Math.max(0, Number(b.currentPage) || 0);
+    const prevStatus = statusKey(b.status);
+    b.status = status;
+    if (status === 'finished' && prevStatus !== 'finished') b.finishDate = todayKey();
+    if (status === 'reading'  && !b.startDate)               b.startDate  = todayKey();
+    if (status === 'finished') {
+      const tp = Math.max(0, Number(b.totalPages) || 0);
+      const cp = Math.max(0, Number(b.currentPage) || 0);
+      if (tp > 0 && cp < tp) b.currentPage = tp;
+    }
+    b._ts = Date.now();
+  } else {
+    const nb = {
+      id: newItemId(),
+      title, author, notes,
+      totalPages: pages > 0 ? pages : (status === 'finished' ? 0 : 0),
+      currentPage: (status === 'finished' && pages > 0) ? pages : 0,
+      status, _ts: Date.now()
+    };
+    if (status === 'reading')  nb.startDate  = todayKey();
+    if (status === 'finished') nb.finishDate = todayKey();
+    bookStore.books.push(nb);
+  }
+  saveBook();
+  closeBookEditor();
+  renderBooksAll();
+  showToast(bookCtxBookId ? '已保存 📚' : '已加入书架 📚');
+});
+
+/* --- 想读→开始读 弹窗 --- */
+function openStartModal(bookId) {
+  const b = bookStore.books.find(x => x.id === bookId);
+  if (!b) return;
+  startCtxBookId = bookId;
+  document.getElementById('startMaskTitle').textContent = `🚀 开始读《${b.title}》`;
+  document.getElementById('startTip').textContent   = `《${b.title}${b.author ? ' · ' + b.author : ''}》请填写总页数，确认后进入「正在读」。`;
+  document.getElementById('startPages').value = b.totalPages ? String(b.totalPages) : '';
+  document.getElementById('startMask').classList.add('show');
+}
+function closeStartModal() {
+  document.getElementById('startMask').classList.remove('show');
+  startCtxBookId = null;
+}
+document.getElementById('startMaskClose').addEventListener('click', closeStartModal);
+document.getElementById('startCancel').addEventListener('click', closeStartModal);
+document.getElementById('startOk').addEventListener('click', () => {
+  const pages = Number(document.getElementById('startPages').value);
+  const b = startCtxBookId && bookStore.books.find(x => x.id === startCtxBookId);
+  if (!b) return closeStartModal();
+  if (!(pages > 0)) { showToast('总页数必须 > 0'); return; }
+  b.totalPages = pages;
+  b.status = 'reading';
+  b.currentPage = Math.min(Math.max(0, Number(b.currentPage) || 0), pages);
+  if (!b.startDate) b.startDate = todayKey();
+  b._ts = Date.now();
+  saveBook();
+  closeStartModal();
+  renderBooksAll();
+  showToast(`开始读《${b.title}》！加油 💪`);
+});
+
+/* --- 搜索 --- */
+document.getElementById('bookSearch').addEventListener('input', e => {
+  bookFilter = (e.target.value || '').trim();
+  renderBooksAll();
+});
+document.getElementById('readingTodayText').textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+try { renderBooksAll(); } catch (e) { console.error('init renderBooksAll', e); }
+
+/* ---------- 页面切换 ---------- */
+function switchPage(name) {
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.page === name));
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  const pg = document.getElementById('page-' + name);
+  if (pg) pg.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.querySelectorAll('.nav-item').forEach(item => {
+  item.addEventListener('click', () => switchPage(item.dataset.page));
+});
+document.querySelectorAll('.home-card').forEach(card => {
+  card.addEventListener('click', () => switchPage(card.dataset.page));
 });
 
 document.getElementById('fitTodayText').textContent =
@@ -1753,7 +2912,59 @@ function tombItem(storeObj, dateKey, item) {
 }
 
 function buildPayload() {
-  return { v: 1, ts: Date.now(), ielts: store, fitness: fitStore };
+  return { v: 1, ts: Date.now(), ielts: store, fitness: fitStore, diet: dietStore, clothing: clothingStore, reading: bookStore };
+}
+
+function mergeDiet(local, remote) {
+  const out = JSON.parse(JSON.stringify(local || {}));
+  if (!remote) return out;
+  const a = out.records || {}, b = remote.records || {};
+  Object.keys(b).forEach(k => {
+    const la = (a[k] || []).map(x => ensureId(k, x));
+    const lb = (b[k] || []).map(x => ensureId(k, x));
+    const ids = new Set(la.map(x => x.id));
+    a[k] = la.concat(lb.filter(x => !ids.has(x.id)));
+  });
+  Object.keys(a).forEach(k => { if (!a[k] || !a[k].length) delete a[k]; });
+  out.records = a;
+  out._ts = Math.max(out._ts || 0, remote._ts || 0);
+  return out;
+}
+
+function mergeClothing(local, remote) {
+  const out = JSON.parse(JSON.stringify(local || {}));
+  if (!remote) return out;
+  const a = (out.items || []).map(x => ensureId('clothing', x));
+  const b = (remote.items || []).map(x => ensureId('clothing', x));
+  const ids = new Set(a.map(x => x.id));
+  out.items = a.concat(b.filter(x => !ids.has(x.id)));
+  const mergedBrands = [...(out.brands || [])];
+  (remote.brands || []).forEach(br => { if (!mergedBrands.includes(br)) mergedBrands.push(br); });
+  out.brands = mergedBrands;
+  out._ts = Math.max(out._ts || 0, remote._ts || 0);
+  return out;
+}
+
+function mergeBookStore(local, remote) {
+  const out = JSON.parse(JSON.stringify(local || defaultBookStore()));
+  if (!remote) return out;
+  out.books = Array.isArray(out.books) ? out.books : [];
+  out.logs  = Array.isArray(out.logs)  ? out.logs  : [];
+  const byId = new Map();
+  (out.books || []).forEach(b => { byId.set(b.id, b); });
+  (remote.books || []).forEach(rb => {
+    if (!rb || !rb.id) return;
+    rb.status = statusKey(rb.status);
+    rb._ts = rb._ts || Date.now();
+    const lb = byId.get(rb.id);
+    if (!lb) { byId.set(rb.id, JSON.parse(JSON.stringify(rb))); }
+    else if ((rb._ts || 0) >= (lb._ts || 0)) { byId.set(rb.id, JSON.parse(JSON.stringify(rb))); }
+  });
+  out.books = [...byId.values()];
+  const logIds = new Set((out.logs || []).map(l => l.id));
+  (remote.logs || []).forEach(l => { if (l && l.id && !logIds.has(l.id)) out.logs.push(JSON.parse(JSON.stringify(l))); });
+  out._ts = Math.max(out._ts || 0, remote._ts || 0);
+  return out;
 }
 
 function mergeStore(local, remote) {
@@ -1794,20 +3005,37 @@ function mergeStore(local, remote) {
   return out;
 }
 
-function applyMerged(ielts, fitness) {
+function applyMerged(ielts, fitness, diet, clothing, reading) {
   store = ielts;
   fitStore = fitness;
+  if (diet) { dietStore = diet; localStorage.setItem(DIET_KEY, JSON.stringify(dietStore)); }
+  if (clothing) {
+    clothingStore = clothing;
+    if (!clothingStore.brands) clothingStore.brands = [];
+    localStorage.setItem(CLOTHING_KEY, JSON.stringify(clothingStore));
+    if (typeof refreshBrandTrigger === 'function') refreshBrandTrigger(true);
+  }
+  if (reading) {
+    bookStore = reading;
+    if (!Array.isArray(bookStore.books)) bookStore.books = [];
+    if (!Array.isArray(bookStore.logs))  bookStore.logs  = [];
+    bookStore.books.forEach(b => { b.status = statusKey(b.status); });
+    localStorage.setItem(READ_KEY, JSON.stringify(bookStore));
+  }
   localStorage.setItem(STORE_KEY, JSON.stringify(store));
   localStorage.setItem(FIT_KEY, JSON.stringify(fitStore));
-  document.getElementById('goalReading').value = store.goals.reading;
-  document.getElementById('goalListening').value = store.goals.listening;
-  document.getElementById('goalWriting').value = store.goals.writing;
-  document.getElementById('goalSpeaking').value = store.goals.speaking;
-  document.getElementById('wordGoalInput').value = store.wordGoal;
-  document.getElementById('fitGoalMinutes').value = fitStore.goals.minutes;
-  document.getElementById('fitGoalTimes').value = fitStore.goals.times;
-  renderAll();
-  renderFitnessAll();
+  if (document.getElementById('goalReading')) document.getElementById('goalReading').value = store.goals.reading;
+  if (document.getElementById('goalListening')) document.getElementById('goalListening').value = store.goals.listening;
+  if (document.getElementById('goalWriting')) document.getElementById('goalWriting').value = store.goals.writing;
+  if (document.getElementById('goalSpeaking')) document.getElementById('goalSpeaking').value = store.goals.speaking;
+  if (document.getElementById('wordGoalInput'))  document.getElementById('wordGoalInput').value = store.wordGoal;
+  if (document.getElementById('fitGoalMinutes'))document.getElementById('fitGoalMinutes').value = fitStore.goals.minutes;
+  if (document.getElementById('fitGoalTimes'))  document.getElementById('fitGoalTimes').value = fitStore.goals.times;
+  try { renderAll(); } catch (e) { console.error(e); }
+  try { renderFitnessAll(); } catch (e) { console.error(e); }
+  try { renderDietAll(); } catch (e) { console.error(e); }
+  try { renderClothingAll(); } catch (e) { console.error(e); }
+  try { if (typeof renderBooksAll === 'function') renderBooksAll(); } catch (e) { console.error(e); }
 }
 
 async function cloudSync(showToastOnDone) {
@@ -1821,7 +3049,11 @@ async function cloudSync(showToastOnDone) {
     const remote = (data && data.payload) || {};
     const mergedIelts = mergeStore(store, remote.ielts);
     const mergedFit = mergeStore(fitStore, remote.fitness);
-    applyMerged(mergedIelts, mergedFit);
+    const mergedDiet = mergeDiet(dietStore, remote.diet);
+    const mergedClothing = mergeClothing(clothingStore, remote.clothing);
+    let mergedReading;
+    try { mergedReading = mergeBookStore(bookStore, remote.reading); } catch (e) { console.error('mergeBookStore', e); mergedReading = mergeBookStore(bookStore, null); }
+    applyMerged(mergedIelts, mergedFit, mergedDiet, mergedClothing, mergedReading);
     const { error: upErr } = await sb.from(CLOUD.table).upsert({
       user_id: cloudUser.id,
       payload: buildPayload(),
@@ -1887,7 +3119,7 @@ document.getElementById('syncBtn').onclick = () => {
   if (cloudUser) {
     document.getElementById('syncInfo').innerHTML =
       `当前账号：<b>${cloudUser.email || cloudUser.id}</b><br>` +
-      `雅思 / 健身数据将自动双向同步到云端，<br>换设备登录同一账号即可获取全部数据。`;
+      `雅思 / 健身 / 饮食 / 衣服购物数据将自动双向同步到云端，<br>换设备登录同一账号即可获取全部数据。`;
   }
   syncMask.classList.add('show');
 };
@@ -1936,6 +3168,7 @@ document.getElementById('syncOut').onclick = async () => {
 const foldState = JSON.parse(localStorage.getItem('fold_state_v1') || '{}');
 document.querySelectorAll('.page').forEach((page, pi) => {
   page.querySelectorAll('.card').forEach((card, ci) => {
+    if (card.classList.contains('no-collapse')) return;
     const h2 = card.querySelector('h2');
     if (!h2) return;
     const body = document.createElement('div');
