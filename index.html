@@ -66,9 +66,10 @@
   .sync-form input:focus { border-color: var(--primary); }
   .sync-tip { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 0 0 12px; }
   .sync-info { font-size: 14px; line-height: 1.9; margin: 0 0 12px; word-break: break-all; }
-  .back-bar { display: flex; align-items: center; margin-bottom: 12px; }
-  .back-btn { background: #fff; border: 2px solid var(--line); border-radius: 999px; min-width:44px; min-height:44px; height:44px; padding: 0 16px; font-size: 14px; cursor: pointer; color: var(--text); font-family: inherit; }
+  .back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .back-btn { background: #fff; border: 2px solid var(--line); border-radius: 999px; min-width:36px; min-height:36px; height:36px; padding: 0 12px; font-size: 13px; cursor: pointer; color: var(--text); font-family: inherit; flex-shrink: 0; }
   .back-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .back-bar .page-title { font-size: 16px; font-weight: 700; letter-spacing: .5px; margin-left: auto; }
   .title-btn {
     float: right; background: #fff; color: var(--primary-dark); font-size: 12px; font-weight: 700;
     min-width: 44px; min-height: 36px; height: 36px;
@@ -101,16 +102,16 @@
     border: 2px solid #1f1f1f;
     border-radius: var(--radius);
     color: var(--text);
-    padding: 14px 20px;
-    margin-bottom: 16px;
+    padding: 8px 16px;
+    margin-bottom: 10px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
   }
-  header h1 { font-size: 20px; letter-spacing: 1px; }
-  header p { opacity: .65; margin-top: 4px; font-size: 13px; }
+  header h1 { font-size: 16px; letter-spacing: .5px; }
+  header p { opacity: .65; margin-top: 2px; font-size: 12px; }
   .streak-box { text-align: center; background: #fff; border: 2px solid #1f1f1f; border-radius: 12px; padding: 6px 18px; }
   .streak-box .num { font-size: 26px; font-weight: 700; }
   .streak-box .label { font-size: 12px; opacity: .65; }
@@ -649,7 +650,7 @@
     .clothing-item { gap: 6px; font-size: 12px; }
     .multi-trigger { padding: 6px 8px; font-size: 13px; }
     header { padding: 10px 12px; }
-    header h1 { font-size: 18px; }
+    header h1 { font-size: 15px; }
   }
 </style>
 </head>
@@ -693,13 +694,7 @@
 <!-- 雅思打卡页 -->
 <div id="page-ielts" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div>
-      <h1>雅思打卡 📚</h1>
-      <p id="todayText"></p>
-    </div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">雅思打卡 📚</span></div>
 
   <!-- 考试倒计时 -->
   <div class="card no-collapse">
@@ -826,17 +821,7 @@
 <!-- 健身打卡页 -->
 <div id="page-fitness" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header class="fitness-header">
-    <div>
-      <h1>健身打卡 💪</h1>
-      <p id="fitTodayText"></p>
-    </div>
-    <div class="streak-box">
-      <div class="num" id="fitStreakNum">0</div>
-      <div class="label">连续打卡（天）</div>
-    </div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">健身打卡 💪</span></div>
 
   <!-- Tab 栏 -->
   <div class="tab-bar">
@@ -848,6 +833,10 @@
 
   <!-- Tab: 今日训练 -->
   <div class="tab-panel active" id="fitTab-today">
+    <div class="streak-box" style="margin-bottom:10px">
+      <div class="num" id="fitStreakNum">0</div>
+      <div class="label">连续打卡（天）</div>
+    </div>
     <div class="card no-collapse">
       <h2>今日训练</h2>
       <div class="fit-form">
@@ -923,10 +912,7 @@
 <!-- 饮食记录页 -->
 <div id="page-diet" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div><h1>饮食记录 🍽️</h1><p id="dietTodayText"></p></div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">饮食记录 🍽️</span></div>
 
   <!-- Tab 栏 -->
   <div class="tab-bar">
@@ -980,10 +966,7 @@
 <!-- 衣服购物记录页 -->
 <div id="page-clothing" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div><h1>衣服购物记录 👕</h1><p id="clothingTodayText"></p></div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">衣服购物记录 👕</span></div>
 
   <!-- 总支出 -->
   <div class="card clothing-total-card">
@@ -1048,10 +1031,7 @@
 <!-- 读书打卡页 -->
 <div id="page-reading" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div><h1>读书打卡 📖</h1><p id="readingTodayText"></p></div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">读书打卡 📖</span></div>
 
   <!-- 顶部三统计 -->
   <div class="reading-stats">
@@ -1104,10 +1084,7 @@
 <!-- 日记打卡页 -->
 <div id="page-diary" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div><h1>日记 📓</h1><p id="diaryTodayText"></p></div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">日记 📓</span></div>
 
   <!-- Tab 栏 -->
   <div class="tab-bar" id="diaryTabBar">
@@ -1161,10 +1138,7 @@
 <!-- 待办事项页 -->
 <div id="page-todo" class="page">
 <div class="container">
-  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button></div>
-  <header>
-    <div><h1>待办事项 ✅</h1><p id="todoTodayText"></p></div>
-  </header>
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">待办事项 ✅</span></div>
 
   <!-- Tab 栏 -->
   <div class="tab-bar">
@@ -2159,8 +2133,8 @@ function renderAll() {
   renderCountdown();
 }
 
-document.getElementById('todayText').textContent =
-  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+(function(){ const el = document.getElementById('todayText'); if (el) el.textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
 document.getElementById('goalReading').value = store.goals.reading;
 document.getElementById('goalListening').value = store.goals.listening;
 document.getElementById('goalWriting').value = store.goals.writing;
@@ -2720,8 +2694,8 @@ document.getElementById('dietDateTabs').addEventListener('click', e => {
 function renderDietAll() {
   renderDietDateView();
 }
-document.getElementById('dietTodayText').textContent =
-  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+(function(){ const el = document.getElementById('dietTodayText'); if (el) el.textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
 document.getElementById('dietViewDate').value = todayKey();
 renderDietAll();
 
@@ -2962,8 +2936,8 @@ function renderClothingAll() {
   renderClothingTotals();
   renderClothingHistory();
 }
-document.getElementById('clothingTodayText').textContent =
-  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+(function(){ const el = document.getElementById('clothingTodayText'); if (el) el.textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
 renderClothingAll();
 
 /* ================= 读书打卡页 ================= */
@@ -3580,8 +3554,8 @@ function bindDiaryEvents() {
 bindDiaryEvents();
 
 /* --- 日期显示 --- */
-document.getElementById('readingTodayText').textContent =
-  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+(function(){ const el = document.getElementById('readingTodayText'); if (el) el.textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
 const diaryTodayEl = document.getElementById('diaryTodayText');
 if (diaryTodayEl) diaryTodayEl.textContent =
   new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
@@ -3746,8 +3720,8 @@ document.querySelectorAll('.home-card').forEach(card => {
   card.addEventListener('click', () => switchPage(card.dataset.page));
 });
 
-document.getElementById('fitTodayText').textContent =
-  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
+(function(){ const el = document.getElementById('fitTodayText'); if (el) el.textContent =
+  new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
 document.getElementById('fitGoalMinutes').value = fitStore.goals.minutes;
 document.getElementById('fitGoalTimes').value = fitStore.goals.times;
 renderFitnessAll();
