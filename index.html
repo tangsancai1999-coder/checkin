@@ -267,7 +267,7 @@
     background: #fff; font-size: 15px; cursor: pointer; font-family: inherit;
   }
   .picker-foot #pickerOk { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
-  .empty-tip { text-align: center; color: var(--muted); font-size: 14px; padding: 18px 0; }
+  .empty-tip { text-align: center; color: var(--muted); font-size: 14px; padding: 10px 0; }
 
   /* 周目标 */
   .week-dates { font-size: 13px; color: var(--muted); margin: -8px 0 14px; }
@@ -294,10 +294,10 @@
   .goal-setting .save-goals:hover, .exam-setting .save-goals:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
 
   /* 倒计时 */
-  .cd-main { display: flex; align-items: baseline; gap: 8px; }
-  .cd-num { font-size: 52px; font-weight: 800; color: var(--primary); line-height: 1.1; }
-  .cd-unit { font-size: 16px; font-weight: 600; }
-  .cd-desc { font-size: 14px; color: var(--muted); margin-top: 6px; }
+  .cd-main { display: flex; align-items: baseline; gap: 4px; }
+  .cd-num { font-size: 32px; font-weight: 800; color: var(--primary); line-height: 1.1; }
+  .cd-unit { font-size: 14px; font-weight: 600; }
+  .cd-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .cd-badge {
     display: inline-block; margin-left: 8px; background: #f0f0f0; color: #555;
     font-size: 12px; padding: 2px 10px; border-radius: 10px; font-weight: 600;
@@ -1193,7 +1193,7 @@
 
 <!-- 衣服编辑弹窗 -->
 <div class="modal-mask" id="clothingEditMask">
-  <div class="modal fullscreen">
+  <div class="modal" style="max-width:420px;width:90%;top:50%;transform:translateY(-50%)">
     <h3>✏️ 修改购买记录</h3>
     <div class="modal-body">
       <div class="clothing-form" style="margin-top:0">
