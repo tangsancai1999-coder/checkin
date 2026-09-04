@@ -599,6 +599,13 @@
   .clothing-item .price { color: var(--primary); font-weight: 700; flex-shrink: 0; }
 
   /* === 移动端全局适配 === */
+  /* Tab 栏（页内切换） */
+  .tab-bar { display: flex; gap: 0; margin-bottom: 14px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
+  .tab-bar-btn { flex: 1; padding: 10px 8px; border: none; background: transparent; font-size: 14px; color: var(--muted); cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap; }
+  .tab-bar-btn.active { background: var(--primary); color: #fff; font-weight: 700; }
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
   @media (max-width: 768px) {
     .card { padding: 14px 12px; margin-bottom: 14px; }
     .card::before, .card::after { width: 20px; height: 20px; top: -10px; }
@@ -606,6 +613,8 @@
     .card::after { right: 18px; }
     .card h2 { font-size: 15px; gap: 6px; }
     .container { padding: 14px 10px calc(50px + env(safe-area-inset-bottom)); }
+    .tab-bar { margin-bottom: 10px; }
+    .tab-bar-btn { padding: 8px 4px; font-size: 12px; }
     .book-item { padding: 10px 12px; margin-bottom: 10px; }
     .book-item .row-a > button { min-width: 36px; min-height: 36px; height: 36px; width: 36px; font-size: 14px; }
     .book-item .title { font-size: 14px; }
@@ -698,74 +707,84 @@
     <div id="countdownBody"></div>
   </div>
 
-  <!-- 今日打卡 -->
-  <div class="card no-collapse">
-    <h2>今日打卡</h2>
-    <div class="add-form">
-      <button type="button" class="multi-trigger" id="typeSel"></button>
-      <button type="button" class="multi-trigger" id="bookSel"></button>
-      <input id="customBook" placeholder="材料名称，如：九分达人" style="display:none">
-      <button type="button" class="multi-trigger" id="testSel"></button>
-      <button type="button" class="multi-trigger" id="partSel"></button>
-      <button type="button" class="multi-trigger" id="qtypeTrigger" style="display:none"></button>
-      <input id="customTopic" placeholder="话题内容，如：描述你的邻居" style="display:none">
-      <div class="row2">
-        <input type="date" id="ieltsDate" class="checkin-date" title="打卡日期，可改补打前天">
-        <input id="scoreInp" placeholder="得分 / 正确数（选填，如 7.5 或 30/40）">
-        <input id="noteInp" placeholder="备注（选填，如：判断题错了 3 个）">
-        <button class="add-btn" id="addBtn">+ 添加</button>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="today">📋 今日打卡</button>
+    <button class="tab-bar-btn" data-tab="word">📖 单词</button>
+    <button class="tab-bar-btn" data-tab="stats">📊 目标统计</button>
+    <button class="tab-bar-btn" data-tab="cal">📅 日历</button>
+  </div>
+
+  <!-- Tab: 今日打卡 -->
+  <div class="tab-panel active" id="ieltsTab-today">
+    <div class="card no-collapse">
+      <h2>今日打卡</h2>
+      <div class="add-form">
+        <button type="button" class="multi-trigger" id="typeSel"></button>
+        <button type="button" class="multi-trigger" id="bookSel"></button>
+        <input id="customBook" placeholder="材料名称，如：九分达人" style="display:none">
+        <button type="button" class="multi-trigger" id="testSel"></button>
+        <button type="button" class="multi-trigger" id="partSel"></button>
+        <button type="button" class="multi-trigger" id="qtypeTrigger" style="display:none"></button>
+        <input id="customTopic" placeholder="话题内容，如：描述你的邻居" style="display:none">
+        <div class="row2">
+          <input type="date" id="ieltsDate" class="checkin-date" title="打卡日期，可改补打前天">
+          <input id="scoreInp" placeholder="得分 / 正确数（选填，如 7.5 或 30/40）">
+          <input id="noteInp" placeholder="备注（选填，如：判断题错了 3 个）">
+          <button class="add-btn" id="addBtn">+ 添加</button>
+        </div>
+      </div>
+      <div class="today-list" id="todayList"></div>
+    </div>
+  </div>
+
+  <!-- Tab: 单词 -->
+  <div class="tab-panel" id="ieltsTab-word">
+    <div class="card no-collapse">
+      <h2>单词打卡</h2>
+      <div class="word-form">
+        <button type="button" class="multi-trigger" id="wordBookSel"></button>
+        <input id="wordBookCustom" placeholder="词书名称" style="display:none">
+        <input type="date" id="wordDate" class="checkin-date" title="打卡日期">
+        <input type="number" min="0" id="wordCount" placeholder="背单词数量">
+        <button class="add-btn" id="wordAddBtn">+ 打卡</button>
+      </div>
+      <div class="today-list" id="wordList"></div>
+      <div class="goal" style="margin-top:6px">
+        <div class="goal-head"><span>📝 本周单词</span><span class="count" id="wordWeekCount">0 / 0 个</span></div>
+        <div class="bar"><div class="bar-fill" id="wordWeekBar" style="width:0%"></div></div>
+        <div class="goal-done" id="wordWeekDone" style="display:none">🎉 已达成本周单词目标！</div>
       </div>
     </div>
-    <div class="today-list" id="todayList"></div>
   </div>
 
-  <!-- 单词打卡 -->
-  <div class="card">
-    <h2>单词打卡</h2>
-    <div class="word-form">
-      <button type="button" class="multi-trigger" id="wordBookSel"></button>
-      <input id="wordBookCustom" placeholder="词书名称" style="display:none">
-      <input type="date" id="wordDate" class="checkin-date" title="打卡日期">
-      <input type="number" min="0" id="wordCount" placeholder="背单词数量">
-      <button class="add-btn" id="wordAddBtn">+ 打卡</button>
+  <!-- Tab: 目标统计 -->
+  <div class="tab-panel" id="ieltsTab-stats">
+    <div class="card no-collapse">
+      <h2>本周目标 <button type="button" class="title-btn" id="openGoalModal">🎯 设置目标</button></h2>
+      <div class="week-dates" id="weekDates"></div>
+      <div class="goal">
+        <div class="goal-head"><span>📖 阅读</span><span class="count" id="readingCount">0 / 0 篇</span></div>
+        <div class="bar"><div class="bar-fill" id="readingBar" style="width:0%"></div></div>
+        <div class="goal-done" id="readingDone" style="display:none">🎉 已达成本周阅读目标！</div>
+      </div>
+      <div class="goal">
+        <div class="goal-head"><span>🎧 听力</span><span class="count" id="listeningCount">0 / 0 次</span></div>
+        <div class="bar"><div class="bar-fill" id="listeningBar" style="width:0%"></div></div>
+        <div class="goal-done" id="listeningDone" style="display:none">🎉 已达成本周听力目标！</div>
+      </div>
+      <div class="goal">
+        <div class="goal-head"><span>✍️ 写作</span><span class="count" id="writingCount">0 / 0 篇</span></div>
+        <div class="bar"><div class="bar-fill" id="writingBar" style="width:0%"></div></div>
+        <div class="goal-done" id="writingDone" style="display:none">🎉 已达成本周写作目标！</div>
+      </div>
+      <div class="goal">
+        <div class="goal-head"><span>🗣️ 口语</span><span class="count" id="speakingCount">0 / 0 次</span></div>
+        <div class="bar"><div class="bar-fill" id="speakingBar" style="width:0%"></div></div>
+        <div class="goal-done" id="speakingDone" style="display:none">🎉 已达成本周口语目标！</div>
+      </div>
     </div>
-    <div class="today-list" id="wordList"></div>
-    <div class="goal" style="margin-top:6px">
-      <div class="goal-head"><span>📝 本周单词</span><span class="count" id="wordWeekCount">0 / 0 个</span></div>
-      <div class="bar"><div class="bar-fill" id="wordWeekBar" style="width:0%"></div></div>
-      <div class="goal-done" id="wordWeekDone" style="display:none">🎉 已达成本周单词目标！</div>
-    </div>
-  </div>
-
-  <!-- 本周目标 -->
-  <div class="card">
-    <h2>本周目标 <button type="button" class="title-btn" id="openGoalModal">🎯 设置目标</button></h2>
-    <div class="week-dates" id="weekDates"></div>
-    <div class="goal">
-      <div class="goal-head"><span>📖 阅读</span><span class="count" id="readingCount">0 / 0 篇</span></div>
-      <div class="bar"><div class="bar-fill" id="readingBar" style="width:0%"></div></div>
-      <div class="goal-done" id="readingDone" style="display:none">🎉 已达成本周阅读目标！</div>
-    </div>
-    <div class="goal">
-      <div class="goal-head"><span>🎧 听力</span><span class="count" id="listeningCount">0 / 0 次</span></div>
-      <div class="bar"><div class="bar-fill" id="listeningBar" style="width:0%"></div></div>
-      <div class="goal-done" id="listeningDone" style="display:none">🎉 已达成本周听力目标！</div>
-    </div>
-    <div class="goal">
-      <div class="goal-head"><span>✍️ 写作</span><span class="count" id="writingCount">0 / 0 篇</span></div>
-      <div class="bar"><div class="bar-fill" id="writingBar" style="width:0%"></div></div>
-      <div class="goal-done" id="writingDone" style="display:none">🎉 已达成本周写作目标！</div>
-    </div>
-    <div class="goal">
-      <div class="goal-head"><span>🗣️ 口语</span><span class="count" id="speakingCount">0 / 0 次</span></div>
-      <div class="bar"><div class="bar-fill" id="speakingBar" style="width:0%"></div></div>
-      <div class="goal-done" id="speakingDone" style="display:none">🎉 已达成本周口语目标！</div>
-    </div>
-  </div>
-
-  <!-- 学习统计 + 打卡日历（一排） -->
-  <div class="two-col">
-    <div class="card">
+    <div class="card no-collapse">
       <h2>学习统计</h2>
       <div class="stat-tabs" id="ieltsStatTabs">
         <button class="stat-tab active" data-range="month">本月</button>
@@ -780,22 +799,25 @@
         <div class="stat"><div class="num" id="statWords">0</div><div class="label">背单词（个）</div></div>
       </div>
     </div>
+  </div>
 
-    <div class="card cal-streak-card" style="position:relative;">
+  <!-- Tab: 日历 -->
+  <div class="tab-panel" id="ieltsTab-cal">
+    <div class="card no-collapse cal-streak-card" style="position:relative;">
       <h2>打卡日历</h2>
       <div class="streak-box cal-streak-top" aria-label="连续打卡">
         <div class="num" id="streakNum">0</div>
         <div class="label">连续打卡（天）</div>
       </div>
-    <div class="cal-header">
-      <button id="prevMonth">‹</button>
-      <div class="month" id="monthLabel"></div>
-      <button id="nextMonth">›</button>
-    </div>
-    <div class="cal-grid" id="calGrid"></div>
-    <div class="week-dates" style="margin:12px 0 0">
-      日期下方的数字为当天完成的题目数
-    </div>
+      <div class="cal-header">
+        <button id="prevMonth">‹</button>
+        <div class="month" id="monthLabel"></div>
+        <button id="nextMonth">›</button>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+      <div class="week-dates" style="margin:12px 0 0">
+        日期下方的数字为当天完成的题目数
+      </div>
     </div>
   </div>
 </div>
@@ -816,43 +838,55 @@
     </div>
   </header>
 
-  <!-- 今日训练 -->
-  <div class="card no-collapse">
-    <h2>今日训练</h2>
-    <div class="fit-form">
-      <button type="button" class="multi-trigger" id="fitCatSel"></button>
-      <button type="button" class="multi-trigger" id="fitNameSel"></button>
-      <input id="fitNameCustom" placeholder="运动名称" style="display:none">
-      <button type="button" class="multi-trigger" id="fitExTrigger" style="display:none"></button>
-      <div class="row2">
-        <input type="date" id="fitDate" class="checkin-date" title="打卡日期">
-        <input type="number" min="0" id="fitAmount" placeholder="时长 / 次数">
-        <input id="fitNote" placeholder="备注（选填）">
-        <button class="add-btn" id="fitAddBtn">+ 打卡</button>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="today">🏋️ 今日训练</button>
+    <button class="tab-bar-btn" data-tab="goal">🎯 目标</button>
+    <button class="tab-bar-btn" data-tab="stats">📊 统计</button>
+    <button class="tab-bar-btn" data-tab="cal">📅 日历</button>
+  </div>
+
+  <!-- Tab: 今日训练 -->
+  <div class="tab-panel active" id="fitTab-today">
+    <div class="card no-collapse">
+      <h2>今日训练</h2>
+      <div class="fit-form">
+        <button type="button" class="multi-trigger" id="fitCatSel"></button>
+        <button type="button" class="multi-trigger" id="fitNameSel"></button>
+        <input id="fitNameCustom" placeholder="运动名称" style="display:none">
+        <button type="button" class="multi-trigger" id="fitExTrigger" style="display:none"></button>
+        <div class="row2">
+          <input type="date" id="fitDate" class="checkin-date" title="打卡日期">
+          <input type="number" min="0" id="fitAmount" placeholder="时长 / 次数">
+          <input id="fitNote" placeholder="备注（选填）">
+          <button class="add-btn" id="fitAddBtn">+ 打卡</button>
+        </div>
+      </div>
+      <div class="today-list" id="fitTodayList"></div>
+    </div>
+  </div>
+
+  <!-- Tab: 目标 -->
+  <div class="tab-panel" id="fitTab-goal">
+    <div class="card no-collapse">
+      <h2>本周目标 <button type="button" class="title-btn" id="openFitGoalModal">🎯 设置目标</button></h2>
+      <div class="week-dates" id="fitWeekDates"></div>
+      <div class="goal">
+        <div class="goal-head"><span>🏃 有氧训练</span><span class="count" id="fitCardioCount">0 / 0 分钟</span></div>
+        <div class="bar"><div class="bar-fill" id="fitCardioBar" style="width:0%"></div></div>
+        <div class="goal-done" id="fitCardioDone" style="display:none">🎉 已达成本周有氧目标！</div>
+      </div>
+      <div class="goal">
+        <div class="goal-head"><span>🏋️ 力量训练</span><span class="count" id="fitStrCount">0 / 0 次</span></div>
+        <div class="bar"><div class="bar-fill" id="fitStrBar" style="width:0%"></div></div>
+        <div class="goal-done" id="fitStrDone" style="display:none">🎉 已达成本周力量目标！</div>
       </div>
     </div>
-    <div class="today-list" id="fitTodayList"></div>
   </div>
 
-  <!-- 本周目标 -->
-  <div class="card">
-    <h2>本周目标 <button type="button" class="title-btn" id="openFitGoalModal">🎯 设置目标</button></h2>
-    <div class="week-dates" id="fitWeekDates"></div>
-    <div class="goal">
-      <div class="goal-head"><span>🏃 有氧训练</span><span class="count" id="fitCardioCount">0 / 0 分钟</span></div>
-      <div class="bar"><div class="bar-fill" id="fitCardioBar" style="width:0%"></div></div>
-      <div class="goal-done" id="fitCardioDone" style="display:none">🎉 已达成本周有氧目标！</div>
-    </div>
-    <div class="goal">
-      <div class="goal-head"><span>🏋️ 力量训练</span><span class="count" id="fitStrCount">0 / 0 次</span></div>
-      <div class="bar"><div class="bar-fill" id="fitStrBar" style="width:0%"></div></div>
-      <div class="goal-done" id="fitStrDone" style="display:none">🎉 已达成本周力量目标！</div>
-    </div>
-  </div>
-
-  <!-- 健身统计 + 打卡日历（一排） -->
-  <div class="two-col">
-    <div class="card">
+  <!-- Tab: 统计 -->
+  <div class="tab-panel" id="fitTab-stats">
+    <div class="card no-collapse">
       <h2>健身统计</h2>
       <div class="stat-tabs" id="fitStatTabs">
         <button class="stat-tab active" data-range="month">本月</button>
@@ -864,8 +898,11 @@
         <div class="stat"><div class="num" id="fitStatStrength">0</div><div class="label">力量（次）</div></div>
       </div>
     </div>
+  </div>
 
-    <div class="card">
+  <!-- Tab: 日历 -->
+  <div class="tab-panel" id="fitTab-cal">
+    <div class="card no-collapse">
       <h2>打卡日历</h2>
       <div class="cal-header">
         <button id="fitPrevMonth">‹</button>
@@ -891,31 +928,41 @@
     <div><h1>饮食记录 🍽️</h1><p id="dietTodayText"></p></div>
   </header>
 
-  <!-- 今日饮食 -->
-  <div class="card no-collapse">
-    <h2>今日饮食</h2>
-    <div class="diet-form">
-      <input id="dietFood" placeholder="食物名称，如：白米饭、鸡蛋、全麦面包">
-      <input type="date" id="dietDate" class="checkin-date" title="记录日期">
-      <button type="button" class="multi-trigger" id="dietMealTrigger">餐次（选填）</button>
-      <button type="button" class="multi-trigger" id="dietSugarTrigger">血糖标记</button>
-      <input class="row2" id="dietNote" placeholder="备注（选填，如：饭后 2 小时血糖 9.8）">
-      <button class="add-btn" id="dietAddBtn">+ 记录</button>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="add">➕ 记录</button>
+    <button class="tab-bar-btn" data-tab="view">📅 查看</button>
+  </div>
+
+  <!-- Tab: 记录 -->
+  <div class="tab-panel active" id="dietTab-add">
+    <div class="card no-collapse">
+      <h2>今日饮食</h2>
+      <div class="diet-form">
+        <input id="dietFood" placeholder="食物名称，如：白米饭、鸡蛋、全麦面包">
+        <input type="date" id="dietDate" class="checkin-date" title="记录日期">
+        <button type="button" class="multi-trigger" id="dietMealTrigger">餐次（选填）</button>
+        <button type="button" class="multi-trigger" id="dietSugarTrigger">血糖标记</button>
+        <input class="row2" id="dietNote" placeholder="备注（选填，如：饭后 2 小时血糖 9.8）">
+        <button class="add-btn" id="dietAddBtn">+ 记录</button>
+      </div>
     </div>
   </div>
 
-  <!-- 饮食记录 -->
-  <div class="card">
-    <h2>饮食记录</h2>
-    <div class="diet-date-view">
-      <label>📅 查看日期：</label>
-      <input type="date" id="dietViewDate">
-      <div class="stat-tabs" id="dietDateTabs" style="margin-top:8px;gap:6px">
-        <button class="stat-tab active" data-filter="day">📅 当天</button>
-        <button class="stat-tab" data-filter="month" style="flex:none;font-size:12px;padding:6px 10px">📆 本月</button>
-        <button class="stat-tab" data-filter="red" style="flex:none;font-size:12px;padding:6px 10px">🔴 升糖快</button>
+  <!-- Tab: 查看 -->
+  <div class="tab-panel" id="dietTab-view">
+    <div class="card no-collapse">
+      <h2>饮食记录</h2>
+      <div class="diet-date-view">
+        <label>📅 查看日期：</label>
+        <input type="date" id="dietViewDate">
+        <div class="stat-tabs" id="dietDateTabs" style="margin-top:8px;gap:6px">
+          <button class="stat-tab active" data-filter="day">📅 当天</button>
+          <button class="stat-tab" data-filter="month" style="flex:none;font-size:12px;padding:6px 10px">📆 本月</button>
+          <button class="stat-tab" data-filter="red" style="flex:none;font-size:12px;padding:6px 10px">🔴 升糖快</button>
+        </div>
+        <div class="today-list" id="dietDateList"></div>
       </div>
-      <div class="today-list" id="dietDateList"></div>
     </div>
   </div>
 </div>
@@ -956,34 +1003,44 @@
     </div>
   </div>
 
-  <!-- 添加衣服 -->
-  <div class="card no-collapse">
-    <h2>添加衣服</h2>
-    <div class="clothing-form">
-      <input id="clothingName" placeholder="衣服名称，如：黑色卫衣">
-      <input type="date" id="clothingDate" class="checkin-date" title="购买日期">
-      <button type="button" class="multi-trigger" id="clothingTypeTrigger">类型</button>
-      <input type="number" min="0" id="clothingPrice" placeholder="价格（元）">
-      <button type="button" class="multi-trigger" id="clothingSizeTrigger">尺码</button>
-      <button type="button" class="multi-trigger" id="clothingBrandTrigger">品牌</button>
-      <input class="row2" id="clothingBrandCustom" placeholder="输入自定义品牌名称" style="display:none">
-      <input class="row2" id="clothingNote" placeholder="备注（选填）">
-      <button class="add-btn" id="clothingAddBtn">+ 添加</button>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="add">➕ 添加</button>
+    <button class="tab-bar-btn" data-tab="history">📋 历史</button>
+  </div>
+
+  <!-- Tab: 添加 -->
+  <div class="tab-panel active" id="clothingTab-add">
+    <div class="card no-collapse">
+      <h2>添加衣服</h2>
+      <div class="clothing-form">
+        <input id="clothingName" placeholder="衣服名称，如：黑色卫衣">
+        <input type="date" id="clothingDate" class="checkin-date" title="购买日期">
+        <button type="button" class="multi-trigger" id="clothingTypeTrigger">类型</button>
+        <input type="number" min="0" id="clothingPrice" placeholder="价格（元）">
+        <button type="button" class="multi-trigger" id="clothingSizeTrigger">尺码</button>
+        <button type="button" class="multi-trigger" id="clothingBrandTrigger">品牌</button>
+        <input class="row2" id="clothingBrandCustom" placeholder="输入自定义品牌名称" style="display:none">
+        <input class="row2" id="clothingNote" placeholder="备注（选填）">
+        <button class="add-btn" id="clothingAddBtn">+ 添加</button>
+      </div>
     </div>
   </div>
 
-  <!-- 历史记录（按月查看 / 按品牌筛选） -->
-  <div class="card">
-    <h2>历史记录</h2>
-    <div class="clothing-filter-row">
-      <button type="button" class="multi-trigger" id="clothingBrandFilter">🏷️ 全部品牌</button>
+  <!-- Tab: 历史 -->
+  <div class="tab-panel" id="clothingTab-history">
+    <div class="card no-collapse">
+      <h2>历史记录</h2>
+      <div class="clothing-filter-row">
+        <button type="button" class="multi-trigger" id="clothingBrandFilter">🏷️ 全部品牌</button>
+      </div>
+      <div class="cal-header" id="clothingMonthNav">
+        <button id="clothingPrevMonth">‹</button>
+        <div class="month" id="clothingMonthLabel"></div>
+        <button id="clothingNextMonth">›</button>
+      </div>
+      <div id="clothingHistory"></div>
     </div>
-    <div class="cal-header" id="clothingMonthNav">
-      <button id="clothingPrevMonth">‹</button>
-      <div class="month" id="clothingMonthLabel"></div>
-      <button id="clothingNextMonth">›</button>
-    </div>
-    <div id="clothingHistory"></div>
   </div>
 </div>
 </div>
@@ -1010,23 +1067,36 @@
     </div>
   </div>
 
-  <!-- 正在读 -->
-  <div class="card no-collapse">
-    <h2>📖 正在读 <span class="cnt" id="readingCnt">(0)</span></h2>
-    <div id="readingList"></div>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="reading">📖 正在读</button>
+    <button class="tab-bar-btn" data-tab="plan">🌟 想读</button>
+    <button class="tab-bar-btn" data-tab="finished">✅ 已读完</button>
   </div>
 
-  <!-- 想读 -->
-  <div class="card">
-    <h2>🌟 想读 <span class="cnt" id="planCnt">(0)</span></h2>
-    <div id="planList"></div>
+  <!-- Tab: 正在读 -->
+  <div class="tab-panel active" id="readTab-reading">
+    <div class="card no-collapse">
+      <h2>📖 正在读 <span class="cnt" id="readingCnt">(0)</span></h2>
+      <div id="readingList"></div>
+    </div>
   </div>
 
-  <!-- 已读完 -->
-  <div class="card">
-    <h2>✅ 已读完 <span class="cnt" id="finishedCnt">(0)</span></h2>
-    <div class="month-nav" id="finishedMonthNav"></div>
-    <div id="finishedList"></div>
+  <!-- Tab: 想读 -->
+  <div class="tab-panel" id="readTab-plan">
+    <div class="card no-collapse">
+      <h2>🌟 想读 <span class="cnt" id="planCnt">(0)</span></h2>
+      <div id="planList"></div>
+    </div>
+  </div>
+
+  <!-- Tab: 已读完 -->
+  <div class="tab-panel" id="readTab-finished">
+    <div class="card no-collapse">
+      <h2>✅ 已读完 <span class="cnt" id="finishedCnt">(0)</span></h2>
+      <div class="month-nav" id="finishedMonthNav"></div>
+      <div id="finishedList"></div>
+    </div>
   </div>
 </div>
 </div>
@@ -1039,38 +1109,51 @@
     <div><h1>日记 📓</h1><p id="diaryTodayText"></p></div>
   </header>
 
-  <!-- 文字记录 -->
-  <div class="card no-collapse">
-    <h2>📝 记录 <span id="diaryEditTag" style="font-size:13px;color:var(--muted);font-weight:normal"></span></h2>
-    <textarea id="diaryText" placeholder="今天发生了什么？心情如何？想到什么写什么～" rows="6" style="font-size:16px;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:10px;resize:vertical;font-family:inherit;line-height:1.6;background:var(--card);color:var(--text);outline:none"></textarea>
-    <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
-      <button class="add-btn" id="diaryTextCancel" style="display:none">取消</button>
-      <button class="add-btn" id="diaryTextSave">➕ 添加</button>
+  <!-- Tab 栏 -->
+  <div class="tab-bar" id="diaryTabBar">
+    <button class="tab-bar-btn active" data-tab="write">📝 记录</button>
+    <button class="tab-bar-btn" data-tab="view">📅 查看日记</button>
+    <button class="tab-bar-btn" data-tab="search">🔍 搜索</button>
+  </div>
+
+  <!-- Tab: 记录 -->
+  <div class="tab-panel active" id="diaryTab-write">
+    <div class="card no-collapse">
+      <h2>📝 记录 <span id="diaryEditTag" style="font-size:13px;color:var(--muted);font-weight:normal"></span></h2>
+      <textarea id="diaryText" placeholder="今天发生了什么？心情如何？想到什么写什么～" rows="6" style="font-size:16px;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:10px;resize:vertical;font-family:inherit;line-height:1.6;background:var(--card);color:var(--text);outline:none"></textarea>
+      <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
+        <button class="add-btn" id="diaryTextCancel" style="display:none">取消</button>
+        <button class="add-btn" id="diaryTextSave">➕ 添加</button>
+      </div>
     </div>
   </div>
 
-  <!-- 日期切换 + 当天记录列表 -->
-  <div class="card">
-    <h2>📅 查看日记</h2>
-    <div class="cal-header">
-      <button id="diaryPrevDay">‹</button>
-      <div class="month" id="diaryDateLabel"></div>
-      <button id="diaryNextDay">›</button>
+  <!-- Tab: 查看日记 -->
+  <div class="tab-panel" id="diaryTab-view">
+    <div class="card no-collapse">
+      <h2>📅 查看日记</h2>
+      <div class="cal-header">
+        <button id="diaryPrevDay">‹</button>
+        <div class="month" id="diaryDateLabel"></div>
+        <button id="diaryNextDay">›</button>
+      </div>
+      <div style="text-align:center;margin:4px 0 8px">
+        <input type="date" id="diaryDatePick" class="checkin-date" title="点击跳转到任意一天">
+        <button class="add-btn" id="diaryBackToday" style="margin-left:8px">回到今天</button>
+      </div>
+      <div id="diaryNotesList" style="margin-top:10px"></div>
     </div>
-    <div style="text-align:center;margin:4px 0 8px">
-      <input type="date" id="diaryDatePick" class="checkin-date" title="点击跳转到任意一天">
-      <button class="add-btn" id="diaryBackToday" style="margin-left:8px">回到今天</button>
-    </div>
-    <div id="diaryNotesList" style="margin-top:10px"></div>
   </div>
 
-  <!-- 底部搜索 -->
-  <div class="card no-collapse">
-    <h2>🔍 搜索日记</h2>
-    <div class="search-row">
-      <input id="diarySearch" placeholder="搜索日记文字关键词（不区分大小写）" style="font-size:16px">
+  <!-- Tab: 搜索 -->
+  <div class="tab-panel" id="diaryTab-search">
+    <div class="card no-collapse">
+      <h2>🔍 搜索日记</h2>
+      <div class="search-row">
+        <input id="diarySearch" placeholder="搜索日记文字关键词（不区分大小写）" style="font-size:16px">
+      </div>
+      <div id="diarySearchList" style="margin-top:10px"></div>
     </div>
-    <div id="diarySearchList" style="margin-top:10px"></div>
   </div>
 </div>
 </div>
@@ -1083,37 +1166,50 @@
     <div><h1>待办事项 ✅</h1><p id="todoTodayText"></p></div>
   </header>
 
-  <!-- 日常任务 -->
-  <div class="card no-collapse">
-    <h2>🏠 日常任务 <span class="cnt" id="dailyTodoCnt">(0/0)</span></h2>
-    <div class="diary-todo-add">
-      <input id="dailyTodoAdd" placeholder="新增日常任务" style="font-size:16px">
-      <button class="add-btn" id="dailyTodoAddBtn">+ 添加</button>
-    </div>
-    <div id="dailyTodoList"></div>
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="daily">🏠 日常</button>
+    <button class="tab-bar-btn" data-tab="study">📚 学习</button>
+    <button class="tab-bar-btn" data-tab="date">📅 按日期</button>
   </div>
 
-  <!-- 学习任务 -->
-  <div class="card no-collapse">
-    <h2>📚 学习任务 <span class="cnt" id="studyTodoCnt">(0/0)</span></h2>
-    <div class="diary-todo-add">
-      <input id="studyTodoAdd" placeholder="新增学习任务" style="font-size:16px">
-      <button class="add-btn" id="studyTodoAddBtn">+ 添加</button>
+  <!-- Tab: 日常任务 -->
+  <div class="tab-panel active" id="todoTab-daily">
+    <div class="card no-collapse">
+      <h2>🏠 日常任务 <span class="cnt" id="dailyTodoCnt">(0/0)</span></h2>
+      <div class="diary-todo-add">
+        <input id="dailyTodoAdd" placeholder="新增日常任务" style="font-size:16px">
+        <button class="add-btn" id="dailyTodoAddBtn">+ 添加</button>
+      </div>
+      <div id="dailyTodoList"></div>
     </div>
-    <div id="studyTodoList"></div>
   </div>
 
-  <!-- 日期切换（底部：按日期查看当天任务） -->
-  <div class="card">
-    <h2>📅 按日期查看</h2>
-    <div class="cal-header">
-      <button id="todoPrevDay">‹</button>
-      <div class="month" id="todoDateLabel"></div>
-      <button id="todoNextDay">›</button>
+  <!-- Tab: 学习任务 -->
+  <div class="tab-panel" id="todoTab-study">
+    <div class="card no-collapse">
+      <h2>📚 学习任务 <span class="cnt" id="studyTodoCnt">(0/0)</span></h2>
+      <div class="diary-todo-add">
+        <input id="studyTodoAdd" placeholder="新增学习任务" style="font-size:16px">
+        <button class="add-btn" id="studyTodoAddBtn">+ 添加</button>
+      </div>
+      <div id="studyTodoList"></div>
     </div>
-    <div style="text-align:center;margin:4px 0 0">
-      <input type="date" id="todoDatePick" class="checkin-date" title="点击跳转到任意一天">
-      <button class="add-btn" id="todoBackToday" style="margin-left:8px">回到今天</button>
+  </div>
+
+  <!-- Tab: 按日期查看 -->
+  <div class="tab-panel" id="todoTab-date">
+    <div class="card no-collapse">
+      <h2>📅 按日期查看</h2>
+      <div class="cal-header">
+        <button id="todoPrevDay">‹</button>
+        <div class="month" id="todoDateLabel"></div>
+        <button id="todoNextDay">›</button>
+      </div>
+      <div style="text-align:center;margin:4px 0 0">
+        <input type="date" id="todoDatePick" class="checkin-date" title="点击跳转到任意一天">
+        <button class="add-btn" id="todoBackToday" style="margin-left:8px">回到今天</button>
+      </div>
     </div>
   </div>
 </div>
@@ -3409,14 +3505,25 @@ function renderDiarySearch() {
       diaryViewDate = el.dataset.date;
       diaryEditId = el.dataset.id;
       document.getElementById('diarySearch').value = '';
+      // 切换到记录 tab，加载编辑内容
+      document.querySelector('#diaryTabBar .tab-bar-btn[data-tab="write"]').click();
       renderDiaryAll();
-      document.getElementById('diaryText').scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
 }
 
 /* --- 日记事件绑定 --- */
 function bindDiaryEvents() {
+  // Tab 切换
+  document.querySelectorAll('#diaryTabBar .tab-bar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('#diaryTabBar .tab-bar-btn').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === 'diaryTab-' + tab));
+      if (tab === 'view') renderDiaryAll();
+      if (tab === 'search') document.getElementById('diarySearch').focus();
+    });
+  });
   // 添加 / 修改
   document.getElementById('diaryTextSave').addEventListener('click', () => {
     const text = document.getElementById('diaryText').value.trim();
@@ -3590,6 +3697,29 @@ function bindTodoEvents() {
   });
 }
 bindTodoEvents();
+
+/* --- 通用 Tab 切换（非日记页） --- */
+function setupTabBar(tabBarSel, panelPrefix) {
+  const tabBar = document.querySelector(tabBarSel);
+  if (!tabBar) return;
+  tabBar.querySelectorAll('.tab-bar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      tabBar.querySelectorAll('.tab-bar-btn').forEach(b => b.classList.toggle('active', b === btn));
+      // 只切换该页面的 tab panels
+      const page = tabBar.closest('.page');
+      if (page) {
+        page.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active', p.id === panelPrefix + tab));
+      }
+    });
+  });
+}
+setupTabBar('#page-ielts .tab-bar', 'ieltsTab-');
+setupTabBar('#page-fitness .tab-bar', 'fitTab-');
+setupTabBar('#page-diet .tab-bar', 'dietTab-');
+setupTabBar('#page-clothing .tab-bar', 'clothingTab-');
+setupTabBar('#page-reading .tab-bar', 'readTab-');
+setupTabBar('#page-todo .tab-bar', 'todoTab-');
 
 /* --- 待办初始化 --- */
 const todoTodayEl = document.getElementById('todoTodayText');
