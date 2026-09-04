@@ -23,18 +23,22 @@
     --line: #bdbdbd;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { height: 100%; overflow: hidden; }
   body {
     font-family: "Comic Sans MS", "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100dvh;
+    height: 100dvh;
+    overflow: hidden;
     padding-top: env(safe-area-inset-top);
   }
+  .page { height: 100dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .page:not(.active) { display: none !important; }
   .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
 
   /* 侧边栏与页面布局 */
   .sidebar {
-    position: fixed; top: 0; left: 0; right: 0; width: 100%; height: auto;
+    position: fixed; top: var(--vv-top, 0px); left: 0; right: 0; width: 100%; height: auto;
     padding: 10px 16px; box-sizing: border-box; z-index: 50;
     background: #ffffff; border-bottom: 2px solid #1f1f1f;
     display: flex; align-items: center; justify-content: space-between;
@@ -4128,23 +4132,25 @@ document.querySelectorAll('.container').forEach(c => {
   c.appendChild(f);
 });
 
-/* ---------- 键盘弹出时防止页面滚动 ---------- */
+/* ---------- 键盘弹出时防止页面跳动 ---------- */
 (function() {
   if (!window.visualViewport) return;
-  let scrollTop = 0;
-  const inputs = 'input, textarea, select, [contenteditable]';
+  // visualViewport 变化时，保持固定元素不跑位
+  function onResize() {
+    var vv = window.visualViewport;
+    document.documentElement.style.setProperty('--vv-h', vv.height + 'px');
+    document.documentElement.style.setProperty('--vv-top', vv.offsetTop + 'px');
+  }
+  window.visualViewport.addEventListener('resize', onResize);
+  window.visualViewport.addEventListener('scroll', onResize);
+  onResize();
+  // 输入框聚焦时，让它滚入可视区域
   document.addEventListener('focusin', function(e) {
-    if (!e.target.matches(inputs)) return;
-    scrollTop = window.scrollY;
-  });
-  document.addEventListener('focusout', function(e) {
-    if (!e.target.matches(inputs)) return;
-    // 延迟恢复，等键盘收起
-    setTimeout(function() { window.scrollTo(0, scrollTop); }, 100);
-  });
-  // visualViewport 变化时保持视口不动
-  window.visualViewport.addEventListener('resize', function() {
-    document.documentElement.style.setProperty('--keyboard-h', (window.innerHeight - window.visualViewport.height) + 'px');
+    if (e.target.matches('input, textarea, select, [contenteditable]')) {
+      setTimeout(function() {
+        e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }, 300);
+    }
   });
 })();
 </script>
