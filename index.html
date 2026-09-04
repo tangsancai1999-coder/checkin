@@ -1076,6 +1076,58 @@
 
 </main>
 
+<!-- 衣服编辑弹窗 -->
+<div class="modal-mask" id="clothingEditMask">
+  <div class="modal fullscreen">
+    <h3>✏️ 修改购买记录</h3>
+    <div class="modal-body">
+      <div class="clothing-form" style="margin-top:0">
+        <input id="editClothingName" placeholder="衣服名称">
+        <input type="date" id="editClothingDate" class="checkin-date">
+        <input type="number" min="0" id="editClothingPrice" placeholder="价格（元）">
+        <input id="editClothingNote" class="row2" placeholder="备注（选填）">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="add-btn" id="editClothingSave" style="flex:1">💾 保存修改</button>
+      <button class="add-btn" id="editClothingDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+    </div>
+    <button class="modal-close" id="editClothingClose">×</button>
+  </div>
+</div>
+
+<!-- 饮食编辑弹窗 -->
+<div class="modal-mask" id="dietEditMask">
+  <div class="modal fullscreen">
+    <h3>✏️ 修改饮食记录</h3>
+    <div class="modal-body">
+      <div class="clothing-form" style="margin-top:0">
+        <input id="editDietFood" placeholder="食物名称">
+        <input type="date" id="editDietDate" class="checkin-date">
+        <select id="editDietMeal" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)">
+          <option value="">餐次（选填）</option>
+          <option value="早餐">早餐</option>
+          <option value="午餐">午餐</option>
+          <option value="晚餐">晚餐</option>
+          <option value="加餐">加餐</option>
+          <option value="其他">其他</option>
+        </select>
+        <select id="editDietSugar" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)">
+          <option value="green">🟢 升糖慢</option>
+          <option value="yellow">🟡 一般</option>
+          <option value="red">🔴 升糖快</option>
+        </select>
+        <input id="editDietNote" class="row2" placeholder="备注（选填）">
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="add-btn" id="editDietSave" style="flex:1">💾 保存修改</button>
+      <button class="add-btn" id="editDietDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+    </div>
+    <button class="modal-close" id="editDietClose">×</button>
+  </div>
+</div>
+
 <!-- 多选选择器（底部弹层） -->
 <div class="picker-mask" id="pickerMask">
   <div class="picker-panel">
@@ -1400,21 +1452,8 @@ function renderPicker() {
   });
   if (single) { pickerCustomWrap.style.display = 'none'; return; }
   if (pickerCtx.enableCustom) {
-    const row = document.createElement('label');
-    row.className = 'picker-item';
-    const cb = document.createElement('input');
-    cb.type = 'checkbox';
-    cb.checked = pickerCtx.useCustom;
-    cb.addEventListener('change', () => {
-      pickerCtx.useCustom = cb.checked;
-      pickerCustomWrap.style.display = cb.checked ? '' : 'none';
-    });
-    const span = document.createElement('span');
-    span.textContent = '自定义动作…';
-    row.appendChild(cb);
-    row.appendChild(span);
-    pickerList.appendChild(row);
-    pickerCustomWrap.style.display = pickerCtx.useCustom ? '' : 'none';
+    pickerCtx.useCustom = true;
+    pickerCustomWrap.style.display = 'block';
     pickerCustomInput.value = pickerCtx.customText;
   } else {
     pickerCustomWrap.style.display = 'none';
@@ -2002,6 +2041,19 @@ const STRENGTH_PLANS = {
   '臀腿训练': ['深蹲', '硬拉', '罗马尼亚硬拉', '臀桥', '箭步蹲', '保加利亚分腿蹲', '腿举', '哈克深蹲', '史密斯深蹲', '坐姿腿弯举', '腿屈伸', '髋外展', '山羊挺身', '跪姿后踢腿', '臀推']
 };
 
+/* 自定义动作库：持久化到 localStorage */
+const CUSTOM_EX_KEY = 'custom_exercises_v1';
+function loadCustomEx() {
+  try { return JSON.parse(localStorage.getItem(CUSTOM_EX_KEY)) || {}; } catch { return {}; }
+}
+function saveCustomEx() { localStorage.setItem(CUSTOM_EX_KEY, JSON.stringify(customExercises)); }
+let customExercises = loadCustomEx();
+function getExerciseList(plan) {
+  const builtIn = STRENGTH_PLANS[plan] || [];
+  const custom = customExercises[plan] || [];
+  return [...builtIn, ...custom];
+}
+
 function loadFit() {
   try {
     const d = JSON.parse(localStorage.getItem(FIT_KEY));
@@ -2048,8 +2100,8 @@ function fitRefreshName() {
   fitExItems = [];
   fitExTrigger.style.display = 'none';
   if (cat === 'strength') {
-    const exs = STRENGTH_PLANS[fitNameSel.value];
-    if (exs) {
+    const exs = getExerciseList(fitNameSel.value);
+    if (exs.length) {
       fitExItems = exs;
       fitExTrigger.style.display = '';
     }
@@ -2069,12 +2121,27 @@ function updateFitExTrigger() {
 
 fitExTrigger.addEventListener('click', () => {
   if (!fitExItems.length) return;
+  const currentPlan = fitNameSel.value;
   openPicker({
     title: '选择动作（可多选）',
     items: fitExItems,
     selected: fitExState,
     enableCustom: true,
-    onOk: arr => { fitExState = arr; updateFitExTrigger(); }
+    onOk: arr => {
+      fitExState = arr;
+      // 把不在内置列表里的自定义动作持久化到动作库
+      const builtIn = STRENGTH_PLANS[currentPlan] || [];
+      if (!customExercises[currentPlan]) customExercises[currentPlan] = [];
+      arr.forEach(a => {
+        if (!builtIn.includes(a) && !customExercises[currentPlan].includes(a)) {
+          customExercises[currentPlan].push(a);
+        }
+      });
+      if (customExercises[currentPlan].length) saveCustomEx();
+      // 刷新动作列表（加入新增的自定义动作）
+      fitExItems = getExerciseList(currentPlan);
+      updateFitExTrigger();
+    }
   });
 });
 
@@ -2361,30 +2428,91 @@ function deleteDietItem(date, idx) {
   renderDietAll();
 }
 
+/* 饮食编辑弹窗 */
+let dietEditDate = null;
+let dietEditId = null;
+function findDietItem(date, id) {
+  const list = dietStore.records[date] || [];
+  return list.find(it => it.id === id);
+}
+function openDietEdit(date, id) {
+  const it = findDietItem(date, id);
+  if (!it) return;
+  dietEditDate = date;
+  dietEditId = id;
+  document.getElementById('editDietFood').value = it.food || '';
+  document.getElementById('editDietDate').value = date;
+  document.getElementById('editDietMeal').value = it.meal || '';
+  document.getElementById('editDietSugar').value = it.sugar || 'yellow';
+  document.getElementById('editDietNote').value = it.note || '';
+  document.getElementById('dietEditMask').classList.add('show');
+}
+function closeDietEdit() {
+  dietEditDate = null;
+  dietEditId = null;
+  document.getElementById('dietEditMask').classList.remove('show');
+}
+document.getElementById('editDietClose').addEventListener('click', closeDietEdit);
+document.getElementById('dietEditMask').addEventListener('click', e => {
+  if (e.target === document.getElementById('dietEditMask')) closeDietEdit();
+});
+document.getElementById('editDietSave').addEventListener('click', () => {
+  if (!dietEditDate || !dietEditId) return;
+  const it = findDietItem(dietEditDate, dietEditId);
+  if (!it) { closeDietEdit(); return; }
+  const food = document.getElementById('editDietFood').value.trim();
+  if (!food) { showToast('请填写食物名称'); return; }
+  const newDate = document.getElementById('editDietDate').value || dietEditDate;
+  it.food = food;
+  it.meal = document.getElementById('editDietMeal').value;
+  it.sugar = document.getElementById('editDietSugar').value;
+  it.note = document.getElementById('editDietNote').value.trim();
+  it._ts = Date.now();
+  // 如果日期改了，把记录移到新日期
+  if (newDate !== dietEditDate) {
+    dietStore.records[dietEditDate] = dietStore.records[dietEditDate].filter(n => n.id !== dietEditId);
+    if (!dietStore.records[dietEditDate].length) delete dietStore.records[dietEditDate];
+    if (!dietStore.records[newDate]) dietStore.records[newDate] = [];
+    dietStore.records[newDate].push(it);
+  }
+  saveDiet();
+  closeDietEdit();
+  renderDietAll();
+  showToast('已修改 ✏️');
+});
+document.getElementById('editDietDelete').addEventListener('click', () => {
+  if (!dietEditDate || !dietEditId) return;
+  const list = dietStore.records[dietEditDate] || [];
+  const idx = list.findIndex(it => it.id === dietEditId);
+  if (idx >= 0) deleteDietItem(dietEditDate, idx);
+  closeDietEdit();
+  showToast('已删除 🗑');
+});
+
 function renderDietToday() {
   const key = todayKey();
   const list = dietStore.records[key] || [];
   const box = document.getElementById('dietTodayList');
   if (!box) return;
   box.innerHTML = list.length ? list.map((it, i) => `
-    <div class="item" style="flex-wrap:wrap">
+    <div class="item diet-item-click" data-date="${key}" data-id="${it.id}" style="flex-wrap:wrap;cursor:pointer">
       <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
       ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
       <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
-      <button class="del" data-idx="${i}" title="删除">×</button>
+      <span style="color:var(--muted);font-size:14px">✏️</span>
     </div>`).join('') : '<div class="empty-tip">今天还没记录饮食，来记一笔吧～</div>';
-  box.querySelectorAll('.del').forEach(btn =>
-    btn.addEventListener('click', () => deleteDietItem(todayKey(), Number(btn.dataset.idx))));
+  box.querySelectorAll('.diet-item-click').forEach(el =>
+    el.addEventListener('click', () => openDietEdit(el.dataset.date, el.dataset.id)));
 }
 
 let dietDateFilter = 'day';
 
 function dietItemHtml(date, it, idx) {
-  return `<div class="item" style="flex-wrap:wrap">
+  return `<div class="item diet-item-click" data-date="${date}" data-id="${it.id}" style="flex-wrap:wrap;cursor:pointer">
     <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
     ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
     <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
-    <button class="del" data-date="${date}" data-idx="${idx}" title="删除">×</button>
+    <span style="color:var(--muted);font-size:14px">✏️</span>
   </div>`;
 }
 
@@ -2395,8 +2523,8 @@ function renderDietDateView() {
   // 当天：内联显示
   let list = (dietStore.records[sel] || []).slice();
   box.innerHTML = list.length ? list.map((it, i) => dietItemHtml(sel, it, i)).join('') : '<div class="empty-tip">这天没有饮食记录</div>';
-  box.querySelectorAll('.del').forEach(btn =>
-    btn.addEventListener('click', () => deleteDietItem(sel, Number(btn.dataset.idx))));
+  box.querySelectorAll('.diet-item-click').forEach(el =>
+    el.addEventListener('click', () => openDietEdit(el.dataset.date, el.dataset.id)));
 }
 
 function openDietMonthModal(filter) {
@@ -2421,8 +2549,8 @@ function openDietMonthModal(filter) {
       html += dietItemHtml(e.date, e.it, e.idx);
     });
     listBox.innerHTML = html;
-    listBox.querySelectorAll('.del').forEach(btn =>
-      btn.addEventListener('click', () => { deleteDietItem(btn.dataset.date, Number(btn.dataset.idx)); openDietMonthModal(filter); }));
+    listBox.querySelectorAll('.diet-item-click').forEach(el =>
+      el.addEventListener('click', () => { openDietEdit(el.dataset.date, el.dataset.id); }));
   }
   document.getElementById('dietMonthMask').classList.add('show');
 }
@@ -2452,7 +2580,7 @@ renderDietAll();
 
 /* ================= 衣服购物记录页 ================= */
 const CLOTHING_KEY = 'clothing_v1';
-const CLOTHING_TYPES = ['上衣', '裤子', '裙子', '外套', '鞋', '配饰', '其他'];
+const CLOTHING_TYPES = ['上衣', '裤子', '裙子', '外套', '鞋', '配饰', '连体衣', '其他'];
 const DEFAULT_BRANDS = ['其他']; // 不预设品牌，全部来自用户自定义保存
 
 function loadClothing() {
@@ -2539,6 +2667,49 @@ function deleteClothingItem(id) {
   if (idx >= 0) { clothingStore.items.splice(idx, 1); saveClothing(); renderClothingAll(); }
 }
 
+/* 衣服编辑弹窗 */
+let clothingEditId = null;
+function openClothingEdit(id) {
+  const it = clothingStore.items.find(i => i.id === id);
+  if (!it) return;
+  clothingEditId = id;
+  document.getElementById('editClothingName').value = it.name || '';
+  document.getElementById('editClothingDate').value = it.date || todayKey();
+  document.getElementById('editClothingPrice').value = it.price || '';
+  document.getElementById('editClothingNote').value = it.note || '';
+  document.getElementById('clothingEditMask').classList.add('show');
+}
+function closeClothingEdit() {
+  clothingEditId = null;
+  document.getElementById('clothingEditMask').classList.remove('show');
+}
+document.getElementById('editClothingClose').addEventListener('click', closeClothingEdit);
+document.getElementById('clothingEditMask').addEventListener('click', e => {
+  if (e.target === document.getElementById('clothingEditMask')) closeClothingEdit();
+});
+document.getElementById('editClothingSave').addEventListener('click', () => {
+  if (!clothingEditId) return;
+  const it = clothingStore.items.find(i => i.id === clothingEditId);
+  if (!it) return;
+  const name = document.getElementById('editClothingName').value.trim();
+  if (!name) { showToast('请填写衣服名称'); return; }
+  it.name = name;
+  it.date = document.getElementById('editClothingDate').value || todayKey();
+  it.price = Math.max(0, Number(document.getElementById('editClothingPrice').value) || 0);
+  it.note = document.getElementById('editClothingNote').value.trim();
+  it._ts = Date.now();
+  saveClothing();
+  closeClothingEdit();
+  renderClothingAll();
+  showToast('已修改 ✏️');
+});
+document.getElementById('editClothingDelete').addEventListener('click', () => {
+  if (!clothingEditId) return;
+  deleteClothingItem(clothingEditId);
+  closeClothingEdit();
+  showToast('已删除 🗑');
+});
+
 function renderClothingTotals() {
   const now = new Date();
   const ym = dateKey(now).slice(0, 7);
@@ -2570,15 +2741,15 @@ function getFilterBrandItems() {
 }
 
 function clothingItemHtml(it, showDate) {
-  return `<div class="clothing-item">
+  return `<div class="clothing-item" data-id="${it.id}" style="cursor:pointer">
     <span class="title">${it.name}<span class="meta">${showDate && it.date ? ' · ' + it.date.slice(5) : ''}${it.brand ? ' · ' + it.brand : ''} · ${it.type}${it.size ? ' · ' + it.size : ''}${it.note ? ' · ' + it.note : ''}</span></span>
     <span class="price">¥${it.price || 0}</span>
-    <button class="del" data-id="${it.id}" title="删除">×</button>
+    <span style="color:var(--muted);font-size:14px">✏️</span>
   </div>`;
 }
 function bindClothingDel(box) {
-  box.querySelectorAll('.del').forEach(btn =>
-    btn.addEventListener('click', () => deleteClothingItem(btn.dataset.id)));
+  box.querySelectorAll('.clothing-item').forEach(el =>
+    el.addEventListener('click', () => openClothingEdit(el.dataset.id)));
 }
 
 function renderClothingHistory() {
