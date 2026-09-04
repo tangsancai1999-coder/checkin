@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
 <title>Slow Learner · 雅思 & 健身</title>
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -27,7 +27,7 @@
     font-family: "Comic Sans MS", "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
     background: var(--bg);
     color: var(--text);
-    min-height: 100vh;
+    min-height: 100dvh;
     padding-top: env(safe-area-inset-top);
   }
   .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
@@ -1193,7 +1193,7 @@
 
 <!-- 衣服编辑弹窗 -->
 <div class="modal-mask" id="clothingEditMask">
-  <div class="modal" style="max-width:420px;width:90%;top:50%;transform:translateY(-50%)">
+  <div class="modal">
     <h3>✏️ 修改购买记录</h3>
     <div class="modal-body">
       <div class="clothing-form" style="margin-top:0">
@@ -4127,6 +4127,26 @@ document.querySelectorAll('.container').forEach(c => {
   f.textContent = '🐾 今天也要加油喵～';
   c.appendChild(f);
 });
+
+/* ---------- 键盘弹出时防止页面滚动 ---------- */
+(function() {
+  if (!window.visualViewport) return;
+  let scrollTop = 0;
+  const inputs = 'input, textarea, select, [contenteditable]';
+  document.addEventListener('focusin', function(e) {
+    if (!e.target.matches(inputs)) return;
+    scrollTop = window.scrollY;
+  });
+  document.addEventListener('focusout', function(e) {
+    if (!e.target.matches(inputs)) return;
+    // 延迟恢复，等键盘收起
+    setTimeout(function() { window.scrollTo(0, scrollTop); }, 100);
+  });
+  // visualViewport 变化时保持视口不动
+  window.visualViewport.addEventListener('resize', function() {
+    document.documentElement.style.setProperty('--keyboard-h', (window.innerHeight - window.visualViewport.height) + 'px');
+  });
+})();
 </script>
 </body>
 </html>
