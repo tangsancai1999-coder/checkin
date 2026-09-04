@@ -2422,8 +2422,14 @@ document.getElementById('dietAddBtn').addEventListener('click', () => {
 });
 
 function deleteDietItem(date, idx) {
+  const item = dietStore.records[date][idx];
   dietStore.records[date].splice(idx, 1);
   if (!dietStore.records[date].length) delete dietStore.records[date];
+  // 记录墓碑
+  if (item && item.id) {
+    dietStore.tomb = dietStore.tomb || {};
+    dietStore.tomb[item.id] = Date.now();
+  }
   saveDiet();
   renderDietAll();
 }
@@ -2622,6 +2628,8 @@ const clothingBrandTrigger = makeSingleTrigger(document.getElementById('clothing
 // 从品牌选项中删除（写错的品牌可以叉掉）
 function removeBrandOption(name) {
   clothingStore.brands = (clothingStore.brands || []).filter(b => b !== name);
+  clothingStore.brandTomb = clothingStore.brandTomb || {};
+  clothingStore.brandTomb[name] = Date.now();
   saveClothing();
   if (clothingBrandFilter === name) clothingBrandFilter = '';
   clothingBrandCustom.style.display = 'none';
@@ -2664,7 +2672,13 @@ document.getElementById('clothingAddBtn').addEventListener('click', () => {
 
 function deleteClothingItem(id) {
   const idx = clothingStore.items.findIndex(it => it.id === id);
-  if (idx >= 0) { clothingStore.items.splice(idx, 1); saveClothing(); renderClothingAll(); }
+  if (idx >= 0) {
+    clothingStore.items.splice(idx, 1);
+    // 记录墓碑，防止云同步合并时把已删除的记录恢复
+    clothingStore.tomb = clothingStore.tomb || {};
+    clothingStore.tomb[id] = Date.now();
+    saveClothing(); renderClothingAll();
+  }
 }
 
 /* 衣服编辑弹窗 */
@@ -3648,14 +3662,17 @@ function mergeDiet(local, remote) {
   const out = JSON.parse(JSON.stringify(local || {}));
   if (!remote) return out;
   const a = out.records || {}, b = remote.records || {};
+  // 合并墓碑
+  const tomb = { ...(out.tomb || {}), ...(remote.tomb || {}) };
   Object.keys(b).forEach(k => {
-    const la = (a[k] || []).map(x => ensureId(k, x));
-    const lb = (b[k] || []).map(x => ensureId(k, x));
+    const la = (a[k] || []).map(x => ensureId(k, x)).filter(x => !tomb[x.id]);
+    const lb = (b[k] || []).map(x => ensureId(k, x)).filter(x => !tomb[x.id]);
     const ids = new Set(la.map(x => x.id));
     a[k] = la.concat(lb.filter(x => !ids.has(x.id)));
   });
   Object.keys(a).forEach(k => { if (!a[k] || !a[k].length) delete a[k]; });
   out.records = a;
+  out.tomb = tomb;
   out._ts = Math.max(out._ts || 0, remote._ts || 0);
   return out;
 }
@@ -3665,11 +3682,21 @@ function mergeClothing(local, remote) {
   if (!remote) return out;
   const a = (out.items || []).map(x => ensureId('clothing', x));
   const b = (remote.items || []).map(x => ensureId('clothing', x));
-  const ids = new Set(a.map(x => x.id));
-  out.items = a.concat(b.filter(x => !ids.has(x.id)));
-  const mergedBrands = [...(out.brands || [])];
-  (remote.brands || []).forEach(br => { if (!mergedBrands.includes(br)) mergedBrands.push(br); });
+  // 合并墓碑（本地 + 远端已删除的 id）
+  const tomb = { ...(out.tomb || {}), ...(remote.tomb || {}) };
+  // 过滤掉墓碑中的记录
+  const filteredA = a.filter(x => !tomb[x.id]);
+  const ids = new Set(filteredA.map(x => x.id));
+  out.items = filteredA.concat(b.filter(x => !ids.has(x.id) && !tomb[x.id]));
+  // 合并品牌墓碑
+  const brandTomb = { ...(out.brandTomb || {}), ...(remote.brandTomb || {}) };
+  const mergedBrands = [...(out.brands || []).filter(br => !brandTomb[br])];
+  (remote.brands || []).forEach(br => {
+    if (!brandTomb[br] && !mergedBrands.includes(br)) mergedBrands.push(br);
+  });
   out.brands = mergedBrands;
+  out.tomb = tomb;
+  out.brandTomb = brandTomb;
   out._ts = Math.max(out._ts || 0, remote._ts || 0);
   return out;
 }
@@ -3741,6 +3768,14 @@ function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo) {
   if (clothing) {
     clothingStore = clothing;
     if (!clothingStore.brands) clothingStore.brands = [];
+    // 去重已存在的重复记录
+    const seen = new Set();
+    clothingStore.items = clothingStore.items.filter(it => {
+      if (!it.id) it.id = newItemId();
+      if (seen.has(it.id)) return false;
+      seen.add(it.id);
+      return true;
+    });
     localStorage.setItem(CLOTHING_KEY, JSON.stringify(clothingStore));
     if (typeof refreshBrandTrigger === 'function') refreshBrandTrigger(true);
   }
