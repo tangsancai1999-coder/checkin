@@ -60,7 +60,6 @@
     --ease: cubic-bezier(.4, 0, .2, 1);
 
     /* z-index */
-    --z-topbar: 50;
     --z-modal: 100;
     --z-picker: 200;
     --z-toast: 200;
@@ -78,17 +77,6 @@
   .page:not(.active) { display: none !important; }
   .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
 
-  /* 顶部导航栏（原 .sidebar，已统一重命名为 .topbar） */
-  .topbar {
-    position: fixed; top: 0; left: 0; right: 0; width: 100%; height: auto;
-    padding: 10px 16px; box-sizing: border-box; z-index: var(--z-topbar);
-    background: var(--card); border-bottom: 2px solid var(--line);
-    display: flex; align-items: center; justify-content: space-between;
-    box-shadow: 0 1px 0 rgba(0,0,0,.03);
-  }
-  .topbar .logo { color: var(--text); font-size: 19px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
-  .topbar .logo svg { flex-shrink: 0; }
-  .topbar nav { display: flex; align-items: center; gap: 10px; }
   .nav-item {
     display: flex; align-items: center; gap: 10px; padding: 12px 16px;
     border-radius: 12px; color: var(--muted); font-size: 15px; cursor: pointer; transition: all .15s;
@@ -96,12 +84,6 @@
   }
   .nav-item:hover { color: var(--text); background: var(--tint); }
   .nav-item.active { color: var(--card); background: var(--line); }
-  .sync-btn {
-    margin: 0; padding: 8px 14px; box-sizing: border-box;
-    border: 1.5px dashed var(--border); border-radius: 10px; background: var(--card); color: var(--muted);
-    font-size: 13px; cursor: pointer; text-align: left; font-family: inherit; flex-shrink: 0;
-  }
-  .sync-btn:hover { background: var(--tint); color: var(--text); border-color: var(--muted); }
   .sync-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--idle); margin-right: 6px; }
   .sync-dot.ok { background: var(--ok); }
@@ -131,16 +113,10 @@
     border-radius: 999px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 700;
   }
   .stat-tab.active { background: var(--primary); border-color: var(--primary); color: var(--card); }
-  .main { padding-top: 56px; }
+  .main { margin-left: 0; }
   .page { display: none; }
   .page.active { display: block; }
   @media (max-width: 768px) {
-    .topbar { padding: 8px 12px; }
-    .topbar .logo { font-size: 16px; }
-    .topbar .logo svg { width: 26px; height: 26px; }
-    .sync-btn { width: 46px; height: 40px; padding: 0; position: relative; display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1; border-radius: 12px; flex-shrink: 0; }
-    .sync-btn .sync-dot { margin-right: 0; width: 7px; height: 7px; position: absolute; transform: translate(-14px, -9px); }
-    .main { padding-top: 50px; margin-left: 0; }
     .container { padding-top: 16px; }
   }
 
@@ -795,9 +771,14 @@
 
   /* === 首页 Dashboard（Today / Progress / Quick Actions / Other Modules） === */
   .dash-header { margin-bottom: 20px; }
+  .dash-greeting-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
   .dash-header .greeting { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .3px; }
   .dash-header .date-line { font-size: 14px; color: var(--muted); margin-top: 2px; }
   .dash-header .summary { font-size: 13px; color: var(--secondary); margin-top: 6px; }
+  /* 云同步按钮在 greeting 右侧 */
+  .dash-greeting-row .sync-btn { display: inline-flex; align-items: center; justify-content: center; width: 36px; height: 36px; border: 1px solid var(--border); border-radius: 999px; background: var(--card); cursor: pointer; transition: all var(--t-fast); font-size: 16px; color: var(--muted); }
+  .dash-greeting-row .sync-btn:hover { background: var(--tint); }
+  .dash-greeting-row .sync-btn .sync-dot { margin-right: 0; width: 7px; height: 7px; position: absolute; transform: translate(-12px, -8px); }
 
   .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
   .dash-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
@@ -854,25 +835,6 @@
 </style>
 </head>
 <body>
-<aside class="topbar">
-  <div class="logo">
-    <svg width="30" height="30" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-      <path d="M15 24 L11 9 L25 16"/>
-      <path d="M49 24 L53 9 L39 16"/>
-      <circle cx="32" cy="36" r="21"/>
-      <circle cx="24" cy="34" r="2.5" fill="currentColor" stroke="none"/>
-      <circle cx="40" cy="34" r="2.5" fill="currentColor" stroke="none"/>
-      <path d="M29 42 L35 42 L32 46 Z" fill="currentColor" stroke="none"/>
-      <path d="M32 46 Q29 50 26 48"/>
-      <path d="M32 46 Q35 50 38 48"/>
-      <path d="M6 38 L15 39 M7 45 L15 44 M49 39 L58 38 M49 44 L57 45"/>
-    </svg>
-    <span>Slow Learner</span>
-  </div>
-  <nav>
-    <button class="sync-btn" id="syncBtn" style="display:none"></button>
-  </nav>
-</aside>
 <main class="main">
 
 <!-- 主页 -->
@@ -881,7 +843,10 @@
 
   <!-- Today Header -->
   <div class="dash-header">
-    <div class="greeting" id="dashGreeting">Good afternoon</div>
+    <div class="dash-greeting-row">
+      <div class="greeting" id="dashGreeting">Good afternoon</div>
+      <button class="sync-btn" id="syncBtn" style="display:none"></button>
+    </div>
     <div class="date-line" id="dashDateLine"></div>
     <div class="summary" id="dashSummary"></div>
   </div>
@@ -4555,16 +4520,17 @@ function scheduleCloudPush() {
 
 function updateSyncBtn(state) {
   const btn = document.getElementById('syncBtn');
-  const short = window.innerWidth <= 768; // 手机端只显示一朵云 + 状态点，避免顶部拥挤
+  if (!btn) return;
   if (!cloudUser) {
-    btn.innerHTML = short ? '<span class="sync-dot"></span>☁️' : '<span class="sync-dot"></span>☁️ 云同步：未登录';
+    btn.innerHTML = '<span class="sync-dot"></span>☁️';
+    btn.title = '云同步：未登录';
     return;
   }
   const email = cloudUser.email || cloudUser.id.slice(0, 8);
-  if (state === 'ok') btn.innerHTML = short ? '<span class="sync-dot ok"></span>☁️' : `<span class="sync-dot ok"></span>☁️ ${email}`;
-  else if (state === 'syncing') btn.innerHTML = '<span class="sync-dot"></span>☁️';
-  else if (state === 'err') btn.innerHTML = short ? '<span class="sync-dot err"></span>☁️' : `<span class="sync-dot err"></span>☁️ 同步失败`;
-  else btn.innerHTML = short ? '<span class="sync-dot ok"></span>☁️' : `<span class="sync-dot ok"></span>☁️ ${email}`;
+  if (state === 'ok') { btn.innerHTML = '<span class="sync-dot ok"></span>☁️'; btn.title = '已同步 · ' + email; }
+  else if (state === 'syncing') { btn.innerHTML = '<span class="sync-dot"></span>☁️'; btn.title = '同步中...'; }
+  else if (state === 'err') { btn.innerHTML = '<span class="sync-dot err"></span>☁️'; btn.title = '同步失败'; }
+  else { btn.innerHTML = '<span class="sync-dot ok"></span>☁️'; btn.title = '已同步 · ' + email; }
 }
 
 async function initCloud() {
