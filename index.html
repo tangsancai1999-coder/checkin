@@ -838,16 +838,24 @@
   .module-card .name { font-size: 12px; color: var(--secondary); }
 
   @media (max-width: 768px) {
-    .dash-grid { grid-template-columns: 1fr; }
+    .dash-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .dash-header { margin-bottom: 16px; }
     .dash-header .greeting { font-size: 19px; }
-    .modules-grid { grid-template-columns: repeat(3, 1fr); }
+    .modules-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
     .quick-btn { font-size: 13px; min-width: 70px; }
-  }
-  @media (max-width: 480px) {
-    .modules-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
-    .module-card { padding: 10px 4px; }
-    .module-card svg { width: 24px; height: 24px; }
+    .dash-card { padding: 14px; min-width: 0; }
+    .dash-card h3 { font-size: 12px; margin-bottom: 10px; }
+    .today-item-dash { font-size: 13px; gap: 8px; flex-wrap: wrap; }
+    .today-item-dash .label { min-width: 0; word-break: break-word; }
+    .today-item-dash .check { width: 18px; height: 18px; flex-shrink: 0; }
+    .prog-bar { height: 6px; }
+    .prog-head { font-size: 12px; }
+    .prog-head .val { white-space: nowrap; }
+    .module-card { padding: 12px 6px; }
+    .module-card svg { width: 26px; height: 26px; }
     .module-card .name { font-size: 11px; }
+    .dash-modules { margin-bottom: 16px; }
+    .dash-quick { margin-bottom: 16px; }
   }
 </style>
 </head>
@@ -884,6 +892,20 @@
     <div class="summary" id="dashSummary"></div>
   </div>
 
+  <!-- Other Modules（功能入口，置于上方） -->
+  <div class="dash-modules">
+    <h3>Modules</h3>
+    <div class="modules-grid" id="dashModules"></div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="dash-quick" id="dashQuick">
+    <button class="quick-btn" data-page="ielts">+ 雅思</button>
+    <button class="quick-btn" data-page="fitness">+ 健身</button>
+    <button class="quick-btn" data-page="diary">+ 日记</button>
+    <button class="quick-btn" data-page="todo">+ 待办</button>
+  </div>
+
   <!-- Today + Progress 两列 -->
   <div class="dash-grid">
     <!-- Today 卡片 -->
@@ -896,20 +918,6 @@
       <h3>This Week</h3>
       <div id="dashProgress"></div>
     </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="dash-quick" id="dashQuick">
-    <button class="quick-btn" data-page="ielts">+ 雅思</button>
-    <button class="quick-btn" data-page="fitness">+ 健身</button>
-    <button class="quick-btn" data-page="diary">+ 日记</button>
-    <button class="quick-btn" data-page="todo">+ 待办</button>
-  </div>
-
-  <!-- Other Modules -->
-  <div class="dash-modules">
-    <h3>Other Modules</h3>
-    <div class="modules-grid" id="dashModules"></div>
   </div>
 
 </div>
@@ -4152,7 +4160,7 @@ function renderDashboard() {
   const tk = todayKey();
   const items = [];
 
-  // --- 从现有 Todo 数据读取今日待办 ---
+  // --- 从现有 Todo 数据读取今日待办（Todo 是真正的任务，显示完成状态） ---
   const todoEnt = todoStore.entries[tk] || { daily: [], study: [] };
   const allTodos = [...(todoEnt.daily || []), ...(todoEnt.study || [])];
   if (allTodos.length > 0) {
@@ -4160,22 +4168,25 @@ function renderDashboard() {
     items.push({ label: `待办 ${doneN}/${allTodos.length}`, done: doneN === allTodos.length, tag: 'Todo' });
   }
 
-  // --- 从现有 IELTS 数据读取今日打卡 ---
+  // --- 从现有 IELTS 数据读取今日活动（"有记录" ≠ "完成目标"） ---
   const ieltsToday = store.records[tk] || [];
   const wordToday = store.words[tk] || [];
-  if (ieltsToday.length > 0 || wordToday.length > 0) {
+  const wordCntToday = wordToday.reduce((s,w)=>s+w.count,0);
+  if (ieltsToday.length > 0 || wordCntToday > 0) {
+    // 有记录即表示今日有学习活动（✓ 活动状态，非"完成全部目标"）
     let parts = [];
     if (ieltsToday.length) parts.push(`${ieltsToday.length} 篇`);
-    if (wordToday.length) parts.push(`${wordToday.reduce((s,w)=>s+w.count,0)} 词`);
-    items.push({ label: `雅思 ${parts.join(' · ')}`, done: true, tag: 'IELTS' });
+    if (wordCntToday) parts.push(`${wordCntToday} 词`);
+    items.push({ label: `雅思 ${parts.join(' · ')}`, done: true, tag: 'IELTS', activity: true });
   } else {
     items.push({ label: '雅思打卡', done: false, tag: 'IELTS' });
   }
 
-  // --- 从现有 Fitness 数据读取今日打卡 ---
+  // --- 从现有 Fitness 数据读取今日训练（"有记录" ≠ "完成目标"） ---
   const fitToday = fitStore.records[tk] || [];
   if (fitToday.length > 0) {
-    items.push({ label: `健身 ${fitToday.length} 项`, done: true, tag: 'Fitness' });
+    // 有训练记录即今日有健身活动（✓ 活动状态，非"完成全部目标"）
+    items.push({ label: `健身 ${fitToday.length} 项`, done: true, tag: 'Fitness', activity: true });
   } else {
     items.push({ label: '健身打卡', done: false, tag: 'Fitness' });
   }
@@ -4188,8 +4199,16 @@ function renderDashboard() {
     items.push({ label: '日记', done: false, tag: 'Diary' });
   }
 
-  const completed = items.filter(i => i.done).length;
-  document.getElementById('dashSummary').textContent = `Today · ${completed} / ${items.length} completed`;
+  // Summary：Todo 算"完成"，其他算"活动"
+  const todos = items.filter(i => i.tag === 'Todo');
+  const todoDone = todos.filter(i => i.done).length;
+  const acts = items.filter(i => i.tag !== 'Todo');
+  const actDone = acts.filter(i => i.done).length;
+  let summaryParts = [];
+  if (todos.length > 0) summaryParts.push(`待办 ${todoDone}/${todos.length} 完成`);
+  if (acts.length > 0) summaryParts.push(`活动 ${actDone}/${acts.length} 已记录`);
+  const summary = summaryParts.length ? summaryParts.join(' · ') : '今天暂无任务';
+  document.getElementById('dashSummary').textContent = summary;
 
   const todayList = document.getElementById('dashTodayList');
   if (items.length === 0) {
@@ -4255,9 +4274,32 @@ function renderDashboard() {
   document.getElementById('dashModules').innerHTML = mods.map(m =>
     `<div class="module-card" data-page="${m.page}"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${m.svg}</svg><div class="name">${m.name}</div></div>`).join('');
 
-  // 绑定点击事件
-  document.querySelectorAll('#dashModules .module-card, #dashQuick .quick-btn').forEach(el => {
+  // 绑定点击事件：Other Modules 普通跳转
+  document.querySelectorAll('#dashModules .module-card').forEach(el => {
     el.addEventListener('click', () => switchPage(el.dataset.page));
+  });
+  // Quick Actions：尽可能定位到对应页面的「今日记录 / 新增」区域
+  document.querySelectorAll('#dashQuick .quick-btn').forEach(el => {
+    el.addEventListener('click', () => {
+      const page = el.dataset.page;
+      switchPage(page);
+      // 复用现有 tab 切换，定位到今日/记录区域
+      setTimeout(() => {
+        const map = {
+          ielts: '#page-ielts .tab-bar-btn[data-tab="today"]',   // IELTS 今日打卡
+          fitness: '#page-fitness .tab-bar-btn[data-tab="today"]', // Fitness 今日训练
+          diary: '#page-diary .tab-bar-btn[data-tab="write"]',    // 日记记录区
+          todo: '#page-todo .tab-bar-btn[data-tab="daily"]'       // 待办日常区
+        };
+        const btn = document.querySelector(map[page]);
+        if (btn) btn.click();
+        // 定位后聚焦输入框（diary 的输入框存在时聚焦）
+        if (page === 'diary') {
+          const ta = document.getElementById('diaryText');
+          if (ta) setTimeout(() => ta.focus(), 60);
+        }
+      }, 60);
+    });
   });
 }
 renderDashboard();
