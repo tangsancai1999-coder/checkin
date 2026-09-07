@@ -23,22 +23,21 @@
     --line: #bdbdbd;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { height: 100%; overflow: hidden; }
+  html { -webkit-text-size-adjust: 100%; }
   body {
     font-family: "Comic Sans MS", "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
     background: var(--bg);
     color: var(--text);
-    height: 100dvh;
-    overflow: hidden;
+    min-height: 100dvh;
     padding-top: env(safe-area-inset-top);
   }
-  .page { height: 100dvh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  .page { min-height: 100dvh; }
   .page:not(.active) { display: none !important; }
   .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
 
   /* 侧边栏与页面布局 */
   .sidebar {
-    position: fixed; top: var(--vv-top, 0px); left: 0; right: 0; width: 100%; height: auto;
+    position: fixed; top: 0; left: 0; right: 0; width: 100%; height: auto;
     padding: 10px 16px; box-sizing: border-box; z-index: 50;
     background: #ffffff; border-bottom: 2px solid #1f1f1f;
     display: flex; align-items: center; justify-content: space-between;
@@ -476,6 +475,22 @@
     font-family: inherit; box-sizing: border-box;
   }
   .diary-todo-add input:focus { border-color: var(--primary); }
+  .todo-date-btn {
+    flex: none; display: flex; align-items: center; gap: 3px;
+    padding: 6px 8px; border: 1.5px solid var(--border); border-radius: 10px;
+    background: var(--card); cursor: pointer; font-size: 12px; color: var(--text);
+    position: relative; white-space: nowrap; overflow: hidden;
+  }
+  .todo-date-btn:active { background: var(--bg); }
+  /* 待办日历弹窗的小号日历 */
+  .todo-cal-grid .dow { font-size: 11px; padding: 3px 0; }
+  .todo-cal-grid .day { aspect-ratio: auto; height: 40px; font-size: 13px; border-radius: 8px; }
+  .todo-cal-grid .day .dot {
+    width: 6px; height: 6px; border-radius: 50%; background: #e74c3c;
+    position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
+  }
+  .todo-cal-grid .day.sel { background: var(--primary); color: #fff; font-weight: 600; }
+  .todo-cal-grid .day.sel .dot { background: #fff; }
   .todo-item {
     display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
     background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
@@ -1156,6 +1171,11 @@
     <div class="card no-collapse">
       <h2>🏠 日常任务 <span class="cnt" id="dailyTodoCnt">(0/0)</span></h2>
       <div class="diary-todo-add">
+        <button class="todo-date-btn" id="dailyTodoDateBtn" title="选择任务日期">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span class="todo-date-label" id="dailyTodoDateLabel">今天</span>
+        </button>
+        <input type="date" id="dailyTodoAddDate" class="checkin-date" style="display:none">
         <input id="dailyTodoAdd" placeholder="新增日常任务" style="font-size:16px">
         <button class="add-btn" id="dailyTodoAddBtn">+ 添加</button>
       </div>
@@ -1168,6 +1188,11 @@
     <div class="card no-collapse">
       <h2>📚 学习任务 <span class="cnt" id="studyTodoCnt">(0/0)</span></h2>
       <div class="diary-todo-add">
+        <button class="todo-date-btn" id="studyTodoDateBtn" title="选择任务日期">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+          <span class="todo-date-label" id="studyTodoDateLabel">今天</span>
+        </button>
+        <input type="date" id="studyTodoAddDate" class="checkin-date" style="display:none">
         <input id="studyTodoAdd" placeholder="新增学习任务" style="font-size:16px">
         <button class="add-btn" id="studyTodoAddBtn">+ 添加</button>
       </div>
@@ -1184,11 +1209,29 @@
         <div class="month" id="todoDateLabel"></div>
         <button id="todoNextDay">›</button>
       </div>
-      <div style="text-align:center;margin:4px 0 0">
+      <div style="text-align:center;margin:4px 0 8px">
         <input type="date" id="todoDatePick" class="checkin-date" title="点击跳转到任意一天">
         <button class="add-btn" id="todoBackToday" style="margin-left:8px">回到今天</button>
       </div>
+      <h3 style="margin:8px 0 4px;font-size:14px;color:var(--muted)">🏠 日常任务</h3>
+      <div id="todoDateDailyList"></div>
+      <h3 style="margin:12px 0 4px;font-size:14px;color:var(--muted)">📚 学习任务</h3>
+      <div id="todoDateStudyList"></div>
     </div>
+  </div>
+</div>
+
+<!-- 待办日期选择日历弹窗 -->
+<div class="modal-mask" id="todoCalMask">
+  <div class="modal" style="max-width:360px;width:90%;padding:16px">
+    <h3 style="margin:0 0 10px;font-size:15px" id="todoCalTitle">选择任务日期</h3>
+    <div class="cal-header">
+      <button id="todoCalPrev">‹</button>
+      <div class="month" id="todoCalLabel"></div>
+      <button id="todoCalNext">›</button>
+    </div>
+    <div class="cal-grid todo-cal-grid" id="todoCalGrid"></div>
+    <button class="modal-close" id="todoCalClose">×</button>
   </div>
 </div>
 </div>
@@ -1212,6 +1255,21 @@
       <button class="add-btn" id="editClothingDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
     </div>
     <button class="modal-close" id="editClothingClose">×</button>
+  </div>
+</div>
+
+<!-- 日记编辑弹窗 -->
+<div class="modal-mask" id="diaryEditMask">
+  <div class="modal">
+    <h3>✏️ 编辑日记记录</h3>
+    <div class="modal-body">
+      <textarea id="diaryEditText" class="row2" style="width:100%;min-height:120px;font-size:16px;border:1px solid var(--border);border-radius:10px;padding:10px;resize:vertical" placeholder="写下今天..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;margin-top:12px">
+      <button class="add-btn" id="diaryEditSave" style="flex:1">💾 保存修改</button>
+      <button class="add-btn" id="diaryEditDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+    </div>
+    <button class="modal-close" id="diaryEditClose">×</button>
   </div>
 </div>
 
@@ -2204,6 +2262,7 @@ let fitExItems = [];
 const fitCatSel = makeSingleTrigger(document.getElementById('fitCatSel'), {
   title: '训练类别', placeholder: '训练类别',
   items: [{ value: 'cardio', label: '有氧训练' }, { value: 'strength', label: '力量训练' }],
+  value: 'strength',
   onPick: () => fitRefreshForm()
 });
 const fitNameSel = makeSingleTrigger(document.getElementById('fitNameSel'), {
@@ -3420,14 +3479,35 @@ function renderDiaryAll() {
           <div style="font-size:12px;color:var(--muted);margin-top:4px">${timeStr}</div>
         </div>`;
       }).join('');
-      // 点击记录 → 加载到编辑区
+      // 点击记录 → 弹窗编辑
       listEl.querySelectorAll('.diary-note-item').forEach(el => {
         el.addEventListener('click', (ev) => {
           if (ev.target.classList.contains('diary-note-del')) return;
-          diaryEditId = el.dataset.id;
-          renderDiaryAll();
-          document.getElementById('diaryText').scrollIntoView({ behavior: 'smooth', block: 'center' });
-          document.getElementById('diaryText').focus();
+          const noteId = el.dataset.id;
+          const note = ent.notes.find(n => n.id === noteId);
+          if (!note) return;
+          // 填充弹窗
+          document.getElementById('diaryEditText').value = note.text || '';
+          document.getElementById('diaryEditMask').classList.add('show');
+          // 保存按钮
+          document.getElementById('diaryEditSave').onclick = function() {
+            const newText = document.getElementById('diaryEditText').value.trim();
+            if (!newText) { showToast('内容不能为空'); return; }
+            note.text = newText;
+            note._ts = Date.now();
+            touchDiaryEntry(date); saveDiary();
+            document.getElementById('diaryEditMask').classList.remove('show');
+            renderDiaryAll();
+            showToast('已修改');
+          };
+          // 删除按钮
+          document.getElementById('diaryEditDelete').onclick = function() {
+            ent.notes = ent.notes.filter(n => n.id !== noteId);
+            touchDiaryEntry(date); saveDiary();
+            document.getElementById('diaryEditMask').classList.remove('show');
+            renderDiaryAll();
+            showToast('已删除');
+          };
         });
       });
       // 删除记录
@@ -3481,17 +3561,29 @@ function renderDiarySearch() {
   listEl.querySelectorAll('.diary-search-item').forEach(el => {
     el.addEventListener('click', () => {
       diaryViewDate = el.dataset.date;
-      diaryEditId = el.dataset.id;
       document.getElementById('diarySearch').value = '';
-      // 切换到记录 tab，加载编辑内容
-      document.querySelector('#diaryTabBar .tab-bar-btn[data-tab="write"]').click();
+      // 切换到查看 tab，然后弹窗编辑
+      document.querySelector('#diaryTabBar .tab-bar-btn[data-tab="view"]').click();
       renderDiaryAll();
+      // 延迟弹窗，等渲染完成
+      setTimeout(() => {
+        const noteEl = document.querySelector('.diary-note-item[data-id="' + el.dataset.id + '"]');
+        if (noteEl) noteEl.click();
+      }, 100);
     });
   });
 }
 
 /* --- 日记事件绑定 --- */
 function bindDiaryEvents() {
+  // 弹窗关闭
+  document.getElementById('diaryEditClose').addEventListener('click', () => {
+    document.getElementById('diaryEditMask').classList.remove('show');
+  });
+  document.getElementById('diaryEditMask').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('diaryEditMask'))
+      document.getElementById('diaryEditMask').classList.remove('show');
+  });
   // Tab 切换
   document.querySelectorAll('#diaryTabBar .tab-bar-btn').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -3597,23 +3689,32 @@ function renderTodoAll() {
     const ent = todoStore.entries[date] || { daily: [], study: [] };
     renderTodoList('daily', ent.daily || []);
     renderTodoList('study', ent.study || []);
+    // 按日期查看 Tab 的列表
+    renderTodoList('daily', ent.daily || [], 'todoDateDailyList');
+    renderTodoList('study', ent.study || [], 'todoDateStudyList');
     // 日期标签
     const d = new Date(date.slice(0, 4), Number(date.slice(5, 7)) - 1, Number(date.slice(8, 10)));
     document.getElementById('todoDateLabel').textContent = d.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' });
     const datePick = document.getElementById('todoDatePick');
     if (datePick.value !== date) datePick.value = date;
+    // 更新日期按钮红圈和标签
+    updateTodoDateButton('daily');
+    updateTodoDateButton('study');
   } catch (e) {
     console.error('renderTodoAll error', e);
   }
 }
 
-function renderTodoList(kind, items) {
-  const box = document.getElementById(kind === 'daily' ? 'dailyTodoList' : 'studyTodoList');
-  const cnt = document.getElementById(kind === 'daily' ? 'dailyTodoCnt' : 'studyTodoCnt');
-  if (!box || !cnt) return;
-  const done = items.filter(t => t.done).length;
-  cnt.textContent = `(${done}/${items.length})`;
-  if (!items.length) { box.innerHTML = `<div class="empty-tip">暂无任务，添加一个吧～</div>`; return; }
+function renderTodoList(kind, items, boxId) {
+  const box = document.getElementById(boxId || (kind === 'daily' ? 'dailyTodoList' : 'studyTodoList'));
+  if (!box) return;
+  const isMain = !boxId;
+  const cnt = isMain ? document.getElementById(kind === 'daily' ? 'dailyTodoCnt' : 'studyTodoCnt') : null;
+  if (cnt) {
+    const done = items.filter(t => t.done).length;
+    cnt.textContent = `(${done}/${items.length})`;
+  }
+  if (!items.length) { box.innerHTML = `<div class="empty-tip">${isMain ? '暂无任务，添加一个吧～' : '暂无任务'}</div>`; return; }
   box.innerHTML = items.map((t, i) => `
     <div class="todo-item ${t.done ? 'done' : ''}" data-ti="${i}">
       <input type="checkbox" ${t.done ? 'checked' : ''} data-act="toggle">
@@ -3635,22 +3736,127 @@ function renderTodoList(kind, items) {
   });
 }
 
+// 更新日期按钮的标签（今天 / MM/DD）
+function updateTodoDateButton(kind) {
+  const datePick = document.getElementById(kind === 'daily' ? 'dailyTodoAddDate' : 'studyTodoAddDate');
+  const label = document.getElementById(kind === 'daily' ? 'dailyTodoDateLabel' : 'studyTodoDateLabel');
+  if (!datePick || !label) return;
+  const d = datePick.value || todayKey();
+  label.textContent = d === todayKey() ? '今天' : d.slice(5).replace('-', '/');
+}
+
+/* --- 待办日历弹窗 --- */
+let todoCalKind = 'daily'; // 当前打开日历的是哪个 kind
+let todoCalYear = new Date().getFullYear();
+let todoCalMonth = new Date().getMonth();
+
+function openTodoCalendar(kind) {
+  todoCalKind = kind;
+  // 以当前选择的日期所在月份为初始显示
+  const dp = document.getElementById(kind === 'daily' ? 'dailyTodoAddDate' : 'studyTodoAddDate');
+  const cur = (dp && dp.value) ? dp.value : todayKey();
+  todoCalYear = Number(cur.slice(0, 4));
+  todoCalMonth = Number(cur.slice(5, 7)) - 1;
+  renderTodoCalendar();
+  document.getElementById('todoCalMask').classList.add('show');
+}
+
+function renderTodoCalendar() {
+  document.getElementById('todoCalLabel').textContent = `${todoCalYear} 年 ${todoCalMonth + 1} 月`;
+  const grid = document.getElementById('todoCalGrid');
+  grid.innerHTML = '';
+  ['日', '一', '二', '三', '四', '五', '六'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'dow';
+    el.textContent = d;
+    grid.appendChild(el);
+  });
+  const firstDay = new Date(todoCalYear, todoCalMonth, 1).getDay();
+  const daysInMonth = new Date(todoCalYear, todoCalMonth + 1, 0).getDate();
+  const dp = document.getElementById(todoCalKind === 'daily' ? 'dailyTodoAddDate' : 'studyTodoAddDate');
+  const selDate = (dp && dp.value) ? dp.value : todayKey();
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'day empty';
+    grid.appendChild(el);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const key = dateKey(new Date(todoCalYear, todoCalMonth, day));
+    const ent = todoStore.entries[key];
+    const hasTasks = ent && ((Array.isArray(ent.daily) && ent.daily.length) || (Array.isArray(ent.study) && ent.study.length));
+    const el = document.createElement('div');
+    el.className = 'day';
+    el.textContent = day;
+    if (hasTasks) {
+      const dot = document.createElement('span');
+      dot.className = 'dot';
+      el.appendChild(dot);
+    }
+    if (key === selDate) el.classList.add('sel');
+    if (key === todayKey()) el.classList.add('today');
+    el.addEventListener('click', () => {
+      dp.value = key;
+      todoViewDate = key;
+      updateTodoDateButton(todoCalKind);
+      renderTodoAll();
+      document.getElementById('todoCalMask').classList.remove('show');
+    });
+    grid.appendChild(el);
+  }
+}
+
+document.getElementById('todoCalPrev').addEventListener('click', () => {
+  todoCalMonth--; if (todoCalMonth < 0) { todoCalMonth = 11; todoCalYear--; }
+  renderTodoCalendar();
+});
+document.getElementById('todoCalNext').addEventListener('click', () => {
+  todoCalMonth++; if (todoCalMonth > 11) { todoCalMonth = 0; todoCalYear++; }
+  renderTodoCalendar();
+});
+document.getElementById('todoCalClose').addEventListener('click', () => {
+  document.getElementById('todoCalMask').classList.remove('show');
+});
+document.getElementById('todoCalMask').addEventListener('click', e => {
+  if (e.target.id === 'todoCalMask') document.getElementById('todoCalMask').classList.remove('show');
+});
+
 /* --- 待办事件绑定 --- */
 function bindTodoEvents() {
+  // 初始化日期选择器默认为今天
+  const initDatePick = (id) => {
+    const dp = document.getElementById(id);
+    if (dp) dp.value = todayKey();
+  };
+  initDatePick('dailyTodoAddDate');
+  initDatePick('studyTodoAddDate');
+
   const addTask = (kind) => {
     const input = document.getElementById(kind === 'daily' ? 'dailyTodoAdd' : 'studyTodoAdd');
+    const datePick = document.getElementById(kind === 'daily' ? 'dailyTodoAddDate' : 'studyTodoAddDate');
     const text = input.value.trim();
     if (!text) { showToast('请填写任务内容'); return; }
-    const e = getTodoEntry(todoViewDate);
+    const taskDate = (datePick && datePick.value) ? datePick.value : todayKey();
+    const e = getTodoEntry(taskDate);
     e[kind].push({ id: newItemId(), text, done: false });
-    touchTodoEntry(todoViewDate); saveTodo();
+    touchTodoEntry(taskDate); saveTodo();
     input.value = '';
+    // 如果任务日期和当前查看日期不同，切换过去
+    if (taskDate !== todoViewDate) {
+      todoViewDate = taskDate;
+    }
     renderTodoAll();
+    if (taskDate !== todayKey()) {
+      const d = new Date(taskDate.slice(0,4), Number(taskDate.slice(5,7))-1, Number(taskDate.slice(8,10)));
+      showToast('已添加到 ' + d.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric' }));
+    }
   };
   document.getElementById('dailyTodoAddBtn').addEventListener('click', () => addTask('daily'));
   document.getElementById('dailyTodoAdd').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addTask('daily'); } });
   document.getElementById('studyTodoAddBtn').addEventListener('click', () => addTask('study'));
   document.getElementById('studyTodoAdd').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); addTask('study'); } });
+  // 日历按钮点击打开自定义日历弹窗
+  document.getElementById('dailyTodoDateBtn').addEventListener('click', () => openTodoCalendar('daily'));
+  document.getElementById('studyTodoDateBtn').addEventListener('click', () => openTodoCalendar('study'));
   // 日期切换：‹ / ›
   document.getElementById('todoPrevDay').addEventListener('click', () => {
     const d = new Date(todoViewDate.slice(0, 4), Number(todoViewDate.slice(5, 7)) - 1, Number(todoViewDate.slice(8, 10)));
@@ -3675,6 +3881,9 @@ function bindTodoEvents() {
   });
 }
 bindTodoEvents();
+// 初始化日期按钮显示
+updateTodoDateButton('daily');
+updateTodoDateButton('study');
 
 /* --- 通用 Tab 切换（非日记页） --- */
 function setupTabBar(tabBarSel, panelPrefix) {
@@ -4134,17 +4343,7 @@ document.querySelectorAll('.container').forEach(c => {
 
 /* ---------- 键盘弹出时防止页面跳动 ---------- */
 (function() {
-  if (!window.visualViewport) return;
-  // visualViewport 变化时，保持固定元素不跑位
-  function onResize() {
-    var vv = window.visualViewport;
-    document.documentElement.style.setProperty('--vv-h', vv.height + 'px');
-    document.documentElement.style.setProperty('--vv-top', vv.offsetTop + 'px');
-  }
-  window.visualViewport.addEventListener('resize', onResize);
-  window.visualViewport.addEventListener('scroll', onResize);
-  onResize();
-  // 输入框聚焦时，让它滚入可视区域
+  // 输入框聚焦时，延迟滚动到可见区域
   document.addEventListener('focusin', function(e) {
     if (e.target.matches('input, textarea, select, [contenteditable]')) {
       setTimeout(function() {
