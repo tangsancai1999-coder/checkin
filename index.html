@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -11,21 +11,64 @@
 <meta name="theme-color" content="#ffffff">
 <style>
   :root {
-    --primary: #1f1f1f;
-    --primary-dark: #000000;
-    --bg: #fafafa;
-    --card: #ffffff;
-    --text: #1a1a1a;
-    --muted: #9a9a9a;
-    --border: #e3e3e3;
-    --success: #3a3a3a;
-    --radius: 20px;
-    --line: #bdbdbd;
+    /* Colors */
+    --primary: #1f1f1f;       /* black: actions, emphasis, strong borders */
+    --text: #1a1a1a;          /* body text */
+    --secondary: #4a4a4a;    /* secondary text */
+    --muted: #9a9a9a;        /* muted text */
+    --line: #bdbdbd;          /* line/border strong */
+    --border: #e3e3e3;       /* default border */
+    --card: #ffffff;          /* card surface */
+    --bg: #fafafa;           /* page background */
+    --tint: #f5f5f5;          /* subtle bg tint / hover */
+
+    /* Status */
+    --success: #3a3a3a;      /* grayscale "done" */
+    --danger: #c0392b;        /* delete/error text */
+    --danger-bg: #e74c3c;    /* danger button bg */
+    --danger-soft: #fdecec;  /* danger hover bg */
+    --ok: #34d399;            /* sync ok */
+    --warn: #ffc107;          /* sugar warning */
+    --err: #f87171;           /* sync error */
+    --idle: #94a3b8;          /* sync idle */
+
+    /* Radius */
+    --radius-sm: 8px;
+    --radius-md: 12px;
+    --radius-lg: 16px;
+    --radius-xl: 20px;
+    --radius-pill: 999px;
+
+    /* Spacing */
+    --space-1: 4px;
+    --space-2: 8px;
+    --space-3: 12px;
+    --space-4: 16px;
+    --space-5: 20px;
+    --space-6: 24px;
+    --space-7: 28px;
+
+    /* Shadow */
+    --shadow-sm: 0 4px 14px rgba(0,0,0,.05);
+    --shadow-md: 0 8px 24px rgba(0,0,0,.08);
+    --shadow-lg: 0 12px 40px rgba(0,0,0,.18);
+
+    /* Motion */
+    --t-fast: 150ms;
+    --t-base: 200ms;
+    --t-slow: 300ms;
+    --ease: cubic-bezier(.4, 0, .2, 1);
+
+    /* z-index */
+    --z-topbar: 50;
+    --z-modal: 100;
+    --z-picker: 200;
+    --z-toast: 200;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { -webkit-text-size-adjust: 100%; }
   body {
-    font-family: "Comic Sans MS", "Yuanti SC", "YouYuan", "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", "Yuanti SC", system-ui, -apple-system, "Segoe UI", sans-serif;
     background: var(--bg);
     color: var(--text);
     min-height: 100dvh;
@@ -35,33 +78,34 @@
   .page:not(.active) { display: none !important; }
   .container { max-width: 960px; margin: 0 auto; padding: 24px 16px calc(60px + env(safe-area-inset-bottom)); }
 
-  /* 侧边栏与页面布局 */
-  .sidebar {
+  /* 顶部导航栏（原 .sidebar，已统一重命名为 .topbar） */
+  .topbar {
     position: fixed; top: 0; left: 0; right: 0; width: 100%; height: auto;
-    padding: 10px 16px; box-sizing: border-box; z-index: 50;
-    background: #ffffff; border-bottom: 2px solid #1f1f1f;
+    padding: 10px 16px; box-sizing: border-box; z-index: var(--z-topbar);
+    background: var(--card); border-bottom: 2px solid var(--line);
     display: flex; align-items: center; justify-content: space-between;
+    box-shadow: 0 1px 0 rgba(0,0,0,.03);
   }
-  .sidebar .logo { color: var(--text); font-size: 19px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; }
-  .sidebar .logo svg { flex-shrink: 0; }
-  .sidebar nav { display: flex; align-items: center; gap: 10px; }
+  .topbar .logo { color: var(--text); font-size: 19px; font-weight: 700; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; color: var(--primary); }
+  .topbar .logo svg { flex-shrink: 0; }
+  .topbar nav { display: flex; align-items: center; gap: 10px; }
   .nav-item {
     display: flex; align-items: center; gap: 10px; padding: 12px 16px;
-    border-radius: 12px; color: #808080; font-size: 15px; cursor: pointer; transition: all .15s;
+    border-radius: 12px; color: var(--muted); font-size: 15px; cursor: pointer; transition: all .15s;
     white-space: nowrap;
   }
-  .nav-item:hover { color: var(--text); background: #f2f2f2; }
-  .nav-item.active { color: #fff; background: #1f1f1f; }
+  .nav-item:hover { color: var(--text); background: var(--tint); }
+  .nav-item.active { color: var(--card); background: var(--line); }
   .sync-btn {
     margin: 0; padding: 8px 14px; box-sizing: border-box;
-    border: 1.5px dashed #cfcfcf; border-radius: 10px; background: #fff; color: #8a8a8a;
+    border: 1.5px dashed var(--border); border-radius: 10px; background: var(--card); color: var(--muted);
     font-size: 13px; cursor: pointer; text-align: left; font-family: inherit; flex-shrink: 0;
   }
-  .sync-btn:hover { background: #f5f5f5; color: #111; border-color: #999; }
+  .sync-btn:hover { background: var(--tint); color: var(--text); border-color: var(--muted); }
   .sync-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-  .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #94a3b8; margin-right: 6px; }
-  .sync-dot.ok { background: #34d399; }
-  .sync-dot.err { background: #f87171; }
+  .sync-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--idle); margin-right: 6px; }
+  .sync-dot.ok { background: var(--ok); }
+  .sync-dot.err { background: var(--err); }
   .sync-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
     padding: 10px 12px; font-size: 16px; outline: none; margin-bottom: 10px; box-sizing: border-box; font-family: inherit;
@@ -70,40 +114,41 @@
   .sync-tip { font-size: 13px; color: var(--muted); line-height: 1.7; margin: 0 0 12px; }
   .sync-info { font-size: 14px; line-height: 1.9; margin: 0 0 12px; word-break: break-all; }
   .back-bar { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
-  .back-btn { background: #fff; border: 2px solid var(--line); border-radius: 999px; min-width:36px; min-height:36px; height:36px; padding: 0 12px; font-size: 13px; cursor: pointer; color: var(--text); font-family: inherit; flex-shrink: 0; }
-  .back-btn:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .back-btn { background: var(--card); border: 2px solid var(--line); border-radius: 999px; min-width:36px; min-height:36px; height:36px; padding: 0 12px; font-size: 13px; cursor: pointer; color: var(--text); font-family: inherit; flex-shrink: 0; }
+  .back-btn:hover { background: var(--primary); color: var(--card); border-color: var(--primary); }
   .back-bar .page-title { font-size: 16px; font-weight: 700; letter-spacing: .5px; margin-left: auto; }
   .title-btn {
-    float: right; background: #fff; color: var(--primary-dark); font-size: 12px; font-weight: 700;
+    float: right; background: var(--card); color: var(--primary); font-size: 12px; font-weight: 700;
     min-width: 44px; min-height: 36px; height: 36px;
     padding: 0 12px; border: 2px solid var(--primary); border-radius: 999px; cursor: pointer; font-family: inherit; margin-top: -5px;
   }
-  .title-btn:hover { background: var(--primary); color: #fff; }
+  .title-btn:hover { background: var(--primary); color: var(--card); }
   .goal-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; font-size: 14px; margin-bottom: 10px; }
   .goal-row input, .goal-row select { width: 150px !important; margin-bottom: 0 !important; text-align: left; }
   .stat-tabs { display: flex; gap: 8px; margin: -2px 0 14px; }
   .stat-tab {
-    flex: 1; padding: 7px 0; border: 2px solid var(--line); background: #fff; color: var(--muted);
+    flex: 1; padding: 7px 0; border: 2px solid var(--line); background: var(--card); color: var(--muted);
     border-radius: 999px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 700;
   }
-  .stat-tab.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .stat-tab.active { background: var(--primary); border-color: var(--primary); color: var(--card); }
   .main { padding-top: 56px; }
   .page { display: none; }
   .page.active { display: block; }
   @media (max-width: 768px) {
-    .sidebar { padding: 8px 12px; }
-    .sidebar .logo { font-size: 16px; }
-    .sidebar .logo svg { width: 26px; height: 26px; }
+    .topbar { padding: 8px 12px; }
+    .topbar .logo { font-size: 16px; }
+    .topbar .logo svg { width: 26px; height: 26px; }
     .sync-btn { width: 46px; height: 40px; padding: 0; position: relative; display: flex; align-items: center; justify-content: center; font-size: 19px; line-height: 1; border-radius: 12px; flex-shrink: 0; }
     .sync-btn .sync-dot { margin-right: 0; width: 7px; height: 7px; position: absolute; transform: translate(-14px, -9px); }
     .main { padding-top: 50px; margin-left: 0; }
+    .container { padding-top: 16px; }
   }
 
   /* 头部 */
   header {
-    background: #f6f6f6;
-    border: 2px solid #1f1f1f;
-    border-radius: var(--radius);
+    background: var(--tint);
+    border: 2px solid var(--line);
+    border-radius: var(--radius-md);
     color: var(--text);
     padding: 8px 16px;
     margin-bottom: 10px;
@@ -115,7 +160,7 @@
   }
   header h1 { font-size: 16px; letter-spacing: .5px; }
   header p { opacity: .65; margin-top: 2px; font-size: 12px; }
-  .streak-box { text-align: center; background: #fff; border: 2px solid #1f1f1f; border-radius: 12px; padding: 6px 18px; }
+  .streak-box { text-align: center; background: var(--card); border: 2px solid var(--line); border-radius: 12px; padding: 6px 18px; }
   .streak-box .num { font-size: 26px; font-weight: 700; }
   .streak-box .label { font-size: 12px; opacity: .65; }
   .card.cal-streak-card .cal-streak-top {
@@ -134,10 +179,10 @@
   .card {
     background: var(--card);
     border: 2px solid var(--line);
-    border-radius: var(--radius);
+    border-radius: var(--radius-md);
     padding: 22px;
     margin-bottom: 20px;
-    box-shadow: 0 4px 14px rgba(222, 168, 128, .10);
+    box-shadow: var(--shadow-sm);
     position: relative;
   }
   .card::before, .card::after {
@@ -172,15 +217,15 @@
   .add-form .row2 { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; }
   .add-form select, .add-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: var(--card); font-family: inherit;
   }
   .add-form select:focus, .add-form input:focus { border-color: var(--primary); }
   .add-btn {
     min-width: 44px; min-height: 44px; height: 44px;
-    padding: 0 22px; background: #fff; color: var(--primary-dark); border: 2px solid var(--primary);
+    padding: 0 22px; background: var(--card); color: var(--primary); border: 2px solid var(--primary);
     border-radius: 999px; font-size: 14px; font-weight: 700; cursor: pointer; white-space: nowrap;
   }
-  .add-btn:hover { background: var(--primary); color: #fff; }
+  .add-btn:hover { background: var(--primary); color: var(--card); }
   @media (max-width: 640px) {
     .add-form { grid-template-columns: 1fr 1fr; }
     .add-form .row2 { grid-template-columns: 1fr; }
@@ -198,41 +243,41 @@
     background: none; border: none; color: var(--muted); font-size: 16px;
     cursor: pointer; padding: 2px 6px; border-radius: 6px;
   }
-  .item .del:hover { background: #fdecec; color: #d64545; }
+  .item .del:hover { background: var(--danger-soft); color: var(--danger); }
   .badge {
-    font-size: 12px; padding: 3px 10px; border-radius: 20px; color: #fff; font-weight: 600; flex-shrink: 0;
+    font-size: 12px; padding: 3px 10px; border-radius: 20px; color: var(--card); font-weight: 600; flex-shrink: 0;
   }
-  .badge.reading { background: #1f1f1f; }
-  .badge.listening { background: #4a4a4a; }
-  .badge.writing { background: #6b6b6b; }
-  .badge.speaking { background: #8a8a8a; }
-  .badge.fitness { background: #1f1f1f; }
-  .badge.cardio { background: #6b6b6b; }
-  .badge.strength { background: #4a4a4a; }
-  header.fitness-header { background: #f6f6f6; }
+  .badge.reading { background: var(--line); }
+  .badge.listening { background: var(--secondary); }
+  .badge.writing { background: var(--secondary); }
+  .badge.speaking { background: var(--muted); }
+  .badge.fitness { background: var(--line); }
+  .badge.cardio { background: var(--secondary); }
+  .badge.strength { background: var(--secondary); }
+  header.fitness-header { background: var(--tint); }
   .qtype {
-    font-size: 12px; color: #444; background: #f0f0f0;
+    font-size: 12px; color: var(--secondary); background: var(--tint);
     padding: 2px 8px; border-radius: 10px; flex-shrink: 0;
   }
   /* 多选触发按钮 + 底部弹层选择器 */
   .multi-trigger {
     display: flex; align-items: center; justify-content: space-between;
     gap: 10px; width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 10px 12px; font-size: 16px; background: #fff; cursor: pointer;
+    padding: 10px 12px; font-size: 16px; background: var(--card); cursor: pointer;
     color: var(--muted); text-align: left; font-family: inherit;
     box-sizing: border-box;
   }
   .multi-trigger.full, #qtypeTrigger, #fitExTrigger { grid-column: 1 / -1; }
   .multi-trigger.has { color: var(--text); border-color: var(--primary); }
   .multi-trigger .txt { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .multi-trigger .arr { color: #999; flex-shrink: 0; }
+  .multi-trigger .arr { color: var(--muted); flex-shrink: 0; }
   .picker-mask {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,.45);
-    z-index: 200; align-items: flex-end; justify-content: center;
+    z-index: var(--z-picker); align-items: flex-end; justify-content: center;
   }
   .picker-mask.show { display: flex; }
   .picker-panel {
-    background: #fff; width: 100%; max-width: 520px; max-height: 72vh;
+    background: var(--card); width: 100%; max-width: 520px; max-height: 72vh;
     border-radius: 16px 16px 0 0; display: flex; flex-direction: column;
     animation: slideUp .2s ease; box-sizing: border-box;
   }
@@ -251,10 +296,10 @@
   .picker-item input { width: 18px; height: 18px; accent-color: var(--primary); flex-shrink: 0; margin: 0; }
   .picker-del {
     margin-left: auto; width: 26px; height: 26px; border-radius: 50%; flex-shrink: 0;
-    border: 1.5px solid var(--line); background: #fff; color: var(--muted);
+    border: 1.5px solid var(--line); background: var(--card); color: var(--muted);
     font-size: 15px; line-height: 1; cursor: pointer; font-family: inherit;
   }
-  .picker-del:hover { border-color: #e53935; color: #e53935; background: #fdecea; }
+  .picker-del:hover { border-color: var(--danger); color: var(--danger); background: var(--danger-soft); }
   .picker-custom { padding: 0 18px 10px; display: none; }
   .picker-custom input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
@@ -267,9 +312,9 @@
   }
   .picker-foot button {
     flex: 1; padding: 11px; border-radius: 10px; border: 1px solid var(--border);
-    background: #fff; font-size: 15px; cursor: pointer; font-family: inherit;
+    background: var(--card); font-size: 15px; cursor: pointer; font-family: inherit;
   }
-  .picker-foot #pickerOk { background: var(--primary); color: #fff; border-color: var(--primary); font-weight: 600; }
+  .picker-foot #pickerOk { background: var(--primary); color: var(--card); border-color: var(--primary); font-weight: 600; }
   .empty-tip { text-align: center; color: var(--muted); font-size: 14px; padding: 10px 0; }
 
   /* 周目标 */
@@ -277,9 +322,9 @@
   .goal { margin-bottom: 16px; }
   .goal-head { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 8px; }
   .goal-head .count { color: var(--primary); font-weight: 700; }
-  .bar { height: 10px; background: #f0f0f0; border-radius: 6px; overflow: hidden; }
-  .bar-fill { height: 100%; background: linear-gradient(90deg, #2b2b2b, #6e6e6e); border-radius: 6px; transition: width .4s; }
-  .bar-fill.full { background: linear-gradient(90deg, #000, #555); }
+  .bar { height: 10px; background: var(--tint); border-radius: 6px; overflow: hidden; }
+  .bar-fill { height: 100%; background: linear-gradient(90deg, var(--text), var(--muted)); border-radius: 6px; transition: width .4s; }
+  .bar-fill.full { background: linear-gradient(90deg, var(--primary), var(--secondary)); }
   .goal-done { font-size: 12px; color: var(--success); margin-top: 6px; }
   .goal-setting {
     display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
@@ -294,7 +339,7 @@
     margin-left: auto; padding: 7px 18px; background: var(--bg); border: 1px solid var(--border);
     border-radius: 8px; cursor: pointer; font-size: 13px;
   }
-  .goal-setting .save-goals:hover, .exam-setting .save-goals:hover { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .goal-setting .save-goals:hover, .exam-setting .save-goals:hover { background: var(--primary); color: var(--card); border-color: var(--primary); }
 
   /* 倒计时 */
   .cd-main { display: flex; align-items: baseline; gap: 4px; }
@@ -302,7 +347,7 @@
   .cd-unit { font-size: 14px; font-weight: 600; }
   .cd-desc { font-size: 12px; color: var(--muted); margin-top: 2px; }
   .cd-badge {
-    display: inline-block; margin-left: 8px; background: #f0f0f0; color: #555;
+    display: inline-block; margin-left: 8px; background: var(--tint); color: var(--secondary);
     font-size: 12px; padding: 2px 10px; border-radius: 10px; font-weight: 600;
   }
   .exam-setting {
@@ -311,17 +356,17 @@
   }
   .exam-setting input, .exam-setting select {
     border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px;
-    font-size: 16px; outline: none; background: #fff; font-family: inherit;
+    font-size: 16px; outline: none; background: var(--card); font-family: inherit;
   }
   .exam-setting input:focus, .exam-setting select:focus { border-color: var(--primary); }
   .exam-setting input[type="text"] { flex: 1; min-width: 140px; }
 
   /* 单词打卡 */
-  .badge.word { background: #8a8a8a; }
+  .badge.word { background: var(--muted); }
   .word-form { display: grid; grid-template-columns: 1.2fr 1fr 1fr auto; gap: 10px; }
   .word-form select, .word-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: var(--card); font-family: inherit;
   }
   .word-form select:focus, .word-form input:focus { border-color: var(--primary); }
   @media (max-width: 640px) { .word-form { grid-template-columns: 1fr 1fr; } }
@@ -331,7 +376,7 @@
   .fit-form .row2 { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 2fr auto; gap: 10px; }
   .fit-form select, .fit-form input {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
-    padding: 9px 10px; font-size: 16px; outline: none; background: #fff; font-family: inherit;
+    padding: 9px 10px; font-size: 16px; outline: none; background: var(--card); font-family: inherit;
   }
   .fit-form select:focus, .fit-form input:focus { border-color: var(--primary); }
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: start; }
@@ -369,27 +414,31 @@
   .day:hover { transform: scale(1.06); }
   .day.empty { background: transparent; cursor: default; }
   .day.empty:hover { transform: none; }
-  .day.checked { background: var(--primary); color: #fff; font-weight: 600; }
+  .day.checked { background: var(--primary); color: var(--card); font-weight: 600; }
   .day.today:not(.checked) { border: 2px solid var(--primary); color: var(--primary); font-weight: 700; }
   .day .cnt { font-size: 10px; opacity: .85; margin-top: 2px; }
-  .day.checked .cnt { color: #bdbdbd; }
+  .day.checked .cnt { color: var(--muted); }
   /* 小号日历（健身页） */
   .cal-sm-wrap { max-width: 400px; }
   .cal-sm .day { aspect-ratio: auto; height: 46px; font-size: 12px; border-radius: 8px; }
   .cal-sm .dow { font-size: 11px; padding: 4px 0; }
   .cal-sm .day .cnt { font-size: 9px; margin-top: 1px; }
 
-  /* 详情弹层 */
+  /* 详情弹层 —— 统一 Modal 系统 */
   .modal-mask {
     display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4);
-    align-items: center; justify-content: center; z-index: 100; padding: 16px;
+    align-items: center; justify-content: center; z-index: var(--z-modal); padding: 16px;
   }
   .modal-mask.show { display: flex; }
   .modal {
-    background: #fff; border-radius: var(--radius); padding: 24px;
-    width: 100%; max-width: 420px; max-height: 80vh; overflow: auto;
+    position: relative;
+    background: var(--card); border-radius: var(--radius-lg); padding: 24px;
+    width: 100%; max-width: 480px; max-height: 80vh; overflow: auto;
+    box-shadow: var(--shadow-md);
     -webkit-overflow-scrolling: touch;
+    animation: modalIn var(--t-base) var(--ease);
   }
+  @keyframes modalIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
   .modal input { -webkit-user-select: text; user-select: text; }
   .modal.fullscreen {
     max-width: none; max-height: none; width: 100%; height: 100%;
@@ -414,30 +463,32 @@
   .modal .actions button {
     flex: 1; padding: 10px; border-radius: 8px; border: none; cursor: pointer; font-size: 14px;
   }
-  .btn-del { background: #fdecec; color: #d64545; }
+  .btn-del { background: var(--danger-soft); color: var(--danger); }
   .btn-close { background: var(--bg); color: var(--text); }
+  .btn-danger { background: var(--danger-bg); color: var(--card); border-color: var(--danger-bg); }
+  .btn-danger:hover { background: var(--danger); border-color: var(--danger); }
 
   /* 提示 */
   .toast {
     position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px);
-    background: var(--text); color: #fff; padding: 10px 22px; border-radius: 24px;
-    font-size: 14px; opacity: 0; pointer-events: none; transition: all .3s; z-index: 200;
+    background: var(--text); color: var(--card); padding: 10px 22px; border-radius: 24px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: all .3s; z-index: var(--z-toast);
   }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
   /* 单选模式弹层（picker single） */
   .picker-mask.single .picker-foot, .picker-mask.single .picker-custom { display: none; }
-  .picker-dot { width: 18px; height: 18px; border: 2px solid #bbb; border-radius: 50%; flex-shrink: 0; margin: 0; box-sizing: border-box; position: relative; }
+  .picker-dot { width: 18px; height: 18px; border: 2px solid var(--muted); border-radius: 50%; flex-shrink: 0; margin: 0; box-sizing: border-box; position: relative; }
   .picker-dot.on { border-color: var(--primary); }
   .picker-dot.on::after { content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--primary); }
 
   /* 主页卡片网格 */
   .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 8px; }
-  .home-card { background: var(--card); border: 2px solid var(--line); border-radius: var(--radius); padding: 28px 20px; text-align: center; cursor: pointer; transition: all .2s; position: relative; }
-  .home-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-  .home-card .emoji { display: block; margin-bottom: 10px; }
+  .home-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 28px 20px; text-align: center; cursor: pointer; transition: all var(--t-base) var(--ease); position: relative; }
+  .home-card:hover { transform: translateY(-2px); border-color: var(--primary); box-shadow: var(--shadow-sm); }
+  .home-card .emoji { display: block; margin-bottom: 10px; color: var(--primary); }
   .home-card .emoji svg { width: 52px; height: 52px; display: block; margin: 0 auto; }
-  .home-card h3 { font-size: 16px; margin-bottom: 4px; }
+  .home-card h3 { font-size: 17px; font-weight: 700; margin-bottom: 4px; }
   .home-card p { font-size: 12px; color: var(--muted); }
   @media (max-width: 768px) {
     .home-grid { gap: 10px; margin-top: 4px; }
@@ -457,7 +508,7 @@
   .search-row { display: flex; gap: 10px; align-items: center; }
   .search-row input {
     flex: 1; border: 1px solid var(--border); border-radius: 999px; padding: 10px 14px;
-    font-size: 16px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box;
+    font-size: 16px; outline: none; background: var(--card); font-family: inherit; box-sizing: border-box;
   }
   .search-row input:focus { border-color: var(--primary); }
   @media (max-width: 640px) {
@@ -486,14 +537,14 @@
   .todo-cal-grid .dow { font-size: 11px; padding: 3px 0; }
   .todo-cal-grid .day { aspect-ratio: auto; height: 40px; font-size: 13px; border-radius: 8px; }
   .todo-cal-grid .day .dot {
-    width: 6px; height: 6px; border-radius: 50%; background: #e74c3c;
+    width: 6px; height: 6px; border-radius: 50%; background: var(--danger-bg);
     position: absolute; bottom: 4px; left: 50%; transform: translateX(-50%);
   }
-  .todo-cal-grid .day.sel { background: var(--primary); color: #fff; font-weight: 600; }
-  .todo-cal-grid .day.sel .dot { background: #fff; }
+  .todo-cal-grid .day.sel { background: var(--primary); color: var(--card); font-weight: 600; }
+  .todo-cal-grid .day.sel .dot { background: var(--card); }
   .todo-item {
     display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px;
-    background: #fff; border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px;
   }
   .todo-item input[type=checkbox] { margin-top: 4px; flex-shrink: 0; width: 18px; height: 18px; accent-color: var(--primary); }
   .todo-item .t-text { flex: 1; min-width: 0; font-size: 14px; line-height: 1.5; word-break: break-word; }
@@ -502,9 +553,9 @@
     background: none; border: none; color: var(--muted); cursor: pointer;
     font-size: 16px; flex-shrink: 0; padding: 2px 6px;
   }
-  .todo-item .t-del:hover { color: #c0392b; }
+  .todo-item .t-del:hover { color: var(--danger); }
   .diary-search-item {
-    background: #fff; border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px;
     margin-bottom: 10px; cursor: pointer; transition: border-color .2s;
   }
   .diary-search-item:hover { border-color: var(--primary); }
@@ -518,7 +569,7 @@
   }
   .month-nav button:hover { background: var(--border); }
   .book-item {
-    background: #fff; border: 2px solid var(--line); border-radius: var(--radius);
+    background: var(--card); border: 2px solid var(--line); border-radius: var(--radius-md);
     padding: 14px 16px; margin-bottom: 12px; position: relative;
   }
   .book-item .row-a { display: flex; align-items: flex-start; gap: 12px; }
@@ -526,41 +577,41 @@
   .book-item .row-a > button[onclick],
   .book-item .row-a > button {
     min-width: 44px; min-height: 44px; height: 44px; width: 44px; border-radius: 50%;
-    border: 2px solid var(--line); background: #fff; cursor: pointer; font-size: 16px;
+    border: 2px solid var(--line); background: var(--card); cursor: pointer; font-size: 16px;
   }
   .book-item .meta { flex: 1; min-width: 0; }
   .book-item .title { font-size: 16px; font-weight: 700; word-break: break-word; }
   .book-item .sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
   .book-item .progress { margin-top: 10px; }
-  .book-item .p-text { display: flex; justify-content: space-between; font-size: 12px; color: #444; margin-bottom: 6px; }
-  .book-item .p-text .pct { font-weight: 700; color: #111; }
+  .book-item .p-text { display: flex; justify-content: space-between; font-size: 12px; color: var(--secondary); margin-bottom: 6px; }
+  .book-item .p-text .pct { font-weight: 700; color: var(--text); }
   .book-item .btns { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
   .book-item .btns button {
     min-width: 44px; min-height: 44px; height: 44px; padding: 0 16px; font-size: 14px;
-    border: 2px solid var(--line); background: #fff; border-radius: 999px; cursor: pointer;
+    border: 2px solid var(--line); background: var(--card); border-radius: 999px; cursor: pointer;
   }
-  .book-item .btns button.primary { border-color: var(--primary); color: var(--primary-dark); font-weight: 700; }
-  .book-item .btns button.danger  { border-color: #e53935; color: #b71c1c; }
+  .book-item .btns button.primary { border-color: var(--primary); color: var(--primary); font-weight: 700; }
+  .book-item .btns button.danger  { border-color: var(--danger); color: var(--danger); }
   .book-item .read-form { margin-top: 12px; display: grid; gap: 10px; }
   .book-item .tabs { display: flex; gap: 8px; }
   .book-item .tab {
     flex: 1; min-height: 44px; display: flex; align-items: center; justify-content: center;
     padding: 8px 10px; text-align: center; border: 2px solid var(--line); border-radius: 10px;
-    font-size: 14px; cursor: pointer; background: #fff;
+    font-size: 14px; cursor: pointer; background: var(--card);
   }
-  .book-item .tab.active { border-color: var(--primary); background: var(--primary); color: #fff; font-weight: 700; }
+  .book-item .tab.active { border-color: var(--primary); background: var(--primary); color: var(--card); font-weight: 700; }
   .book-item .tab-row { display: flex; gap: 10px; }
   .book-item .tab-row input {
     flex: 1; min-height: 44px; border: 1px solid var(--border); border-radius: 10px;
-    padding: 10px 12px; font-size: 16px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box;
+    padding: 10px 12px; font-size: 16px; outline: none; background: var(--card); font-family: inherit; box-sizing: border-box;
   }
   .book-item .tab-row input:focus { border-color: var(--primary); }
   .book-item .tab-row .add-btn { min-height: 44px; }
-  .book-item .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #f0f0f0; color: #555; margin-right: 6px; }
-  .book-item .badge.reading  { background: #e3f2fd; color: #0d47a1; }
-  .book-item .badge.plan     { background: #fff3e0; color: #e65100; }
-  .book-item .badge.finished { background: #e8f5e9; color: #1b5e20; }
-  .book-item .badge.unknown  { background: #f5f5f5; color: #555; }
+  .book-item .badge { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: var(--tint); color: var(--secondary); margin-right: 6px; }
+  .book-item .badge.reading  { background: var(--tint); color: var(--text); }
+  .book-item .badge.plan     { background: var(--tint); color: var(--secondary); }
+  .book-item .badge.finished { background: var(--text); color: var(--card); }
+  .book-item .badge.unknown  { background: var(--tint); color: var(--secondary); }
   .sync-form textarea {
     width: 100%; border: 1px solid var(--border); border-radius: 8px;
     padding: 10px 12px; font-size: 16px; outline: none; margin-bottom: 10px;
@@ -575,14 +626,14 @@
   /* 饮食记录 */
   .diet-form { display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; }
   .diet-form input, .diet-form .multi-trigger { font-size: 16px; }
-  .diet-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box; }
+  .diet-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: var(--card); font-family: inherit; box-sizing: border-box; }
   .diet-form input:focus { border-color: var(--primary); }
   @media (max-width: 640px) { .diet-form { grid-template-columns: 1fr 1fr; } }
   .sugar-dot { display: inline-block; width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
-  .sugar-green { background: #4caf50; }
-  .sugar-yellow { background: #ffc107; }
-  .sugar-red { background: #f44336; }
-  .diet-meal-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: #f0f0f0; color: #555; flex-shrink: 0; }
+  .sugar-green { background: var(--ok); }
+  .sugar-yellow { background: var(--warn); }
+  .sugar-red { background: var(--err); }
+  .diet-meal-tag { font-size: 12px; padding: 2px 8px; border-radius: 10px; background: var(--tint); color: var(--secondary); flex-shrink: 0; }
   .diet-date-view { margin-top: 0; margin-bottom: 4px; }
   .diet-date-view label { font-size: 14px; }
   .diet-date-view input[type="date"] { font-size: 16px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; margin-bottom: 12px; outline: none; font-family: inherit; box-sizing: border-box; }
@@ -598,7 +649,7 @@
   /* 衣服购物记录 */
   .clothing-form { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 10px; }
   .clothing-form input, .clothing-form .multi-trigger { font-size: 16px; }
-  .clothing-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: #fff; font-family: inherit; box-sizing: border-box; }
+  .clothing-form input { width: 100%; border: 1px solid var(--border); border-radius: 8px; padding: 9px 10px; outline: none; background: var(--card); font-family: inherit; box-sizing: border-box; }
   .clothing-form input:focus { border-color: var(--primary); }
   .clothing-form .row2 { grid-column: 1 / -1; }
   @media (max-width: 640px) { .clothing-form { grid-template-columns: 1fr 1fr; } }
@@ -613,7 +664,7 @@
   .clothing-month-group h3 { font-size: 14px; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
   .clothing-item { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 14px; }
   .clothing-item .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; padding: 2px 6px; border-radius: 6px; }
-  .clothing-item .del:hover { background: #fdecec; color: #d64545; }
+  .clothing-item .del:hover { background: var(--danger-soft); color: var(--danger); }
   .clothing-item .title { flex: 1; font-weight: 500; }
   .clothing-item .meta { color: var(--muted); font-size: 12px; }
   .clothing-item .price { color: var(--primary); font-weight: 700; flex-shrink: 0; }
@@ -622,7 +673,7 @@
   /* Tab 栏（页内切换） */
   .tab-bar { display: flex; gap: 0; margin-bottom: 14px; border: 2px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card); }
   .tab-bar-btn { flex: 1; padding: 10px 8px; border: none; background: transparent; font-size: 14px; color: var(--muted); cursor: pointer; font-family: inherit; transition: all .15s; white-space: nowrap; }
-  .tab-bar-btn.active { background: var(--primary); color: #fff; font-weight: 700; }
+  .tab-bar-btn.active { background: var(--primary); color: var(--card); font-weight: 700; }
   .tab-panel { display: none; }
   .tab-panel.active { display: block; }
 
@@ -671,18 +722,145 @@
     header { padding: 10px 12px; }
     header h1 { font-size: 15px; }
   }
+
+  /* === 统一组件类（第二轮精修：表单/按钮/工具类） === */
+  /* 全局 input/textarea/select 字号 —— 避免 iOS Safari 自动缩放 */
+  input, textarea, select { font-size: 16px; font-family: inherit; }
+  /* Form controls —— 替代重复 inline style */
+  .form-control {
+    width: 100%;
+    min-height: 44px;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--card);
+    color: var(--text);
+    font: inherit;
+    font-size: 16px;       /* 避免 iOS Safari 自动缩放 */
+    box-sizing: border-box;
+    -webkit-appearance: none;
+  }
+  .form-control:focus { outline: none; border-color: var(--primary); }
+  .form-textarea { min-height: 120px; resize: vertical; line-height: 1.6; }
+  .form-select { cursor: pointer; background-image: linear-gradient(45deg, transparent 50%, var(--muted) 50%), linear-gradient(135deg, var(--muted) 50%, transparent 50%); background-position: calc(100% - 14px) 50%, calc(100% - 9px) 50%; background-size: 5px 5px, 5px 5px; background-repeat: no-repeat; padding-right: 30px; }
+
+  /* Buttons —— 统一按钮基类 */
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    min-height: 40px; padding: 0 16px;
+    border-radius: var(--radius-md);
+    font: inherit; font-size: 14px;
+    cursor: pointer; border: 1px solid transparent;
+    transition: all var(--t-fast); box-sizing: border-box;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary); color: var(--card); border-color: var(--primary); }
+  .btn-primary:hover { opacity: .88; }
+  .btn-secondary { background: var(--tint); color: var(--text); }
+  .btn-secondary:hover { background: var(--border); }
+  .btn-ghost { background: transparent; color: var(--text); border-color: var(--border); }
+  .btn-ghost:hover { background: var(--tint); }
+  .btn-sm { min-height: 32px; padding: 0 10px; font-size: 12px; border-radius: var(--radius-sm); }
+  .btn-block { width: 100%; }
+
+  /* Utilities —— 替代重复 inline style */
+  .text-muted { color: var(--muted); }
+  .text-muted-sm { color: var(--muted); font-size: 14px; }
+  .text-muted-xs { color: var(--muted); font-size: 12px; }
+  .text-muted-400 { color: var(--muted); font-weight: 400; }
+  .text-center { text-align: center; }
+  .text-danger { color: var(--danger); }
+  .text-danger-bold { color: var(--danger); font-weight: 700; }
+  .row-gap { display: flex; gap: 8px; margin-top: 12px; }
+  .row-gap-end { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; }
+  .flex-wrap-cursor { flex-wrap: wrap; cursor: pointer; }
+  .tag-sm { flex: none; font-size: 12px; padding: 6px 10px; }
+  .section-label { margin: 12px 0 4px; font-size: 14px; color: var(--muted); }
+  .modal-compact { max-width: 360px; width: 90%; padding: 16px; }
+
+  /* Modal 移动端适配 —— 确保不超出屏幕、footer 可点击 */
+  @media (max-width: 640px) {
+    .modal-mask { padding: 0; }
+    .modal { width: calc(100% - 24px); max-width: none; max-height: calc(100dvh - 24px); border-radius: var(--radius-md); }
+    .modal.fullscreen { width: 100%; max-height: none; height: 100dvh; border-radius: 0; }
+    .modal-close { width: 40px; height: 40px; top: 6px; right: 6px; }
+  }
+
+  /* Diary note list item —— 提取自 inline style */
+  .diary-note-item { padding: 10px 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 8px; cursor: pointer; background: var(--card); }
+  .diary-note-row { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+  .diary-note-preview { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; line-height: 1.5; }
+  .diary-note-del { flex: none; border: none; background: none; color: var(--muted); font-size: 18px; cursor: pointer; padding: 0 4px; }
+  .diary-note-time { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* === 首页 Dashboard（Today / Progress / Quick Actions / Other Modules） === */
+  .dash-header { margin-bottom: 20px; }
+  .dash-header .greeting { font-size: 22px; font-weight: 700; color: var(--text); letter-spacing: .3px; }
+  .dash-header .date-line { font-size: 14px; color: var(--muted); margin-top: 2px; }
+  .dash-header .summary { font-size: 13px; color: var(--secondary); margin-top: 6px; }
+
+  .dash-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+  .dash-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 20px; }
+  .dash-card h3 { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 14px; letter-spacing: .5px; text-transform: uppercase; }
+
+  /* Today list */
+  .today-list-dash { display: flex; flex-direction: column; gap: 10px; }
+  .today-item-dash { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--text); }
+  .today-item-dash .check { width: 20px; height: 20px; border: 2px solid var(--border); border-radius: 6px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 12px; color: var(--card); }
+  .today-item-dash.done .check { background: var(--primary); border-color: var(--primary); }
+  .today-item-dash.done .label { color: var(--muted); text-decoration: line-through; }
+  .today-item-dash .label { flex: 1; }
+  .today-item-dash .tag { font-size: 11px; color: var(--muted); }
+  .today-empty { font-size: 14px; color: var(--muted); padding: 8px 0; }
+
+  /* Progress bars */
+  .prog-row { margin-bottom: 14px; }
+  .prog-row:last-child { margin-bottom: 0; }
+  .prog-head { display: flex; justify-content: space-between; font-size: 14px; margin-bottom: 6px; }
+  .prog-head .name { color: var(--text); font-weight: 600; }
+  .prog-head .val { color: var(--muted); }
+  .prog-bar { height: 8px; background: var(--tint); border-radius: 999px; overflow: hidden; }
+  .prog-fill { height: 100%; background: var(--primary); border-radius: 999px; transition: width var(--t-slow) var(--ease); }
+  .prog-fill.full { background: var(--primary); }
+  .prog-none { font-size: 13px; color: var(--muted); padding: 4px 0; }
+
+  /* Quick Actions */
+  .dash-quick { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .quick-btn { flex: 1; min-width: 80px; min-height: 44px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; transition: all var(--t-fast); display: flex; align-items: center; justify-content: center; gap: 4px; }
+  .quick-btn:hover { border-color: var(--primary); background: var(--tint); }
+
+  /* Other Modules */
+  .dash-modules h3 { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase; }
+  .modules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .module-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 8px; text-align: center; cursor: pointer; transition: all var(--t-fast); }
+  .module-card:hover { border-color: var(--primary); background: var(--tint); }
+  .module-card svg { width: 28px; height: 28px; display: block; margin: 0 auto 4px; color: var(--primary); }
+  .module-card .name { font-size: 12px; color: var(--secondary); }
+
+  @media (max-width: 768px) {
+    .dash-grid { grid-template-columns: 1fr; }
+    .dash-header .greeting { font-size: 19px; }
+    .modules-grid { grid-template-columns: repeat(3, 1fr); }
+    .quick-btn { font-size: 13px; min-width: 70px; }
+  }
+  @media (max-width: 480px) {
+    .modules-grid { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+    .module-card { padding: 10px 4px; }
+    .module-card svg { width: 24px; height: 24px; }
+    .module-card .name { font-size: 11px; }
+  }
 </style>
 </head>
 <body>
-<aside class="sidebar">
+<aside class="topbar">
   <div class="logo">
-    <svg width="30" height="30" viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <svg width="30" height="30" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M15 24 L11 9 L25 16"/>
       <path d="M49 24 L53 9 L39 16"/>
       <circle cx="32" cy="36" r="21"/>
-      <circle cx="24" cy="34" r="2.5" fill="#1f1f1f" stroke="none"/>
-      <circle cx="40" cy="34" r="2.5" fill="#1f1f1f" stroke="none"/>
-      <path d="M29 42 L35 42 L32 46 Z" fill="#1f1f1f" stroke="none"/>
+      <circle cx="24" cy="34" r="2.5" fill="currentColor" stroke="none"/>
+      <circle cx="40" cy="34" r="2.5" fill="currentColor" stroke="none"/>
+      <path d="M29 42 L35 42 L32 46 Z" fill="currentColor" stroke="none"/>
       <path d="M32 46 Q29 50 26 48"/>
       <path d="M32 46 Q35 50 38 48"/>
       <path d="M6 38 L15 39 M7 45 L15 44 M49 39 L58 38 M49 44 L57 45"/>
@@ -698,15 +876,42 @@
 <!-- 主页 -->
 <div id="page-home" class="page active">
 <div class="container">
-  <div class="home-grid">
-    <div class="home-card" data-page="todo"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="13" y="10" width="38" height="46" rx="7"/><path d="M23 32 L30 39 L42 25"/></svg></span><h3>待办事项</h3><p>日常/学习任务</p></div>
-    <div class="home-card" data-page="diary"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="13" y="10" width="38" height="46" rx="5"/><path d="M21 10 V56"/><path d="M29 24 H44"/><path d="M29 33 H44"/><path d="M29 42 H39"/></svg></span><h3>日记</h3><p>每日文字记录</p></div>
-    <div class="home-card" data-page="ielts"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="20" width="34" height="9" rx="2"/><rect x="14" y="30" width="38" height="9" rx="2"/><rect x="10" y="40" width="42" height="9" rx="2"/></svg></span><h3>雅思打卡</h3><p>题目/单词/周目标</p></div>
-    <div class="home-card" data-page="fitness"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M23 32 H41"/><rect x="8" y="23" width="7" height="18" rx="2"/><rect x="16" y="18" width="7" height="28" rx="2"/><rect x="41" y="18" width="7" height="28" rx="2"/><rect x="49" y="23" width="7" height="18" rx="2"/></svg></span><h3>健身打卡</h3><p>有氧/力量训练</p></div>
-    <div class="home-card" data-page="diet"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 10 V21"/><path d="M21 10 V21"/><path d="M27 10 V21"/><path d="M15 21 C15 27 27 27 27 21"/><path d="M21 27 V54"/><path d="M45 10 C40 17 40 25 45 30 V54"/></svg></span><h3>饮食记录</h3><p>每餐食物/血糖标记</p></div>
-    <div class="home-card" data-page="clothing"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 11 L11 19 L17 28 L20 25 V52 H44 V25 L47 28 L53 19 L42 11 C40 16 24 16 22 11 Z"/></svg></span><h3>衣服购物记录</h3><p>月度支出/尺码类型</p></div>
-    <div class="home-card" data-page="reading"><span class="emoji"><svg viewBox="0 0 64 64" fill="none" stroke="#1f1f1f" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M32 19 C27 14 19 13 12 15 V49 C19 47 27 48 32 52 C37 48 45 47 52 49 V15 C45 13 37 14 32 19 Z"/><path d="M32 19 V52"/></svg></span><h3>读书打卡</h3><p>进度/想读/已读完</p></div>
+
+  <!-- Today Header -->
+  <div class="dash-header">
+    <div class="greeting" id="dashGreeting">Good afternoon</div>
+    <div class="date-line" id="dashDateLine"></div>
+    <div class="summary" id="dashSummary"></div>
   </div>
+
+  <!-- Today + Progress 两列 -->
+  <div class="dash-grid">
+    <!-- Today 卡片 -->
+    <div class="dash-card">
+      <h3>Today</h3>
+      <div class="today-list-dash" id="dashTodayList"></div>
+    </div>
+    <!-- Progress 卡片 -->
+    <div class="dash-card">
+      <h3>This Week</h3>
+      <div id="dashProgress"></div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="dash-quick" id="dashQuick">
+    <button class="quick-btn" data-page="ielts">+ 雅思</button>
+    <button class="quick-btn" data-page="fitness">+ 健身</button>
+    <button class="quick-btn" data-page="diary">+ 日记</button>
+    <button class="quick-btn" data-page="todo">+ 待办</button>
+  </div>
+
+  <!-- Other Modules -->
+  <div class="dash-modules">
+    <h3>Other Modules</h3>
+    <div class="modules-grid" id="dashModules"></div>
+  </div>
+
 </div>
 </div>
 
@@ -963,8 +1168,8 @@
         <input type="date" id="dietViewDate">
         <div class="stat-tabs" id="dietDateTabs" style="margin-top:8px;gap:6px">
           <button class="stat-tab active" data-filter="day">📅 当天</button>
-          <button class="stat-tab" data-filter="month" style="flex:none;font-size:12px;padding:6px 10px">📆 本月</button>
-          <button class="stat-tab" data-filter="red" style="flex:none;font-size:12px;padding:6px 10px">🔴 升糖快</button>
+          <button class="stat-tab tag-sm" data-filter="month">📆 本月</button>
+          <button class="stat-tab tag-sm" data-filter="red">🔴 升糖快</button>
         </div>
         <div class="today-list" id="dietDateList"></div>
       </div>
@@ -1115,9 +1320,9 @@
   <!-- Tab: 记录 -->
   <div class="tab-panel active" id="diaryTab-write">
     <div class="card no-collapse">
-      <h2>📝 记录 <span id="diaryEditTag" style="font-size:13px;color:var(--muted);font-weight:normal"></span></h2>
-      <textarea id="diaryText" placeholder="今天发生了什么？心情如何？想到什么写什么～" rows="6" style="font-size:16px;width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:10px;resize:vertical;font-family:inherit;line-height:1.6;background:var(--card);color:var(--text);outline:none"></textarea>
-      <div style="margin-top:8px;text-align:right;display:flex;gap:8px;justify-content:flex-end">
+      <h2>📝 记录 <span id="diaryEditTag" class="text-muted-400" style="font-size:13px"></span></h2>
+      <textarea id="diaryText" class="form-control form-textarea" placeholder="今天发生了什么？心情如何？想到什么写什么～" rows="6"></textarea>
+      <div class="row-gap-end">
         <button class="add-btn" id="diaryTextCancel" style="display:none">取消</button>
         <button class="add-btn" id="diaryTextSave">➕ 添加</button>
       </div>
@@ -1133,7 +1338,7 @@
         <div class="month" id="diaryDateLabel"></div>
         <button id="diaryNextDay">›</button>
       </div>
-      <div style="text-align:center;margin:4px 0 8px">
+      <div class="text-center" style="margin:4px 0 8px">
         <input type="date" id="diaryDatePick" class="checkin-date" title="点击跳转到任意一天">
         <button class="add-btn" id="diaryBackToday" style="margin-left:8px">回到今天</button>
       </div>
@@ -1146,7 +1351,7 @@
     <div class="card no-collapse">
       <h2>🔍 搜索日记</h2>
       <div class="search-row">
-        <input id="diarySearch" placeholder="搜索日记文字关键词（不区分大小写）" style="font-size:16px">
+        <input id="diarySearch" placeholder="搜索日记文字关键词（不区分大小写）">
       </div>
       <div id="diarySearchList" style="margin-top:10px"></div>
     </div>
@@ -1176,7 +1381,7 @@
           <span class="todo-date-label" id="dailyTodoDateLabel">今天</span>
         </button>
         <input type="date" id="dailyTodoAddDate" class="checkin-date" style="display:none">
-        <input id="dailyTodoAdd" placeholder="新增日常任务" style="font-size:16px">
+        <input id="dailyTodoAdd" placeholder="新增日常任务">
         <button class="add-btn" id="dailyTodoAddBtn">+ 添加</button>
       </div>
       <div id="dailyTodoList"></div>
@@ -1193,7 +1398,7 @@
           <span class="todo-date-label" id="studyTodoDateLabel">今天</span>
         </button>
         <input type="date" id="studyTodoAddDate" class="checkin-date" style="display:none">
-        <input id="studyTodoAdd" placeholder="新增学习任务" style="font-size:16px">
+        <input id="studyTodoAdd" placeholder="新增学习任务">
         <button class="add-btn" id="studyTodoAddBtn">+ 添加</button>
       </div>
       <div id="studyTodoList"></div>
@@ -1209,13 +1414,13 @@
         <div class="month" id="todoDateLabel"></div>
         <button id="todoNextDay">›</button>
       </div>
-      <div style="text-align:center;margin:4px 0 8px">
+      <div class="text-center" style="margin:4px 0 8px">
         <input type="date" id="todoDatePick" class="checkin-date" title="点击跳转到任意一天">
         <button class="add-btn" id="todoBackToday" style="margin-left:8px">回到今天</button>
       </div>
-      <h3 style="margin:8px 0 4px;font-size:14px;color:var(--muted)">🏠 日常任务</h3>
+      <h3 class="section-label" style="margin:8px 0 4px">🏠 日常任务</h3>
       <div id="todoDateDailyList"></div>
-      <h3 style="margin:12px 0 4px;font-size:14px;color:var(--muted)">📚 学习任务</h3>
+      <h3 class="section-label">📚 学习任务</h3>
       <div id="todoDateStudyList"></div>
     </div>
   </div>
@@ -1223,7 +1428,7 @@
 
 <!-- 待办日期选择日历弹窗 -->
 <div class="modal-mask" id="todoCalMask">
-  <div class="modal" style="max-width:360px;width:90%;padding:16px">
+  <div class="modal modal-compact">
     <h3 style="margin:0 0 10px;font-size:15px" id="todoCalTitle">选择任务日期</h3>
     <div class="cal-header">
       <button id="todoCalPrev">‹</button>
@@ -1250,9 +1455,9 @@
         <input id="editClothingNote" class="row2" placeholder="备注（选填）">
       </div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <div class="row-gap">
       <button class="add-btn" id="editClothingSave" style="flex:1">💾 保存修改</button>
-      <button class="add-btn" id="editClothingDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+      <button class="add-btn btn-danger" id="editClothingDelete" style="flex:none">🗑 删除</button>
     </div>
     <button class="modal-close" id="editClothingClose">×</button>
   </div>
@@ -1263,11 +1468,11 @@
   <div class="modal">
     <h3>✏️ 编辑日记记录</h3>
     <div class="modal-body">
-      <textarea id="diaryEditText" class="row2" style="width:100%;min-height:120px;font-size:16px;border:1px solid var(--border);border-radius:10px;padding:10px;resize:vertical" placeholder="写下今天..."></textarea>
+      <textarea id="diaryEditText" class="row2 form-control form-textarea" placeholder="写下今天..."></textarea>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <div class="row-gap">
       <button class="add-btn" id="diaryEditSave" style="flex:1">💾 保存修改</button>
-      <button class="add-btn" id="diaryEditDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+      <button class="add-btn btn-danger" id="diaryEditDelete" style="flex:none">🗑 删除</button>
     </div>
     <button class="modal-close" id="diaryEditClose">×</button>
   </div>
@@ -1281,7 +1486,7 @@
       <div class="clothing-form" style="margin-top:0">
         <input id="editDietFood" placeholder="食物名称">
         <input type="date" id="editDietDate" class="checkin-date">
-        <select id="editDietMeal" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)">
+        <select id="editDietMeal" class="form-control form-select">
           <option value="">餐次（选填）</option>
           <option value="早餐">早餐</option>
           <option value="午餐">午餐</option>
@@ -1289,7 +1494,7 @@
           <option value="加餐">加餐</option>
           <option value="其他">其他</option>
         </select>
-        <select id="editDietSugar" style="width:100%;padding:10px 12px;border:1px solid var(--border);border-radius:10px;font-size:16px;font-family:inherit;background:var(--card);color:var(--text)">
+        <select id="editDietSugar" class="form-control form-select">
           <option value="green">🟢 升糖慢</option>
           <option value="yellow">🟡 一般</option>
           <option value="red">🔴 升糖快</option>
@@ -1297,9 +1502,9 @@
         <input id="editDietNote" class="row2" placeholder="备注（选填）">
       </div>
     </div>
-    <div style="display:flex;gap:8px;margin-top:12px">
+    <div class="row-gap">
       <button class="add-btn" id="editDietSave" style="flex:1">💾 保存修改</button>
-      <button class="add-btn" id="editDietDelete" style="flex:none;background:#e74c3c;color:#fff">🗑 删除</button>
+      <button class="add-btn btn-danger" id="editDietDelete" style="flex:none">🗑 删除</button>
     </div>
     <button class="modal-close" id="editDietClose">×</button>
   </div>
@@ -1416,15 +1621,15 @@
   <div class="modal">
     <h3 id="bookMaskTitle">➕ 添加书籍</h3>
     <div class="sync-form">
-      <label class="goal-row">📕 书名 <span style="color:#c0392b">*</span><input id="bTitle" placeholder="书名，如：三体" style="font-size:16px"></label>
-      <label class="goal-row">✍️ 作者<input id="bAuthor" placeholder="选填" style="font-size:16px"></label>
-      <label class="goal-row">📄 总页数<input id="bPages" type="number" min="0" placeholder="正整数，正在读时必填" style="font-size:16px"></label>
+      <label class="goal-row">📕 书名 <span style="color:var(--danger)">*</span><input id="bTitle" placeholder="书名，如：三体"></label>
+      <label class="goal-row">✍️ 作者<input id="bAuthor" placeholder="选填"></label>
+      <label class="goal-row">📄 总页数<input id="bPages" type="number" min="0" placeholder="正整数，正在读时必填"></label>
       <label class="goal-row">📌 加入到
         <button type="button" class="multi-trigger" id="bStatusTrigger"></button>
       </label>
-      <label class="goal-row">🚀 开始日期<input id="bStartDate" type="date" class="checkin-date" placeholder="选填，正在读/已读完可设置" style="font-size:16px"></label>
-      <label class="goal-row">✅ 读完日期<input id="bFinishDate" type="date" class="checkin-date" placeholder="选填，已读完可设置" style="font-size:16px"></label>
-      <label class="goal-row">📝 备注<textarea id="bNotes" placeholder="选填，短评/购书日期等" rows="2" style="font-size:16px"></textarea></label>
+      <label class="goal-row">🚀 开始日期<input id="bStartDate" type="date" class="checkin-date" placeholder="选填，正在读/已读完可设置"></label>
+      <label class="goal-row">✅ 读完日期<input id="bFinishDate" type="date" class="checkin-date" placeholder="选填，已读完可设置"></label>
+      <label class="goal-row">📝 备注<textarea id="bNotes" placeholder="选填，短评/购书日期等" rows="2"></textarea></label>
     </div>
     <div class="row2">
       <button class="add-btn" id="bookSave">💾 保存</button>
@@ -1441,7 +1646,7 @@
     <h3 id="startMaskTitle">📖 开始读</h3>
     <div class="sync-form">
       <p class="sync-tip" id="startTip">请填写本书总页数，开始后将进入「正在读」分组。</p>
-      <label class="goal-row">📄 总页数 <span style="color:#c0392b">*</span><input id="startPages" type="number" min="1" placeholder="必须 > 0" style="font-size:16px"></label>
+      <label class="goal-row">📄 总页数 <span style="color:var(--danger)">*</span><input id="startPages" type="number" min="1" placeholder="必须 > 0"></label>
     </div>
     <div class="row2">
       <button class="add-btn" id="startOk">🚀 确认开读</button>
@@ -1851,7 +2056,7 @@ function renderToday() {
       <span class="title">${itemTitle(it)}</span>
       ${qtypeTags(it)}
       ${it.score ? `<span class="score">${it.score}</span>` : ''}
-      ${it.note ? `<span class="score" style="color:var(--muted);font-weight:400">${it.note}</span>` : ''}
+      ${it.note ? `<span class="score text-muted-400">${it.note}</span>` : ''}
       <button class="del" data-idx="${i}" title="删除">×</button>
     </div>`).join('');
   box.querySelectorAll('.del').forEach(btn =>
@@ -2157,7 +2362,7 @@ function openModal(key) {
         <span>${itemTitle(it)}</span>
         ${qtypeTags(it)}
         ${it.score ? `<span class="score">${it.score}</span>` : ''}
-        ${it.note ? `<span class="score" style="color:var(--muted)">${it.note}</span>` : ''}
+        ${it.note ? `<span class="score text-muted">${it.note}</span>` : ''}
       </div>`).join('');
   }
   document.getElementById('modalMask').classList.add('show');
@@ -2395,7 +2600,7 @@ function renderFitToday() {
     <div class="item">
       <span class="badge ${it.category}">${it.category === 'cardio' ? '🏃 有氧' : '🏋️ 力量'}</span>
       <span class="title">${fitItemText(it)}</span>
-      ${it.note ? `<span class="score" style="color:var(--muted);font-weight:400">${it.note}</span>` : ''}
+      ${it.note ? `<span class="score text-muted-400">${it.note}</span>` : ''}
       <button class="del" data-idx="${i}" title="删除">×</button>
     </div>`).join('') : '<div class="empty-tip">今天还没运动，来打个卡吧～</div>';
   box.querySelectorAll('.del').forEach(btn =>
@@ -2529,7 +2734,7 @@ function openFitModal(key) {
       <div class="m-item">
         <span class="badge ${it.category}">${it.category === 'cardio' ? '🏃' : '🏋️'}</span>
         <span>${fitItemText(it)}</span>
-        ${it.note ? `<span class="score" style="color:var(--muted)">${it.note}</span>` : ''}
+        ${it.note ? `<span class="score text-muted">${it.note}</span>` : ''}
       </div>`).join('');
   }
   document.getElementById('modalMask').classList.add('show');
@@ -2679,11 +2884,11 @@ function renderDietToday() {
   const box = document.getElementById('dietTodayList');
   if (!box) return;
   box.innerHTML = list.length ? list.map((it, i) => `
-    <div class="item diet-item-click" data-date="${key}" data-id="${it.id}" style="flex-wrap:wrap;cursor:pointer">
+    <div class="item diet-item-click flex-wrap-cursor" data-date="${key}" data-id="${it.id}">
       <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
       ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
       <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
-      <span style="color:var(--muted);font-size:14px">✏️</span>
+      <span class="text-muted-sm">✏️</span>
     </div>`).join('') : '<div class="empty-tip">今天还没记录饮食，来记一笔吧～</div>';
   box.querySelectorAll('.diet-item-click').forEach(el =>
     el.addEventListener('click', () => openDietEdit(el.dataset.date, el.dataset.id)));
@@ -2692,11 +2897,11 @@ function renderDietToday() {
 let dietDateFilter = 'day';
 
 function dietItemHtml(date, it, idx) {
-  return `<div class="item diet-item-click" data-date="${date}" data-id="${it.id}" style="flex-wrap:wrap;cursor:pointer">
+  return `<div class="item diet-item-click flex-wrap-cursor" data-date="${date}" data-id="${it.id}">
     <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
     ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
     <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
-    <span style="color:var(--muted);font-size:14px">✏️</span>
+    <span class="text-muted-sm">✏️</span>
   </div>`;
 }
 
@@ -2936,7 +3141,7 @@ function clothingItemHtml(it, showDate) {
   return `<div class="clothing-item" data-id="${it.id}" style="cursor:pointer">
     <span class="title">${it.name}<span class="meta">${showDate && it.date ? ' · ' + it.date.slice(5) : ''}${it.brand ? ' · ' + it.brand : ''} · ${it.type}${it.size ? ' · ' + it.size : ''}${it.note ? ' · ' + it.note : ''}</span></span>
     <span class="price">¥${it.price || 0}</span>
-    <span style="color:var(--muted);font-size:14px">✏️</span>
+    <span class="text-muted-sm">✏️</span>
   </div>`;
 }
 function bindClothingDel(box) {
@@ -3080,14 +3285,14 @@ function bookCardHtml(b) {
   const pro = bookProgress(b);
   const badge = `<span class="badge ${k === 'reading' ? 'reading' : k === 'plan' ? 'plan' : k === 'finished' ? 'finished' : 'unknown'}">${statusLabel(k)}</span>`;
   const pctText = pro.dirty
-    ? `<span class="pct" style="color:#c0392b">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
+    ? `<span class="pct text-danger">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
     : `<span class="pct">${pro.pct}%</span>`;
   const prog = (k !== 'plan')
     ? `<div class="progress">
          <div class="p-text"><span>${pro.cur} / ${pro.total || 0} 页</span>${pctText}</div>
          <div class="bar"><div class="bar-fill" style="width:${Math.min(100, pro.pct)}%"></div></div>
        </div>`
-    : `<div class="p-text" style="margin-top:6px;color:var(--muted);font-size:12px">未开始 · 点击「开始读」后进入正在读</div>`;
+    : `<div class="p-text text-muted-xs" style="margin-top:6px">未开始 · 点击「开始读」后进入正在读</div>`;
   const readForm = (k === 'reading')
     ? `<div class="read-form">
          <div class="tabs">
@@ -3208,13 +3413,13 @@ function renderBooksAll() {
       const box = document.getElementById('finishedList');
       const warn = document.createElement('div');
       warn.className = 'book-item';
-      warn.innerHTML = `<div class="title" style="font-size:14px;color:#c0392b;font-weight:700">⚠️ 以下 ${unknowns.length} 本书状态异常，请到编辑里手动改为「想读 / 正在读 / 已读完」：</div>` +
+      warn.innerHTML = `<div class="title text-danger-bold" style="font-size:14px">⚠️ 以下 ${unknowns.length} 本书状态异常，请到编辑里手动改为「想读 / 正在读 / 已读完」：</div>` +
         unknowns.map(b => {
           const k = statusKey(b.status);
           const pro = bookProgress(b);
           const badge = `<span class="badge unknown">${statusLabel(k)}</span>`;
           const pctText = pro.dirty
-            ? `<span class="pct" style="color:#c0392b">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
+            ? `<span class="pct text-danger">${pro.pct}%（数据异常：totalPages 为 0/缺失）</span>`
             : `<span class="pct">${pro.pct}%</span>`;
           return `<div class="book-item" data-bid="${b.id}" style="margin-top:10px">
             <div class="row-a">
@@ -3471,12 +3676,12 @@ function renderDiaryAll() {
         const t = new Date(n._ts || Date.now());
         const timeStr = t.getHours().toString().padStart(2,'0') + ':' + t.getMinutes().toString().padStart(2,'0');
         const preview = String(n.text).split(/\n/)[0].slice(0, 40);
-        return `<div class="diary-note-item" data-id="${n.id}" style="padding:10px 12px;border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;background:var(--card)">
-          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px">
-            <div style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:15px;line-height:1.5">${preview.replace(/</g,'&lt;')}</div>
-            <button class="diary-note-del" data-id="${n.id}" style="flex:none;border:none;background:none;color:var(--muted);font-size:18px;cursor:pointer;padding:0 4px">×</button>
+        return `<div class="diary-note-item" data-id="${n.id}">
+          <div class="diary-note-row">
+            <div class="diary-note-preview">${preview.replace(/</g,'&lt;')}</div>
+            <button class="diary-note-del" data-id="${n.id}">×</button>
           </div>
-          <div style="font-size:12px;color:var(--muted);margin-top:4px">${timeStr}</div>
+          <div class="diary-note-time">${timeStr}</div>
         </div>`;
       }).join('');
       // 点击记录 → 弹窗编辑
@@ -3932,6 +4137,130 @@ document.querySelectorAll('.nav-item').forEach(item => {
 document.querySelectorAll('.home-card').forEach(card => {
   card.addEventListener('click', () => switchPage(card.dataset.page));
 });
+
+/* ---------- 首页 Dashboard（聚合现有数据，不新建第二套数据源） ---------- */
+function renderDashboard() {
+  const now = new Date();
+  const h = now.getHours();
+  let greeting = 'Good morning';
+  if (h >= 12 && h < 18) greeting = 'Good afternoon';
+  else if (h >= 18 || h < 5) greeting = 'Good evening';
+  document.getElementById('dashGreeting').textContent = greeting;
+  document.getElementById('dashDateLine').textContent =
+    now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
+
+  const tk = todayKey();
+  const items = [];
+
+  // --- 从现有 Todo 数据读取今日待办 ---
+  const todoEnt = todoStore.entries[tk] || { daily: [], study: [] };
+  const allTodos = [...(todoEnt.daily || []), ...(todoEnt.study || [])];
+  if (allTodos.length > 0) {
+    const doneN = allTodos.filter(t => t.done).length;
+    items.push({ label: `待办 ${doneN}/${allTodos.length}`, done: doneN === allTodos.length, tag: 'Todo' });
+  }
+
+  // --- 从现有 IELTS 数据读取今日打卡 ---
+  const ieltsToday = store.records[tk] || [];
+  const wordToday = store.words[tk] || [];
+  if (ieltsToday.length > 0 || wordToday.length > 0) {
+    let parts = [];
+    if (ieltsToday.length) parts.push(`${ieltsToday.length} 篇`);
+    if (wordToday.length) parts.push(`${wordToday.reduce((s,w)=>s+w.count,0)} 词`);
+    items.push({ label: `雅思 ${parts.join(' · ')}`, done: true, tag: 'IELTS' });
+  } else {
+    items.push({ label: '雅思打卡', done: false, tag: 'IELTS' });
+  }
+
+  // --- 从现有 Fitness 数据读取今日打卡 ---
+  const fitToday = fitStore.records[tk] || [];
+  if (fitToday.length > 0) {
+    items.push({ label: `健身 ${fitToday.length} 项`, done: true, tag: 'Fitness' });
+  } else {
+    items.push({ label: '健身打卡', done: false, tag: 'Fitness' });
+  }
+
+  // --- 从现有 Diary 数据读取今日日记 ---
+  const diaryEnt = getDiaryEntry(tk);
+  if (diaryEnt.notes.length > 0) {
+    items.push({ label: `日记 ${diaryEnt.notes.length} 篇`, done: true, tag: 'Diary' });
+  } else {
+    items.push({ label: '日记', done: false, tag: 'Diary' });
+  }
+
+  const completed = items.filter(i => i.done).length;
+  document.getElementById('dashSummary').textContent = `Today · ${completed} / ${items.length} completed`;
+
+  const todayList = document.getElementById('dashTodayList');
+  if (items.length === 0) {
+    todayList.innerHTML = '<div class="today-empty">今天暂无任务</div>';
+  } else {
+    todayList.innerHTML = items.map(it => `
+      <div class="today-item-dash ${it.done ? 'done' : ''}">
+        <span class="check">${it.done ? '✓' : ''}</span>
+        <span class="label">${it.label}</span>
+        <span class="tag">${it.tag}</span>
+      </div>`).join('');
+  }
+
+  // --- 周进度：从现有 weekRange + store + fitStore 计算 ---
+  const days = weekRange();
+  const weekSet = new Set(days);
+
+  // IELTS 各类型
+  const ieltsCnt = { reading: 0, listening: 0, writing: 0, speaking: 0 };
+  days.forEach(k => (store.records[k] || []).forEach(it => { const tc = typeClass(it.type); if (ieltsCnt[tc] !== undefined) ieltsCnt[tc]++; }));
+  const ieltsTotal = ieltsCnt.reading + ieltsCnt.listening + ieltsCnt.writing + ieltsCnt.speaking;
+  const ieltsGoal = (store.goals.reading||0) + (store.goals.listening||0) + (store.goals.writing||0) + (store.goals.speaking||0);
+
+  // 单词
+  let weekWords = 0;
+  Object.keys(store.words).forEach(k => { if (weekSet.has(k)) weekWords += store.words[k].reduce((s,w)=>s+w.count,0); });
+
+  // Fitness
+  let cardioMin = 0, strTimes = 0;
+  days.forEach(k => (fitStore.records[k] || []).forEach(it => {
+    if (it.category === 'cardio') cardioMin += it.duration || 0;
+    else strTimes += it.times || 0;
+  }));
+
+  // 渲染进度条
+  let progHtml = '';
+  function progRow(name, done, goal, unit) {
+    if (goal > 0) {
+      const pct = Math.min(100, Math.round(done / goal * 100));
+      return `<div class="prog-row">
+        <div class="prog-head"><span class="name">${name}</span><span class="val">${done} / ${goal} ${unit}</span></div>
+        <div class="prog-bar"><div class="prog-fill ${pct >= 100 ? 'full' : ''}" style="width:${pct}%"></div></div>
+      </div>`;
+    }
+    return `<div class="prog-row"><div class="prog-head"><span class="name">${name}</span></div><div class="prog-none">尚未设置目标</div></div>`;
+  }
+  progHtml += progRow('雅思', ieltsTotal, ieltsGoal, '篇');
+  progHtml += progRow('单词', weekWords, store.wordGoal, '个');
+  progHtml += progRow('有氧', cardioMin, fitStore.goals.minutes, '分钟');
+  progHtml += progRow('力量', strTimes, fitStore.goals.times, '次');
+  document.getElementById('dashProgress').innerHTML = progHtml;
+
+  // --- Other Modules：原有 7 个入口，视觉权重降低 ---
+  const mods = [
+    { page: 'todo', name: '待办', svg: '<rect x="13" y="10" width="38" height="46" rx="7"/><path d="M23 32 L30 39 L42 25"/>' },
+    { page: 'diary', name: '日记', svg: '<rect x="13" y="10" width="38" height="46" rx="5"/><path d="M21 10 V56"/><path d="M29 24 H44"/><path d="M29 33 H44"/><path d="M29 42 H39"/>' },
+    { page: 'ielts', name: '雅思', svg: '<rect x="9" y="20" width="34" height="9" rx="2"/><rect x="14" y="30" width="38" height="9" rx="2"/><rect x="10" y="40" width="42" height="9" rx="2"/>' },
+    { page: 'fitness', name: '健身', svg: '<path d="M23 32 H41"/><rect x="8" y="23" width="7" height="18" rx="2"/><rect x="16" y="18" width="7" height="28" rx="2"/><rect x="41" y="18" width="7" height="28" rx="2"/><rect x="49" y="23" width="7" height="18" rx="2"/>' },
+    { page: 'diet', name: '饮食', svg: '<path d="M15 10 V21"/><path d="M21 10 V21"/><path d="M27 10 V21"/><path d="M15 21 C15 27 27 27 27 21"/><path d="M21 27 V54"/><path d="M45 10 C40 17 40 25 45 30 V54"/>' },
+    { page: 'clothing', name: '衣服', svg: '<path d="M22 11 L11 19 L17 28 L20 25 V52 H44 V25 L47 28 L53 19 L42 11 C40 16 24 16 22 11 Z"/>' },
+    { page: 'reading', name: '读书', svg: '<path d="M32 19 C27 14 19 13 12 15 V49 C19 47 27 48 32 52 C37 48 45 47 52 49 V15 C45 13 37 14 32 19 Z"/><path d="M32 19 V52"/>' },
+  ];
+  document.getElementById('dashModules').innerHTML = mods.map(m =>
+    `<div class="module-card" data-page="${m.page}"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${m.svg}</svg><div class="name">${m.name}</div></div>`).join('');
+
+  // 绑定点击事件
+  document.querySelectorAll('#dashModules .module-card, #dashQuick .quick-btn').forEach(el => {
+    el.addEventListener('click', () => switchPage(el.dataset.page));
+  });
+}
+renderDashboard();
 
 (function(){ const el = document.getElementById('fitTodayText'); if (el) el.textContent =
   new Date().toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }); })();
