@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Slow Learner · 雅思 & 健身</title>
 <link rel="apple-touch-icon" href="icon.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -4343,12 +4343,25 @@ document.querySelectorAll('.container').forEach(c => {
 
 /* ---------- 键盘弹出时防止页面跳动 ---------- */
 (function() {
-  // 输入框聚焦时，延迟滚动到可见区域
+  var savedScroll = 0;
+  // 输入框聚焦时，保存滚动位置，延迟滚动到可见区域
   document.addEventListener('focusin', function(e) {
     if (e.target.matches('input, textarea, select, [contenteditable]')) {
+      savedScroll = window.scrollY;
       setTimeout(function() {
-        e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        var rect = e.target.getBoundingClientRect();
+        if (rect.bottom > window.innerHeight * 0.55) {
+          e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+        }
       }, 300);
+    }
+  });
+  // 键盘收起时，恢复到之前的滚动位置
+  document.addEventListener('focusout', function(e) {
+    if (e.target.matches('input, textarea, select, [contenteditable]')) {
+      setTimeout(function() {
+        window.scrollTo({ top: savedScroll, behavior: 'smooth' });
+      }, 100);
     }
   });
 })();
