@@ -824,12 +824,8 @@
   .prog-fill.full { background: var(--primary); }
   .prog-none { font-size: 13px; color: var(--muted); padding: 4px 0; }
 
-  /* Quick Actions */
-  .dash-quick { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
-  .quick-btn { flex: 1; min-width: 80px; min-height: 44px; padding: 0 14px; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--card); color: var(--text); font: inherit; font-size: 14px; cursor: pointer; transition: all var(--t-fast); display: flex; align-items: center; justify-content: center; gap: 4px; }
-  .quick-btn:hover { border-color: var(--primary); background: var(--tint); }
-
   /* Other Modules */
+  .dash-modules { margin-bottom: 24px; }
   .dash-modules h3 { font-size: 14px; font-weight: 700; color: var(--muted); margin-bottom: 12px; letter-spacing: .5px; text-transform: uppercase; }
   .modules-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
   .module-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-md); padding: 14px 8px; text-align: center; cursor: pointer; transition: all var(--t-fast); }
@@ -842,7 +838,6 @@
     .dash-header { margin-bottom: 16px; }
     .dash-header .greeting { font-size: 19px; }
     .modules-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .quick-btn { font-size: 13px; min-width: 70px; }
     .dash-card { padding: 14px; min-width: 0; }
     .dash-card h3 { font-size: 12px; margin-bottom: 10px; }
     .today-item-dash { font-size: 13px; gap: 8px; flex-wrap: wrap; }
@@ -854,8 +849,7 @@
     .module-card { padding: 12px 6px; }
     .module-card svg { width: 26px; height: 26px; }
     .module-card .name { font-size: 11px; }
-    .dash-modules { margin-bottom: 16px; }
-    .dash-quick { margin-bottom: 16px; }
+    .dash-modules { margin-bottom: 20px; }
   }
 </style>
 </head>
@@ -896,14 +890,6 @@
   <div class="dash-modules">
     <h3>Modules</h3>
     <div class="modules-grid" id="dashModules"></div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="dash-quick" id="dashQuick">
-    <button class="quick-btn" data-page="ielts">+ 雅思</button>
-    <button class="quick-btn" data-page="fitness">+ 健身</button>
-    <button class="quick-btn" data-page="diary">+ 日记</button>
-    <button class="quick-btn" data-page="todo">+ 待办</button>
   </div>
 
   <!-- Today + Progress 两列 -->
@@ -4278,29 +4264,6 @@ function renderDashboard() {
   document.querySelectorAll('#dashModules .module-card').forEach(el => {
     el.addEventListener('click', () => switchPage(el.dataset.page));
   });
-  // Quick Actions：尽可能定位到对应页面的「今日记录 / 新增」区域
-  document.querySelectorAll('#dashQuick .quick-btn').forEach(el => {
-    el.addEventListener('click', () => {
-      const page = el.dataset.page;
-      switchPage(page);
-      // 复用现有 tab 切换，定位到今日/记录区域
-      setTimeout(() => {
-        const map = {
-          ielts: '#page-ielts .tab-bar-btn[data-tab="today"]',   // IELTS 今日打卡
-          fitness: '#page-fitness .tab-bar-btn[data-tab="today"]', // Fitness 今日训练
-          diary: '#page-diary .tab-bar-btn[data-tab="write"]',    // 日记记录区
-          todo: '#page-todo .tab-bar-btn[data-tab="daily"]'       // 待办日常区
-        };
-        const btn = document.querySelector(map[page]);
-        if (btn) btn.click();
-        // 定位后聚焦输入框（diary 的输入框存在时聚焦）
-        if (page === 'diary') {
-          const ta = document.getElementById('diaryText');
-          if (ta) setTimeout(() => ta.focus(), 60);
-        }
-      }, 60);
-    });
-  });
 }
 renderDashboard();
 
@@ -4712,29 +4675,120 @@ document.querySelectorAll('.container').forEach(c => {
   c.appendChild(f);
 });
 
-/* ---------- 键盘弹出时防止页面跳动 ---------- */
+/* ---------- 移动端键盘弹出/收起时的滚动位置管理 ---------- */
 (function() {
-  var savedScroll = 0;
-  // 输入框聚焦时，保存滚动位置，延迟滚动到可见区域
+  var savedScrollY = 0;
+  var hasSaved = false;
+  var keyboardOpen = false;
+  var prevVpHeight = window.innerHeight;
+
+  // 判断元素是否需要触发键盘
+  function isInputEl(el) {
+    if (!el) return false;
+    var tag = el.tagName;
+    if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT') return true;
+    if (el.isContentEditable) return true;
+    return false;
+  }
+  // 判断是否是 select / date / time / color 等不产生键盘的控件
+  function isSoftInput(el) {
+    if (!el || el.tagName !== 'INPUT') return false;
+    var t = (el.type || '').toLowerCase();
+    return ['date','time','month','week','datetime-local','color','range','file','checkbox','radio','button','submit','image','reset'].indexOf(t) === -1;
+  }
+
+  // focusin：保存键盘弹出前的滚动位置
   document.addEventListener('focusin', function(e) {
-    if (e.target.matches('input, textarea, select, [contenteditable]')) {
-      savedScroll = window.scrollY;
-      setTimeout(function() {
-        var rect = e.target.getBoundingClientRect();
-        if (rect.bottom > window.innerHeight * 0.55) {
-          e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    if (!isInputEl(e.target)) return;
+    // 只在真正会弹出软键盘的元素上保存
+    if (e.target.tagName === 'INPUT' && !isSoftInput(e.target)) {
+      // date / select 等不触发软键盘，但仍可能改变页面 scroll
+      // 仍然保存位置，以便恢复
+    }
+    if (!hasSaved) {
+      savedScrollY = window.scrollY;
+      hasSaved = true;
+    }
+    keyboardOpen = true;
+    // 适当把输入框滚动到可见区域（避免被键盘遮挡）
+    setTimeout(function() {
+      var rect = e.target.getBoundingClientRect();
+      // 当输入框在屏幕下半部分时才滚动
+      if (rect.bottom > window.innerHeight * 0.6) {
+        e.target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+      }
+    }, 320);
+  }, true);
+
+  // 通过 visualViewport 判断键盘是否真正收起
+  if (window.visualViewport) {
+    var vv = window.visualViewport;
+    vv.addEventListener('resize', function() {
+      var curH = vv.height;
+      // 视口高度恢复到接近初始值 → 键盘收起
+      if (keyboardOpen && curH > prevVpHeight * 0.9 && curH >= window.innerHeight * 0.9) {
+        keyboardOpen = false;
+        if (hasSaved) {
+          var target = savedScrollY;
+          hasSaved = false;
+          // 直接定位，不使用 smooth，避免动画干扰
+          setTimeout(function() { window.scrollTo(0, target); }, 50);
         }
-      }, 300);
-    }
-  });
-  // 键盘收起时，恢复到之前的滚动位置
+      }
+      prevVpHeight = curH;
+    });
+  }
+
+  // focusout：作为 visualViewport 不支持时的备选方案
   document.addEventListener('focusout', function(e) {
-    if (e.target.matches('input, textarea, select, [contenteditable]')) {
-      setTimeout(function() {
-        window.scrollTo({ top: savedScroll, behavior: 'smooth' });
-      }, 100);
+    if (!isInputEl(e.target)) return;
+    // 延迟检测：如果接下来没有其他元素获得焦点，则认为键盘收起
+    setTimeout(function() {
+      var active = document.activeElement;
+      if (!isInputEl(active)) {
+        keyboardOpen = false;
+        if (hasSaved) {
+          var target = savedScrollY;
+          hasSaved = false;
+          window.scrollTo(0, target);
+        }
+      }
+    }, 150);
+  }, true);
+
+  // resize：兼容不支持 visualViewport 的浏览器
+  if (!window.visualViewport) {
+    window.addEventListener('resize', function() {
+      var curH = window.innerHeight;
+      if (keyboardOpen && curH > prevVpHeight * 0.9) {
+        keyboardOpen = false;
+        if (hasSaved) {
+          var target = savedScrollY;
+          hasSaved = false;
+          window.scrollTo(0, target);
+        }
+      }
+      prevVpHeight = curH;
+    });
+  }
+
+  // 用户手动滚动时，清除保存的位置（避免误恢复）
+  var userScrollTimer = null;
+  window.addEventListener('scroll', function() {
+    // 只在键盘未打开时视为用户主动滚动
+    if (!keyboardOpen) {
+      hasSaved = false;
+      return;
     }
-  });
+    // 键盘打开期间的用户滚动不拦截，但延迟清除保存值
+    clearTimeout(userScrollTimer);
+    userScrollTimer = setTimeout(function() {
+      // 如果在键盘打开期间用户手动滚动，更新保存值
+      if (keyboardOpen && hasSaved) {
+        savedScrollY = window.scrollY;
+      }
+    }, 400);
+  }, { passive: true });
 })();
 </script>
 </body>
