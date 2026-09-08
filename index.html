@@ -3060,6 +3060,8 @@ let clothingBrandFilter = ''; // '' = 全部品牌；否则为品牌名
 const clothingBrandFilterTrigger = makeSingleTrigger(document.getElementById('clothingBrandFilter'), {
   title: '按品牌筛选', placeholder: '🏷️ 全部品牌', value: '',
   items: [{ value: '', label: '🏷️ 全部品牌' }],
+  deletable: true, noDelete: ['🏷️ 全部品牌'],
+  onDelete: name => removeBrandOption(name),
   onPick: v => { clothingBrandFilter = v || ''; renderClothingHistory(); }
 });
 function getFilterBrandItems() {
