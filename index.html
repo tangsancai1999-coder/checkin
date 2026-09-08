@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -36,22 +36,10 @@
     --radius-sm: 8px;
     --radius-md: 12px;
     --radius-lg: 16px;
-    --radius-xl: 20px;
-    --radius-pill: 999px;
-
-    /* Spacing */
-    --space-1: 4px;
-    --space-2: 8px;
-    --space-3: 12px;
-    --space-4: 16px;
-    --space-5: 20px;
-    --space-6: 24px;
-    --space-7: 28px;
 
     /* Shadow */
     --shadow-sm: 0 4px 14px rgba(0,0,0,.05);
     --shadow-md: 0 8px 24px rgba(0,0,0,.08);
-    --shadow-lg: 0 12px 40px rgba(0,0,0,.18);
 
     /* Motion */
     --t-fast: 150ms;
@@ -2837,22 +2825,6 @@ document.getElementById('editDietDelete').addEventListener('click', () => {
   showToast('已删除 🗑');
 });
 
-function renderDietToday() {
-  const key = todayKey();
-  const list = dietStore.records[key] || [];
-  const box = document.getElementById('dietTodayList');
-  if (!box) return;
-  box.innerHTML = list.length ? list.map((it, i) => `
-    <div class="item diet-item-click flex-wrap-cursor" data-date="${key}" data-id="${it.id}">
-      <span class="sugar-dot sugar-${it.sugar || 'yellow'}"></span>
-      ${it.meal ? `<span class="diet-meal-tag">${it.meal}</span>` : ''}
-      <span class="title">${it.food}${it.note ? `<span class="diet-note">📝 ${it.note}</span>` : ''}</span>
-      <span class="text-muted-sm">✏️</span>
-    </div>`).join('') : '<div class="empty-tip">今天还没记录饮食，来记一笔吧～</div>';
-  box.querySelectorAll('.diet-item-click').forEach(el =>
-    el.addEventListener('click', () => openDietEdit(el.dataset.date, el.dataset.id)));
-}
-
 let dietDateFilter = 'day';
 
 function dietItemHtml(date, it, idx) {
@@ -4087,8 +4059,14 @@ function switchPage(name) {
   document.querySelectorAll('.nav-item').forEach(i => i.classList.toggle('active', i.dataset.page === name));
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   const pg = document.getElementById('page-' + name);
-  if (pg) pg.classList.add('active');
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  if (pg) {
+    pg.classList.add('active');
+    // iOS Safari 从 display:none 切换到 display:block 时，首帧可能空白
+    // 读取 offsetHeight 强制浏览器立即完成布局与绘制
+    void pg.offsetHeight;
+  }
+  // 延迟一帧再滚动，确保布局完成
+  requestAnimationFrame(function() { window.scrollTo(0, 0); });
 }
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => switchPage(item.dataset.page));
