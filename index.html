@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -1695,7 +1695,7 @@ function loadData() {
   } catch {}
   return { records: {}, goals: { ...GOAL_DEFAULTS }, words: {}, wordGoal: 500, exam: null };
 }
-function saveStore() { store._ts = Date.now(); localStorage.setItem(STORE_KEY, JSON.stringify(store)); scheduleCloudPush(); }
+function saveStore() { store._ts = Date.now(); localStorage.setItem(STORE_KEY, JSON.stringify(store)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 function dateKey(d) {
   const y = d.getFullYear(), m = String(d.getMonth() + 1).padStart(2, '0'), day = String(d.getDate()).padStart(2, '0');
   return `${y}-${m}-${day}`;
@@ -2401,7 +2401,7 @@ function loadFit() {
   } catch {}
   return { records: {}, goals: { minutes: 150, times: 300 } };
 }
-function saveFit() { fitStore._ts = Date.now(); localStorage.setItem(FIT_KEY, JSON.stringify(fitStore)); scheduleCloudPush(); }
+function saveFit() { fitStore._ts = Date.now(); localStorage.setItem(FIT_KEY, JSON.stringify(fitStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 let fitStore = loadFit();
 
 const fitNameCustom = document.getElementById('fitNameCustom');
@@ -2719,7 +2719,7 @@ function loadDiet() {
   } catch {}
   return { records: {}, _ts: 0 };
 }
-function saveDiet() { dietStore._ts = Date.now(); localStorage.setItem(DIET_KEY, JSON.stringify(dietStore)); scheduleCloudPush(); }
+function saveDiet() { dietStore._ts = Date.now(); localStorage.setItem(DIET_KEY, JSON.stringify(dietStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 let dietStore = loadDiet();
 
 const dietMealTrigger = makeSingleTrigger(document.getElementById('dietMealTrigger'), {
@@ -2910,7 +2910,7 @@ function loadClothing() {
   } catch {}
   return { items: [], brands: [], _ts: 0 };
 }
-function saveClothing() { clothingStore._ts = Date.now(); localStorage.setItem(CLOTHING_KEY, JSON.stringify(clothingStore)); scheduleCloudPush(); }
+function saveClothing() { clothingStore._ts = Date.now(); localStorage.setItem(CLOTHING_KEY, JSON.stringify(clothingStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 let clothingStore = loadClothing();
 
 const clothingTypeTrigger = makeSingleTrigger(document.getElementById('clothingTypeTrigger'), {
@@ -3555,7 +3555,7 @@ function loadDiaryStore() {
   } catch {}
   return defaultDiaryStore();
 }
-function saveDiary() { diaryStore._ts = Date.now(); localStorage.setItem(DIARY_KEY, JSON.stringify(diaryStore)); scheduleCloudPush(); }
+function saveDiary() { diaryStore._ts = Date.now(); localStorage.setItem(DIARY_KEY, JSON.stringify(diaryStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 function getDiaryEntry(date) {
   if (!diaryStore.entries[date]) diaryStore.entries[date] = { notes: [], _ts: Date.now() };
   const e = diaryStore.entries[date];
@@ -3807,7 +3807,7 @@ function loadTodoStore() {
   } catch {}
   return defaultTodoStore();
 }
-function saveTodo() { todoStore._ts = Date.now(); localStorage.setItem(TODO_KEY, JSON.stringify(todoStore)); scheduleCloudPush(); }
+function saveTodo() { todoStore._ts = Date.now(); localStorage.setItem(TODO_KEY, JSON.stringify(todoStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
 function getTodoEntry(date) {
   if (!todoStore.entries[date]) todoStore.entries[date] = { daily: [], study: [], _ts: Date.now() };
   const e = todoStore.entries[date];
@@ -4063,11 +4063,11 @@ function switchPage(name) {
   const pg = document.getElementById('page-' + name);
   if (pg) {
     pg.classList.add('active');
-    // iOS Safari 从 display:none 切换到 display:block 时，首帧可能空白
-    // 读取 offsetHeight 强制浏览器立即完成布局与绘制
+    // iOS Safari 从 display:none 切换到 display:block 时，嵌套的子元素（如 .tab-panel.active）
+    // 首次渲染可能空白。强制重排 page 及其内部所有可见的 tab-panel 和 card，确保子元素完成布局
     void pg.offsetHeight;
+    pg.querySelectorAll('.tab-panel.active, .card').forEach(el => { void el.offsetHeight; });
   }
-  // 延迟一帧再滚动，确保布局完成
   requestAnimationFrame(function() { window.scrollTo(0, 0); });
 }
 document.querySelectorAll('.nav-item').forEach(item => {
@@ -4454,6 +4454,7 @@ function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo) {
   try { if (typeof renderBooksAll === 'function') renderBooksAll(); } catch (e) { console.error(e); }
   try { if (typeof renderDiaryAll === 'function') renderDiaryAll(); } catch (e) { console.error(e); }
   try { if (typeof renderTodoAll === 'function') renderTodoAll(); } catch (e) { console.error(e); }
+  try { renderDashboard(); } catch (e) { console.error(e); }
 }
 
 async function cloudSync(showToastOnDone) {
