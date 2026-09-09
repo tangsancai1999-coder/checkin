@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -106,6 +106,10 @@
   .page.active { display: block; }
   @media (max-width: 768px) {
     .container { padding: 16px 20px calc(60px + env(safe-area-inset-bottom)); }
+    /* iOS Safari 修复：display:none → block 切换时，嵌套子元素绘制延迟导致空白页 */
+    /* transform: translateZ(0) 强制 GPU 合成层，绕过正常绘制流程，确保内容立即渲染 */
+    .page.active { transform: translateZ(0); }
+    .tab-panel.active { transform: translateZ(0); }
   }
 
   /* 头部 */
@@ -4063,12 +4067,18 @@ function switchPage(name) {
   const pg = document.getElementById('page-' + name);
   if (pg) {
     pg.classList.add('active');
-    // iOS Safari 从 display:none 切换到 display:block 时，嵌套的子元素（如 .tab-panel.active）
-    // 首次渲染可能空白。强制重排 page 及其内部所有可见的 tab-panel 和 card，确保子元素完成布局
+    // iOS Safari 修复：display:none → block 切换时嵌套子元素绘制延迟（空白页）
+    // CSS 中 .page.active/.tab-panel.active 已有 transform: translateZ(0) 强制 GPU 合成层
+    // 此处临时设置 opacity 触发合成层更新，双 rAF 确保渲染完成后恢复
+    pg.style.opacity = '0.999';
     void pg.offsetHeight;
-    pg.querySelectorAll('.tab-panel.active, .card').forEach(el => { void el.offsetHeight; });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() {
+        pg.style.opacity = '';
+        window.scrollTo(0, 0);
+      });
+    });
   }
-  requestAnimationFrame(function() { window.scrollTo(0, 0); });
 }
 document.querySelectorAll('.nav-item').forEach(item => {
   item.addEventListener('click', () => switchPage(item.dataset.page));
