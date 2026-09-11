@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -1256,6 +1256,116 @@
 </div>
 </div>
 
+<!-- 使用记录页 -->
+<div id="page-usage" class="page">
+<div class="container">
+  <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">使用记录 ⏱️</span></div>
+
+  <!-- 顶部统计 -->
+  <div class="card clothing-total-card">
+    <div class="clothing-total-row">
+      <div class="clothing-total-item">
+        <div class="num" id="usageActiveCount">0</div>
+        <div class="label">使用中</div>
+      </div>
+      <div class="clothing-total-item">
+        <div class="num" id="usageDoneCount">0</div>
+        <div class="label">已用完</div>
+      </div>
+      <div class="clothing-total-item">
+        <div class="num" id="usageAvgDays">0</div>
+        <div class="label">平均天数</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab 栏 -->
+  <div class="tab-bar">
+    <button class="tab-bar-btn active" data-tab="active">📦 使用中</button>
+    <button class="tab-bar-btn" data-tab="done">✅ 已用完</button>
+    <button class="tab-bar-btn" data-tab="search">🔍 搜索</button>
+  </div>
+
+  <!-- Tab: 使用中 -->
+  <div class="tab-panel active" id="usageTab-active">
+    <div class="card no-collapse">
+      <h2>📦 使用中 <span class="cnt" id="usageActiveCnt">(0)</span> <button type="button" class="title-btn" id="openUsageAddModal">+ 添加</button></h2>
+      <div id="usageActiveList"></div>
+    </div>
+  </div>
+
+  <!-- Tab: 已用完 -->
+  <div class="tab-panel" id="usageTab-done">
+    <div class="card no-collapse">
+      <h2>✅ 已用完 <span class="cnt" id="usageDoneCnt">(0)</span></h2>
+      <div class="cal-header" id="usageMonthNav">
+        <button id="usagePrevMonth">‹</button>
+        <div class="month" id="usageMonthLabel"></div>
+        <button id="usageNextMonth">›</button>
+      </div>
+      <div id="usageDoneList"></div>
+    </div>
+  </div>
+
+  <!-- Tab: 搜索 -->
+  <div class="tab-panel" id="usageTab-search">
+    <div class="card no-collapse">
+      <h2>🔍 搜索使用记录</h2>
+      <input id="usageSearchInput" class="row2 form-control" style="margin-bottom:10px" placeholder="输入物品名称或分类">
+      <div id="usageSearchResult"></div>
+    </div>
+  </div>
+
+  <!-- 添加记录按钮（已移至使用中Tab标题） -->
+</div>
+</div>
+
+<!-- 使用记录添加弹窗 -->
+<div class="modal-mask" id="usageAddMask">
+  <div class="modal">
+    <h3>➕ 记录新物品</h3>
+    <div class="modal-body">
+      <div class="clothing-form" style="margin-top:0">
+        <input id="usageName" placeholder="物品名称，如：猫粮">
+        <input type="date" id="usageDate" class="checkin-date" title="开始日期">
+        <button type="button" class="multi-trigger" id="usageCategoryTrigger">分类</button>
+        <input class="row2" id="usageNote" placeholder="备注（选填）">
+      </div>
+    </div>
+    <div class="row-gap">
+      <button class="add-btn" id="usageAddConfirm" style="flex:1">✓ 开始使用</button>
+    </div>
+    <button class="modal-close" id="usageAddClose">×</button>
+  </div>
+</div>
+
+<!-- 使用记录编辑弹窗 -->
+<div class="modal-mask" id="usageEditMask">
+  <div class="modal">
+    <h3>✏️ 编辑使用记录</h3>
+    <div class="modal-body">
+      <div class="clothing-form" style="margin-top:0">
+        <input id="editUsageName" placeholder="物品名称">
+        <input type="date" id="editUsageDate" class="checkin-date">
+        <button type="button" class="multi-trigger" id="editUsageCategoryTrigger">分类</button>
+        <input class="row2" id="editUsageNote" placeholder="备注（选填）">
+        <div class="row2" id="editUsageEndDateRow" style="display:none">
+          <label style="display:flex;align-items:center;gap:8px;font-size:14px;color:var(--muted)">
+            <input type="date" id="editUsageEndDate" class="checkin-date" style="flex:1">
+            <span>用完日期</span>
+          </label>
+        </div>
+      </div>
+    </div>
+    <div class="row-gap">
+      <button class="add-btn" id="editUsageSave" style="flex:1">💾 保存修改</button>
+      <button class="add-btn" id="editUsageFinishBtn" style="flex:1;display:none">✔ 标记用完</button>
+      <button class="add-btn btn-danger" id="editUsageDelete" style="flex:none">🗑 删除</button>
+    </div>
+    <button class="modal-close" id="editUsageClose">×</button>
+  </div>
+</div>
+
 <!-- 日记打卡页 -->
 <div id="page-diary" class="page">
 <div class="container">
@@ -1402,7 +1512,11 @@
       <div class="clothing-form" style="margin-top:0">
         <input id="editClothingName" placeholder="衣服名称">
         <input type="date" id="editClothingDate" class="checkin-date">
+        <button type="button" class="multi-trigger" id="editClothingTypeTrigger">类型</button>
         <input type="number" min="0" id="editClothingPrice" placeholder="价格（元）">
+        <button type="button" class="multi-trigger" id="editClothingSizeTrigger">尺码</button>
+        <button type="button" class="multi-trigger" id="editClothingBrandTrigger">品牌</button>
+        <input class="row2" id="editClothingBrandCustom" placeholder="输入自定义品牌名称" style="display:none">
         <input id="editClothingNote" class="row2" placeholder="备注（选填）">
       </div>
     </div>
@@ -1743,10 +1857,12 @@ function renderPicker() {
   pickerList.innerHTML = '';
   const single = pickerCtx.multiple === false;
   pickerCtx.items.forEach(it => {
-    const label = document.createElement('label');
-    label.className = 'picker-item';
+    // 单选用 div 替代 label：label 内嵌 button 时，iOS Safari 的 activation behavior
+    // 可能绕过 stopPropagation 触发额外 click，导致 onDelete 和 onOk 同时执行
+    const item = document.createElement(single ? 'div' : 'label');
+    item.className = 'picker-item';
     if (single) {
-      label.addEventListener('click', () => {
+      item.addEventListener('click', () => {
         pickerMask.classList.remove('show');
         if (pickerCtx.onOk) pickerCtx.onOk([it]);
       });
@@ -1754,8 +1870,8 @@ function renderPicker() {
       dot.className = 'picker-dot' + (pickerCtx.sel.has(it) ? ' on' : '');
       const span = document.createElement('span');
       span.textContent = it;
-      label.appendChild(dot);
-      label.appendChild(span);
+      item.appendChild(dot);
+      item.appendChild(span);
       if (pickerCtx.deletable && !pickerCtx.noDelete.includes(it)) {
         const del = document.createElement('button');
         del.type = 'button';
@@ -1767,7 +1883,7 @@ function renderPicker() {
           e.stopPropagation();
           if (pickerCtx.onDelete) pickerCtx.onDelete(it);
         });
-        label.appendChild(del);
+        item.appendChild(del);
       }
     } else {
       const cb = document.createElement('input');
@@ -1778,10 +1894,10 @@ function renderPicker() {
       });
       const span = document.createElement('span');
       span.textContent = it;
-      label.appendChild(cb);
-      label.appendChild(span);
+      item.appendChild(cb);
+      item.appendChild(span);
     }
-    pickerList.appendChild(label);
+    pickerList.appendChild(item);
   });
   if (single) { pickerCustomWrap.style.display = 'none'; return; }
   if (pickerCtx.enableCustom) {
@@ -3001,6 +3117,25 @@ function deleteClothingItem(id) {
 
 /* 衣服编辑弹窗 */
 let clothingEditId = null;
+const editClothingTypeTrigger = makeSingleTrigger(document.getElementById('editClothingTypeTrigger'), {
+  title: '类型', placeholder: '类型',
+  items: CLOTHING_TYPES.map(t => ({ value: t, label: t }))
+});
+const editClothingSizeTrigger = makeSingleTrigger(document.getElementById('editClothingSizeTrigger'), {
+  title: '尺码', placeholder: '尺码',
+  items: CLOTHING_SIZES.map(s => ({ value: s, label: s }))
+});
+const editClothingBrandCustom = document.getElementById('editClothingBrandCustom');
+const editClothingBrandTrigger = makeSingleTrigger(document.getElementById('editClothingBrandTrigger'), {
+  title: '品牌', placeholder: '品牌', value: '',
+  items: getBrandItems(),
+  deletable: false,
+  onPick: v => {
+    const custom = v === '其他';
+    editClothingBrandCustom.style.display = custom ? '' : 'none';
+    if (!custom) editClothingBrandCustom.value = '';
+  }
+});
 function openClothingEdit(id) {
   const it = clothingStore.items.find(i => i.id === id);
   if (!it) return;
@@ -3009,6 +3144,17 @@ function openClothingEdit(id) {
   document.getElementById('editClothingDate').value = it.date || todayKey();
   document.getElementById('editClothingPrice').value = it.price || '';
   document.getElementById('editClothingNote').value = it.note || '';
+  editClothingTypeTrigger.value = it.type || '';
+  editClothingSizeTrigger.value = it.size || '';
+  // 品牌列表：默认列表 + 用户自定义 + 当前记录的品牌（若不在列表中则临时加入）
+  let brandItems = getBrandItems();
+  if (it.brand && it.brand !== '其他' && !brandItems.some(b => b.value === it.brand)) {
+    brandItems = brandItems.concat([{ value: it.brand, label: it.brand }]);
+  }
+  editClothingBrandTrigger.setItems(brandItems, false);
+  editClothingBrandTrigger.value = it.brand || '';
+  editClothingBrandCustom.style.display = it.brand === '其他' ? '' : 'none';
+  if (it.brand === '其他') editClothingBrandCustom.value = '';
   document.getElementById('clothingEditMask').classList.add('show');
 }
 function closeClothingEdit() {
@@ -3026,8 +3172,17 @@ document.getElementById('editClothingSave').addEventListener('click', () => {
   const name = document.getElementById('editClothingName').value.trim();
   if (!name) { showToast('请填写衣服名称'); return; }
   it.name = name;
+  it.type = editClothingTypeTrigger.value || '其他';
   it.date = document.getElementById('editClothingDate').value || todayKey();
   it.price = Math.max(0, Number(document.getElementById('editClothingPrice').value) || 0);
+  it.size = editClothingSizeTrigger.value || '';
+  const brand = editClothingBrandTrigger.value === '其他'
+    ? editClothingBrandCustom.value.trim()
+    : (editClothingBrandTrigger.value || '');
+  if (brand && !DEFAULT_BRANDS.includes(brand) && !(clothingStore.brands || []).includes(brand)) {
+    clothingStore.brands.push(brand);
+  }
+  it.brand = brand;
   it.note = document.getElementById('editClothingNote').value.trim();
   it._ts = Date.now();
   saveClothing();
@@ -4048,7 +4203,248 @@ setupTabBar('#page-fitness .tab-bar', 'fitTab-');
 setupTabBar('#page-diet .tab-bar', 'dietTab-');
 setupTabBar('#page-clothing .tab-bar', 'clothingTab-');
 setupTabBar('#page-reading .tab-bar', 'readTab-');
+setupTabBar('#page-usage .tab-bar', 'usageTab-');
 setupTabBar('#page-todo .tab-bar', 'todoTab-');
+
+/* ================= 使用记录页 ================= */
+const USAGE_KEY = 'usage_v1';
+function defaultUsageStore() { return { items: [], tomb: {}, _ts: 0 }; }
+function loadUsage() {
+  try {
+    const d = JSON.parse(localStorage.getItem(USAGE_KEY));
+    if (d && Array.isArray(d.items)) return Object.assign(defaultUsageStore(), d);
+  } catch {}
+  return defaultUsageStore();
+}
+let usageStore = loadUsage();
+function saveUsage() { usageStore._ts = Date.now(); localStorage.setItem(USAGE_KEY, JSON.stringify(usageStore)); scheduleCloudPush(); try { renderDashboard(); } catch(e) {} }
+
+function usageDaysBetween(start, end) {
+  if (!start) return 0;
+  const e = end || todayKey();
+  const s = new Date(start), en = new Date(e);
+  return Math.max(0, Math.round((en - s) / 86400000));
+}
+function formatUsageDays(days) {
+  if (days <= 0) return '今天';
+  if (days < 30) return days + ' 天';
+  const m = Math.floor(days / 30);
+  const d = days % 30;
+  return d ? `${m} 个月 ${d} 天` : `${m} 个月`;
+}
+
+function usageItemHtml(it, showDate) {
+  const done = !!it.endDate;
+  const days = done ? usageDaysBetween(it.date, it.endDate) : usageDaysBetween(it.date, '');
+  const endDateStr = done ? ` → ${it.endDate.slice(5)}` : '';
+  const dateStr = showDate && it.date ? it.date.slice(5) : '';
+  return `<div class="clothing-item" data-id="${it.id}" style="cursor:pointer">
+    <span class="title">${it.name}<span class="meta">${dateStr ? ' · ' + dateStr : ''}${endDateStr}${it.category ? ' · ' + it.category : ''}${it.note ? ' · ' + it.note : ''}</span></span>
+    <span class="price">${done ? '用了 ' + formatUsageDays(days) : formatUsageDays(days)}</span>
+    <span class="text-muted-sm">${done ? '✏️' : '✔'}</span>
+  </div>`;
+}
+function bindUsageDel(box) {
+  box.querySelectorAll('.clothing-item').forEach(el =>
+    el.addEventListener('click', () => openUsageEdit(el.dataset.id)));
+}
+
+function renderUsageActive() {
+  const box = document.getElementById('usageActiveList');
+  const items = usageStore.items
+    .filter(it => !it.endDate)
+    .sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b._ts || 0) - (a._ts || 0));
+  document.getElementById('usageActiveCnt').textContent = `(${items.length})`;
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-tip">暂无使用中的物品</div>';
+    return;
+  }
+  box.innerHTML = items.map(it => usageItemHtml(it, true)).join('');
+  bindUsageDel(box);
+}
+
+let usageViewMonth = new Date().getMonth();
+let usageViewYear = new Date().getFullYear();
+function renderUsageDone() {
+  const box = document.getElementById('usageDoneList');
+  document.getElementById('usageMonthLabel').textContent = `${usageViewYear} 年 ${usageViewMonth + 1} 月`;
+  const ym = `${usageViewYear}-${String(usageViewMonth + 1).padStart(2, '0')}`;
+  // 已用完记录按完成日期归月；若无完成日期则按开始日期归月
+  const items = usageStore.items
+    .filter(it => it.endDate && (it.endDate.slice(0, 7) === ym))
+    .sort((a, b) => (b.endDate || '').localeCompare(a.endDate || ''));
+  document.getElementById('usageDoneCnt').textContent = `(${items.length})`;
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-tip">本月没有用完记录</div>';
+    return;
+  }
+  const totalDays = items.reduce((s, it) => s + usageDaysBetween(it.date, it.endDate), 0);
+  const avg = items.length ? Math.round(totalDays / items.length) : 0;
+  box.innerHTML = `<div class="clothing-month-group">
+    <h3>${ym}（${items.length} 件 · 平均 ${formatUsageDays(avg)}）</h3>
+    ${items.map(it => usageItemHtml(it, true)).join('')}
+  </div>`;
+  bindUsageDel(box);
+}
+
+function renderUsageSearch() {
+  const q = (document.getElementById('usageSearchInput').value || '').trim().toLowerCase();
+  const box = document.getElementById('usageSearchResult');
+  if (!q) { box.innerHTML = '<div class="empty-tip">输入关键词搜索物品名称或分类</div>'; return; }
+  const items = usageStore.items
+    .filter(it => (it.name || '').toLowerCase().includes(q) || (it.category || '').toLowerCase().includes(q))
+    .sort((a, b) => (b.date || '').localeCompare(a.date || ''));
+  if (!items.length) {
+    box.innerHTML = '<div class="empty-tip">没有匹配的记录</div>';
+    return;
+  }
+  box.innerHTML = items.map(it => usageItemHtml(it, true)).join('');
+  bindUsageDel(box);
+}
+
+function renderUsageTotals() {
+  const active = usageStore.items.filter(it => !it.endDate);
+  const done = usageStore.items.filter(it => it.endDate);
+  document.getElementById('usageActiveCount').textContent = active.length;
+  document.getElementById('usageDoneCount').textContent = done.length;
+  const totalDays = done.reduce((s, it) => s + usageDaysBetween(it.date, it.endDate), 0);
+  document.getElementById('usageAvgDays').textContent = done.length ? Math.round(totalDays / done.length) : 0;
+}
+
+function renderUsageAll() {
+  renderUsageTotals();
+  renderUsageActive();
+  renderUsageDone();
+  renderUsageSearch();
+}
+
+document.getElementById('usagePrevMonth').addEventListener('click', () => {
+  usageViewMonth--; if (usageViewMonth < 0) { usageViewMonth = 11; usageViewYear--; }
+  renderUsageDone();
+});
+document.getElementById('usageNextMonth').addEventListener('click', () => {
+  usageViewMonth++; if (usageViewMonth > 11) { usageViewMonth = 0; usageViewYear++; }
+  renderUsageDone();
+});
+document.getElementById('usageSearchInput').addEventListener('input', renderUsageSearch);
+
+/* === 分类选择器 === */
+const USAGE_CATEGORIES = ['猫粮', '猫砂', '猫零食', '猫用品', '日用品', '清洁用品', '洗护用品', '食品饮料', '其他'];
+const usageCategoryTrigger = makeSingleTrigger(document.getElementById('usageCategoryTrigger'), {
+  title: '分类', placeholder: '分类', value: '',
+  items: USAGE_CATEGORIES.map(c => ({ value: c, label: c }))
+});
+const editUsageCategoryTrigger = makeSingleTrigger(document.getElementById('editUsageCategoryTrigger'), {
+  title: '分类', placeholder: '分类', value: '',
+  items: USAGE_CATEGORIES.map(c => ({ value: c, label: c }))
+});
+
+/* === 添加弹窗 === */
+document.getElementById('openUsageAddModal').addEventListener('click', () => {
+  document.getElementById('usageName').value = '';
+  document.getElementById('usageDate').value = todayKey();
+  document.getElementById('usageNote').value = '';
+  usageCategoryTrigger.value = '';
+  document.getElementById('usageAddMask').classList.add('show');
+});
+document.getElementById('usageAddClose').addEventListener('click', () => {
+  document.getElementById('usageAddMask').classList.remove('show');
+});
+document.getElementById('usageAddMask').addEventListener('click', e => {
+  if (e.target === document.getElementById('usageAddMask')) document.getElementById('usageAddMask').classList.remove('show');
+});
+document.getElementById('usageAddConfirm').addEventListener('click', () => {
+  const name = document.getElementById('usageName').value.trim();
+  if (!name) { showToast('请填写物品名称'); return; }
+  const category = usageCategoryTrigger.value || '';
+  const note = document.getElementById('usageNote').value.trim();
+  const date = document.getElementById('usageDate').value || todayKey();
+  usageStore.items.push({ id: newItemId(), name, category, note, date, endDate: null, _ts: Date.now() });
+  saveUsage();
+  document.getElementById('usageAddMask').classList.remove('show');
+  renderUsageAll();
+  showToast(`已开始使用：${name} ⏱️`);
+});
+
+/* 使用记录编辑弹窗 */
+let usageEditId = null;
+function openUsageEdit(id) {
+  const it = usageStore.items.find(i => i.id === id);
+  if (!it) return;
+  usageEditId = id;
+  document.getElementById('editUsageName').value = it.name || '';
+  document.getElementById('editUsageDate').value = it.date || todayKey();
+  editUsageCategoryTrigger.value = it.category || '';
+  document.getElementById('editUsageNote').value = it.note || '';
+  const endDateRow = document.getElementById('editUsageEndDateRow');
+  const finishBtn = document.getElementById('editUsageFinishBtn');
+  if (it.endDate) {
+    endDateRow.style.display = '';
+    document.getElementById('editUsageEndDate').value = it.endDate;
+    finishBtn.style.display = 'none';
+  } else {
+    endDateRow.style.display = 'none';
+    finishBtn.style.display = '';
+  }
+  document.getElementById('usageEditMask').classList.add('show');
+}
+function closeUsageEdit() {
+  usageEditId = null;
+  document.getElementById('usageEditMask').classList.remove('show');
+}
+document.getElementById('editUsageClose').addEventListener('click', closeUsageEdit);
+document.getElementById('usageEditMask').addEventListener('click', e => {
+  if (e.target === document.getElementById('usageEditMask')) closeUsageEdit();
+});
+document.getElementById('editUsageSave').addEventListener('click', () => {
+  if (!usageEditId) return;
+  const it = usageStore.items.find(i => i.id === usageEditId);
+  if (!it) return;
+  const name = document.getElementById('editUsageName').value.trim();
+  if (!name) { showToast('请填写物品名称'); return; }
+  it.name = name;
+  it.date = document.getElementById('editUsageDate').value || todayKey();
+  it.category = editUsageCategoryTrigger.value || '';
+  it.note = document.getElementById('editUsageNote').value.trim();
+  const endDateRow = document.getElementById('editUsageEndDateRow');
+  if (endDateRow.style.display !== 'none') {
+    const ed = document.getElementById('editUsageEndDate').value;
+    it.endDate = ed || null;
+  }
+  it._ts = Date.now();
+  saveUsage();
+  closeUsageEdit();
+  renderUsageAll();
+  showToast('已修改 ✏️');
+});
+document.getElementById('editUsageFinishBtn').addEventListener('click', () => {
+  if (!usageEditId) return;
+  const it = usageStore.items.find(i => i.id === usageEditId);
+  if (!it) return;
+  it.endDate = todayKey();
+  it._ts = Date.now();
+  saveUsage();
+  closeUsageEdit();
+  renderUsageAll();
+  const days = usageDaysBetween(it.date, it.endDate);
+  showToast(`已用完，使用 ${formatUsageDays(days)} ✔`);
+});
+document.getElementById('editUsageDelete').addEventListener('click', () => {
+  if (!usageEditId) return;
+  const idx = usageStore.items.findIndex(i => i.id === usageEditId);
+  if (idx >= 0) {
+    const it = usageStore.items[idx];
+    usageStore.items.splice(idx, 1);
+    usageStore.tomb = usageStore.tomb || {};
+    usageStore.tomb[it.id] = Date.now();
+    saveUsage();
+    closeUsageEdit();
+    renderUsageAll();
+    showToast('已删除 🗑');
+  }
+});
+
+renderUsageAll();
 
 /* --- 待办初始化 --- */
 const todoTodayEl = document.getElementById('todoTodayText');
@@ -4211,6 +4607,7 @@ function renderDashboard() {
     { page: 'diet', name: '饮食', svg: '<path d="M15 10 V21"/><path d="M21 10 V21"/><path d="M27 10 V21"/><path d="M15 21 C15 27 27 27 27 21"/><path d="M21 27 V54"/><path d="M45 10 C40 17 40 25 45 30 V54"/>' },
     { page: 'clothing', name: '衣服', svg: '<path d="M22 11 L11 19 L17 28 L20 25 V52 H44 V25 L47 28 L53 19 L42 11 C40 16 24 16 22 11 Z"/>' },
     { page: 'reading', name: '读书', svg: '<path d="M32 19 C27 14 19 13 12 15 V49 C19 47 27 48 32 52 C37 48 45 47 52 49 V15 C45 13 37 14 32 19 Z"/><path d="M32 19 V52"/>' },
+    { page: 'usage', name: '使用', svg: '<circle cx="32" cy="34" r="22"/><path d="M32 22 V34 L41 39"/><path d="M24 8 H40"/><path d="M32 8 V14"/>' },
   ];
   document.getElementById('dashModules').innerHTML = mods.map(m =>
     `<div class="module-card" data-page="${m.page}"><svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${m.svg}</svg><div class="name">${m.name}</div></div>`).join('');
@@ -4268,7 +4665,22 @@ function tombItem(storeObj, dateKey, item) {
 }
 
 function buildPayload() {
-  return { v: 1, ts: Date.now(), ielts: store, fitness: fitStore, diet: dietStore, clothing: clothingStore, reading: bookStore, diary: diaryStore, todo: todoStore };
+  return { v: 1, ts: Date.now(), ielts: store, fitness: fitStore, diet: dietStore, clothing: clothingStore, reading: bookStore, diary: diaryStore, todo: todoStore, usage: usageStore };
+}
+function mergeUsageStore(local, remote) {
+  const out = JSON.parse(JSON.stringify(local || defaultUsageStore()));
+  if (!remote) return out;
+  if (!Array.isArray(out.items)) out.items = [];
+  if (!out.tomb) out.tomb = {};
+  const a = (out.items || []).map(x => ensureId('usage', x));
+  const b = (remote.items || []).map(x => ensureId('usage', x));
+  const tomb = { ...out.tomb, ...(remote.tomb || {}) };
+  const filteredA = a.filter(x => !tomb[x.id]);
+  const ids = new Set(filteredA.map(x => x.id));
+  out.items = filteredA.concat(b.filter(x => !ids.has(x.id) && !tomb[x.id]));
+  out.tomb = tomb;
+  out._ts = Math.max(out._ts || 0, remote._ts || 0);
+  return out;
 }
 function mergeDiaryStore(local, remote) {
   const out = JSON.parse(JSON.stringify(local || defaultDiaryStore()));
@@ -4412,7 +4824,7 @@ function mergeStore(local, remote) {
   return out;
 }
 
-function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo) {
+function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo, usage) {
   store = ielts;
   fitStore = fitness;
   if (diet) { dietStore = diet; localStorage.setItem(DIET_KEY, JSON.stringify(dietStore)); }
@@ -4448,6 +4860,12 @@ function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo) {
     if (!todoStore.entries || typeof todoStore.entries !== 'object') todoStore.entries = {};
     localStorage.setItem(TODO_KEY, JSON.stringify(todoStore));
   }
+  if (usage) {
+    usageStore = usage;
+    if (!Array.isArray(usageStore.items)) usageStore.items = [];
+    if (!usageStore.tomb || typeof usageStore.tomb !== 'object') usageStore.tomb = {};
+    localStorage.setItem(USAGE_KEY, JSON.stringify(usageStore));
+  }
   localStorage.setItem(STORE_KEY, JSON.stringify(store));
   localStorage.setItem(FIT_KEY, JSON.stringify(fitStore));
   if (document.getElementById('goalReading')) document.getElementById('goalReading').value = store.goals.reading;
@@ -4464,6 +4882,7 @@ function applyMerged(ielts, fitness, diet, clothing, reading, diary, todo) {
   try { if (typeof renderBooksAll === 'function') renderBooksAll(); } catch (e) { console.error(e); }
   try { if (typeof renderDiaryAll === 'function') renderDiaryAll(); } catch (e) { console.error(e); }
   try { if (typeof renderTodoAll === 'function') renderTodoAll(); } catch (e) { console.error(e); }
+  try { if (typeof renderUsageAll === 'function') renderUsageAll(); } catch (e) { console.error(e); }
   try { renderDashboard(); } catch (e) { console.error(e); }
 }
 
@@ -4486,7 +4905,9 @@ async function cloudSync(showToastOnDone) {
     try { mergedDiary = mergeDiaryStore(diaryStore, remote.diary); } catch (e) { console.error('mergeDiaryStore', e); mergedDiary = mergeDiaryStore(diaryStore, null); }
     let mergedTodo;
     try { mergedTodo = mergeTodoStore(todoStore, remote.todo); } catch (e) { console.error('mergeTodoStore', e); mergedTodo = mergeTodoStore(todoStore, null); }
-    applyMerged(mergedIelts, mergedFit, mergedDiet, mergedClothing, mergedReading, mergedDiary, mergedTodo);
+    let mergedUsage;
+    try { mergedUsage = mergeUsageStore(usageStore, remote.usage); } catch (e) { console.error('mergeUsageStore', e); mergedUsage = mergeUsageStore(usageStore, null); }
+    applyMerged(mergedIelts, mergedFit, mergedDiet, mergedClothing, mergedReading, mergedDiary, mergedTodo, mergedUsage);
     const { error: upErr } = await sb.from(CLOUD.table).upsert({
       user_id: cloudUser.id,
       payload: buildPayload(),
