@@ -1,4 +1,4 @@
-﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
+﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
@@ -626,6 +626,14 @@
   .clothing-total-item .num { font-size: 28px; font-weight: 800; color: var(--primary); }
   .clothing-total-item .label { font-size: 13px; color: var(--muted); margin-top: 4px; }
   @media (max-width: 480px) { .clothing-total-row { flex-direction: column; gap: 12px; } }
+  /* 使用记录统计卡 - 紧凑版 */
+  .usage-stats-card { padding: 10px 14px; }
+  .usage-stats-card .clothing-total-row { gap: 12px; }
+  .usage-stats-card .clothing-total-item .num { font-size: 20px; }
+  .usage-stats-card .clothing-total-item .label { font-size: 11px; margin-top: 2px; }
+  /* 使用记录列表 - 与其他页一致 */
+  #page-usage .clothing-item { font-size: 14px; }
+  #page-usage .clothing-item .meta { font-size: 12px; }
   .clothing-month-summary { display: flex; gap: 16px; }
   .clothing-month-summary .stat { flex: 1; }
   .clothing-month-group { margin-bottom: 16px; }
@@ -1262,7 +1270,7 @@
   <div class="back-bar"><button class="back-btn" onclick="switchPage('home')">‹ 主页</button><span class="page-title">使用记录 ⏱️</span></div>
 
   <!-- 顶部统计 -->
-  <div class="card clothing-total-card">
+  <div class="card clothing-total-card usage-stats-card">
     <div class="clothing-total-row">
       <div class="clothing-total-item">
         <div class="num" id="usageActiveCount">0</div>
